@@ -1,0 +1,35 @@
+[
+  {
+    "id": "morning-set",
+    "name": "morning",
+    "items": [
+      {
+        "id": "morning-1",
+        "title": "أصبحنا وأصبح الملك لله",
+        "text": "أصبحنا وأصبح الملك لله والحمد لله...",
+        "count": 1,
+        "tags": ["morning"]
+      },
+      {
+        "id": "morning-2",
+        "title": "سيد الاستغفار",
+        "text": "اللهم أنت ربي لا إله إلا أنت...",
+        "count": 1,
+        "tags": ["morning", "evening"]
+      }
+    ]
+  },
+  {
+    "id": "evening-set",
+    "name": "evening",
+    "items": [
+      {
+        "id": "evening-1",
+        "title": "آية الكرسي",
+        "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+        "count": 1,
+        "tags": ["evening"]
+      }
+    ]
+  }
+]
