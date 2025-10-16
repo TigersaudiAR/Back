@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-
 import type { Role } from "../types/index.js";
 
 const SECRET = process.env.JWT_SECRET || "super-secret";
@@ -19,20 +18,29 @@ export function authenticate(requiredRoles?: Role | Role[]) {
     if (!header) {
       return res.status(401).json({ message: "الرمز مفقود" });
     }
+
     const [, token] = header.split(" ");
+
     try {
-      const decoded = jwt.verify(token, SECRET) as AuthenticatedRequest["user"];
+      const decoded = jwt.verify(token, SECRET) as AuthenticatedRequest["user"] | undefined;
+
+      if (!decoded) {
+        return res.status(401).json({ message: "رمز غير صالح أو غير معروف" });
+      }
+
       req.user = decoded;
+
       if (requiredRoles) {
         const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
         if (!roles.includes(decoded.role)) {
           return res.status(403).json({ message: "صلاحيات غير كافية" });
         }
       }
+
       next();
     } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: "رمز غير صالح" });
+      console.error("JWT Error:", error);
+      return res.status(401).json({ message: "فشل التحقق من الرمز" });
     }
   };
 }
