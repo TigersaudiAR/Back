@@ -5,17 +5,13 @@ export type Dhikr = {
   count?: number;
   audio_url?: string;
   tags: string[];
+  reference?: string;
 };
-
-export type DhikrSetName =
-  | "morning"
-  | "evening"
-  | "after_prayer"
-  | "sleep"
-  | "other";
 
 export type DhikrSet = {
   id: string;
-  name: DhikrSetName;
+  name: string;
+  title?: string;
+  description?: string;
   items: Dhikr[];
 };

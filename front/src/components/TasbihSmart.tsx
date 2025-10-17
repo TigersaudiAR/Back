@@ -77,6 +77,9 @@ function TasbihSmart({ item }: TasbihSmartProps) {
     <div className="bg-primary-dark/60 rounded-3xl border border-primary-light/40 p-6 space-y-4 shadow-lg text-center">
       <h3 className="text-accent text-lg font-semibold">{item.title}</h3>
       <p className="text-sm leading-7 text-gray-200 whitespace-pre-line">{item.text}</p>
+      {item.reference && (
+        <p className="text-[11px] text-gray-400">المصدر: {item.reference}</p>
+      )}
       <div className="flex justify-center gap-2 text-xs">
         <span className="badge badge-accent">العدد المستهدف: {targetCount}</span>
         <span className="badge">الحالي: {count}</span>

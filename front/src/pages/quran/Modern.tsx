@@ -5,33 +5,22 @@ import HiddenToolbar from "../../components/HiddenToolbar";
 import TopBar from "../../components/TopBar";
 import TafsirPopover from "../../components/TafsirPopover";
 import AudioBar from "../../components/AudioBar";
-import surahList from "../../data/surah_index.json";
-import ayatData from "../../data/sample_ayahs.json";
-import tafsirData from "../../data/tafsir_samples.json";
-import type { Ayah, Recitation, Surah, Tafsir } from "../../types/quran";
+import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useAutoHide } from "../../hooks/useAutoHide";
+import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const mockRecitations: Recitation[] = [
-  {
-    surah_id: 1,
-    reciter: "الشيخ ماهر المعيقلي",
-    url: "https://cdn.islamic.network/quran/audio/128/ar.mahermuaiqly/001.mp3"
-  }
-];
-
 function QuranModernPage() {
   const query = useQuery();
   const navigate = useNavigate();
   const { visible, show, setVisible } = useAutoHide();
-  const [currentSurahId, setCurrentSurahId] = useState<number>(
-    Number(query.get("surah")) || 1
-  );
+  const [currentSurahId, setCurrentSurahId] = useState<number>(Number(query.get("surah")) || 1);
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+
   const computeAutoFont = () => {
     if (typeof window === "undefined") return 30;
     const width = window.innerWidth;
@@ -46,23 +35,38 @@ function QuranModernPage() {
   const [fontSize, setFontSize] = useState<number>(() => computeAutoFont());
   const [isAutoFont, setIsAutoFont] = useState(true);
 
-  const surah: Surah | undefined = useMemo(
-    () => surahList.find((item) => item.id === currentSurahId),
-    [currentSurahId]
-  );
+  const { surahs, loading: loadingIndex } = useSurahIndex();
+  const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
-  const ayat: Ayah[] = useMemo(
-    () => ayatData.filter((ayah) => ayah.surah_id === currentSurahId),
-    [currentSurahId]
-  );
+  const surah: Surah | undefined = data?.surah;
+  const ayat: Ayah[] = data?.ayat ?? [];
+  const tafsirMap = useMemo(() => new Map<string, Tafsir>(), [data?.tafsir]);
 
-  const tafsir: Tafsir | undefined = useMemo(
-    () =>
-      tafsirData.find(
-        (item) => item.surah_id === currentSurahId && item.ayah_number === activeAyah
-      ),
-    [currentSurahId, activeAyah]
-  );
+  if (data?.tafsir) {
+    data.tafsir.forEach((item) => tafsirMap.set(`${item.surah_id}-${item.ayah_number}`, item));
+  }
+
+  const tafsir = activeAyah ? tafsirMap.get(`${currentSurahId}-${activeAyah}`) : undefined;
+
+  const goPrev = () => {
+    if (!surahs.length) return;
+    const index = surahs.findIndex((s) => s.id === currentSurahId);
+    if (index > 0) {
+      const target = surahs[index - 1].id;
+      setCurrentSurahId(target);
+      navigate(`?surah=${target}`);
+    }
+  };
+
+  const goNext = () => {
+    if (!surahs.length) return;
+    const index = surahs.findIndex((s) => s.id === currentSurahId);
+    if (index >= 0 && index < surahs.length - 1) {
+      const target = surahs[index + 1].id;
+      setCurrentSurahId(target);
+      navigate(`?surah=${target}`);
+    }
+  };
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -78,7 +82,7 @@ function QuranModernPage() {
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, []);
+  }, [goNext, goPrev, setVisible]);
 
   useEffect(() => {
     localStorage.setItem("last-reading", JSON.stringify({ surah: currentSurahId, ayah: activeAyah }));
@@ -102,56 +106,71 @@ function QuranModernPage() {
     setFontSize(computeAutoFont());
   };
 
-  const goPrev = () => {
-    const index = surahList.findIndex((s) => s.id === currentSurahId);
-    if (index > 0) {
-      setCurrentSurahId(surahList[index - 1].id);
-      navigate(`?surah=${surahList[index - 1].id}`);
-    }
-  };
-
-  const goNext = () => {
-    const index = surahList.findIndex((s) => s.id === currentSurahId);
-    if (index < surahList.length - 1) {
-      setCurrentSurahId(surahList[index + 1].id);
-      navigate(`?surah=${surahList[index + 1].id}`);
-    }
-  };
+  const recitations = data?.recitations ?? [];
 
   return (
     <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
       <TopBar
         surah={surah}
-        onToggleMode={() => navigate("/quran/classic?surah=" + currentSurahId)}
+        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
         onOpenSearch={() => show()}
       />
       <div className="flex-1">
-        <QuranCanvas
-          ayat={ayat}
-          activeAyah={activeAyah}
-          onSelectAyah={(ayah) => {
-            setActiveAyah(ayah.ayah_number);
-            const range = window.getSelection();
-            const rect = range?.getRangeAt(0).getBoundingClientRect();
-            setAnchorRect(rect ?? null);
-            show();
-          }}
-          onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
-          fontSize={fontSize}
-        />
+        {data?.message && (
+          <div className="mx-auto my-4 max-w-4xl rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-xs text-amber-200">
+            {data.message}
+          </div>
+        )}
+        {loading && (
+          <div className="flex h-full items-center justify-center text-sm text-gray-300">جاري تحميل الآيات...</div>
+        )}
+        {!loading && error && (
+          <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-sm text-red-300">
+            <p>{error}</p>
+            <button className="btn btn-sm" onClick={() => refresh(currentSurahId).catch(() => undefined)}>
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
+        {!loading && !error && ayat.length > 0 && (
+          <QuranCanvas
+            ayat={ayat}
+            activeAyah={activeAyah}
+            onSelectAyah={(ayah) => {
+              setActiveAyah(ayah.ayah_number);
+              try {
+                const selection = window.getSelection();
+                if (selection && selection.rangeCount > 0) {
+                  const rect = selection.getRangeAt(0).getBoundingClientRect();
+                  setAnchorRect(rect ?? null);
+                } else {
+                  setAnchorRect(null);
+                }
+              } catch (err) {
+                console.warn("Failed to read selection", err);
+                setAnchorRect(null);
+              }
+              show();
+            }}
+            onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
+            fontSize={fontSize}
+          />
+        )}
       </div>
-      <AudioBar
-        recitations={mockRecitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
-        onProgress={(time) => {
-          const index = Math.floor(time / 5);
-          setActiveAyah(ayat[index]?.ayah_number);
-        }}
-      />
+      {recitations.length > 0 && (
+        <AudioBar
+          recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
+          onProgress={(time) => {
+            const index = Math.floor(time / 5);
+            setActiveAyah(ayat[index]?.ayah_number);
+          }}
+        />
+      )}
       <HiddenToolbar
         visible={visible}
-        surahList={surahList}
+        surahList={surahs}
         currentSurah={surah}
-        onToggleMode={() => navigate("/quran/classic?surah=" + currentSurahId)}
+        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
         onSelectSurah={(id) => {
           setCurrentSurahId(id);
           navigate(`?surah=${id}`);
@@ -164,6 +183,11 @@ function QuranModernPage() {
         onResetFont={resetFont}
       />
       <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
+      {!loadingIndex && !surahs.length && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary-dark/80 text-sm text-red-200">
+          تعذر تحميل فهرس السور، يرجى التحقق من الاتصال.
+        </div>
+      )}
     </div>
   );
 }

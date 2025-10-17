@@ -73,6 +73,7 @@ function ChatInvite({ faqs }: ChatInviteProps) {
         <div className="flex-1 rounded-3xl border border-primary-light/30 bg-primary-dark/70 p-5">
           <h4 className="text-accent font-semibold mb-4">أبرز الأسئلة الشائعة</h4>
           <div className="space-y-3 text-xs leading-6 text-gray-200">
+            {faqs.length === 0 && <p className="text-gray-400">لا تتوفر أسئلة شائعة حاليًا.</p>}
             {faqs.map((faq, index) => {
               const expanded = expandedIndex === index;
               return (

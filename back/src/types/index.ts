@@ -36,11 +36,14 @@ export interface Dhikr {
   text: string;
   count?: number;
   tags: string[];
+  reference?: string;
 }
 
 export interface DhikrSet {
   id: string;
-  name: "morning" | "evening" | "after_prayer" | "sleep" | "other";
+  name: string;
+  title?: string;
+  description?: string;
   items: Dhikr[];
 }
 
@@ -64,9 +67,11 @@ export interface LeaderboardEntry {
 
 export interface Hadith {
   id: string;
+  title?: string;
+  narrator?: string;
   source: string;
   number?: string;
   text_ar: string;
   grade?: string;
-  topic?: string;
+  topic?: string | string[];
 }
