@@ -32,7 +32,19 @@ function QuranModernPage() {
   );
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-  const [fontSize, setFontSize] = useState(32);
+  const computeAutoFont = () => {
+    if (typeof window === "undefined") return 30;
+    const width = window.innerWidth;
+    if (width >= 1600) return 38;
+    if (width >= 1280) return 34;
+    if (width >= 1024) return 30;
+    if (width >= 768) return 26;
+    if (width >= 480) return 22;
+    return 20;
+  };
+
+  const [fontSize, setFontSize] = useState<number>(() => computeAutoFont());
+  const [isAutoFont, setIsAutoFont] = useState(true);
 
   const surah: Surah | undefined = useMemo(
     () => surahList.find((item) => item.id === currentSurahId),
@@ -72,6 +84,24 @@ function QuranModernPage() {
     localStorage.setItem("last-reading", JSON.stringify({ surah: currentSurahId, ayah: activeAyah }));
   }, [currentSurahId, activeAyah]);
 
+  useEffect(() => {
+    if (!isAutoFont) return;
+    const update = () => setFontSize(computeAutoFont());
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [isAutoFont]);
+
+  const handleFontChange = (delta: number) => {
+    setIsAutoFont(false);
+    setFontSize((prev) => Math.min(46, Math.max(18, prev + delta)));
+  };
+
+  const resetFont = () => {
+    setIsAutoFont(true);
+    setFontSize(computeAutoFont());
+  };
+
   const goPrev = () => {
     const index = surahList.findIndex((s) => s.id === currentSurahId);
     if (index > 0) {
@@ -89,13 +119,13 @@ function QuranModernPage() {
   };
 
   return (
-    <div className="w-full h-full bg-primary-dark text-gray-100" onClick={() => show()}>
+    <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
       <TopBar
         surah={surah}
         onToggleMode={() => navigate("/quran/classic?surah=" + currentSurahId)}
         onOpenSearch={() => show()}
       />
-      <div className="pt-16 h-full" style={{ fontSize }}>
+      <div className="flex-1">
         <QuranCanvas
           ayat={ayat}
           activeAyah={activeAyah}
@@ -107,6 +137,7 @@ function QuranModernPage() {
             show();
           }}
           onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
+          fontSize={fontSize}
         />
       </div>
       <AudioBar
@@ -127,9 +158,10 @@ function QuranModernPage() {
         }}
         onPrev={goPrev}
         onNext={goNext}
-        onFontChange={(delta) => setFontSize((prev) => Math.max(22, prev + delta))}
+        onFontChange={handleFontChange}
         onToggleAudio={() => show()}
         onShowTafsir={() => show()}
+        onResetFont={resetFont}
       />
       <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
     </div>

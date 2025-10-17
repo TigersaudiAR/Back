@@ -7,21 +7,23 @@ function QuranLayout() {
   const { role } = useAuthStore();
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    document.body.classList.add("overflow-hidden");
     return () => {
-      document.body.style.overflow = "";
+      document.body.classList.remove("overflow-hidden");
     };
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-b from-primary-dark to-black text-white">
+    <div className="relative min-h-[100dvh] w-full bg-[radial-gradient(circle_at_top,_rgba(18,70,54,0.65),_#020605_70%)] text-white">
       <Outlet />
-      <button
-        onClick={() => navigate("/")}
-        className="fixed top-4 right-4 z-50 btn btn-sm btn-outline btn-accent"
-      >
-        رجوع للرئيسية ({role})
-      </button>
+      <div className="fixed top-4 right-4 z-50 flex flex-col items-end gap-2 text-xs">
+        <button onClick={() => navigate("/")} className="btn btn-sm btn-outline btn-accent">
+          رجوع للرئيسية ({role})
+        </button>
+        <span className="hidden sm:block rounded-full border border-primary-light/40 bg-primary-dark/70 px-3 py-1 text-[11px] text-gray-200">
+          اضغط على حرف T لإظهار الأدوات أو الأسهم للتنقل بين السور
+        </span>
+      </div>
     </div>
   );
 }
