@@ -62,7 +62,10 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Prop
   }, [onSwipe]);
 
   return (
-    <div ref={containerRef} className="relative h-full w-full select-none overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative h-full w-full select-none overflow-x-hidden overflow-y-auto"
+    >
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.04]" />
       <div className="relative flex h-full w-full items-center justify-center px-3 pb-32 pt-20 sm:px-6">
         <div className="relative w-full max-w-[900px]">
