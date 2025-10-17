@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
-import { getAdhkar } from "../services/dataService.js";
+import { getAdhkar, saveDhikrSet } from "../services/dataService.js";
 
 const router = express.Router();
 
@@ -13,7 +13,17 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", authenticate(["admin", "teacher"]), (req, res) => {
-  res.json({ message: "تم حفظ الذكر (محاكاة)", payload: req.body });
+  try {
+    const saved = saveDhikrSet(req.body);
+    res.status(201).json({
+      message: "تم حفظ مجموعة الأذكار بنجاح",
+      set: saved,
+      all: getAdhkar()
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "تعذر حفظ مجموعة الأذكار";
+    res.status(400).json({ message });
+  }
 });
 
 export const adhkarRouter = router;

@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
-import { getHadith } from "../services/dataService.js";
+import { getHadith, saveHadith } from "../services/dataService.js";
 
 const router = express.Router();
 
@@ -19,7 +19,17 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", authenticate(["admin", "lecturer"]), (req, res) => {
-  res.json({ message: "تم حفظ الحديث (محاكاة)", payload: req.body });
+  try {
+    const saved = saveHadith(req.body);
+    res.status(201).json({
+      message: "تم حفظ الحديث بنجاح",
+      hadith: saved,
+      all: getHadith()
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "تعذر حفظ الحديث";
+    res.status(400).json({ message });
+  }
 });
 
 export const hadithRouter = router;
