@@ -8,7 +8,13 @@ const router = express.Router();
 router.get("/", (req, res) => {
   const topic = req.query.topic as string | undefined;
   const data = getHadith();
-  const filtered = topic ? data.filter((item) => item.topic?.includes(topic)) : data;
+  const filtered = topic
+    ? data.filter((item) =>
+        Array.isArray(item.topic)
+          ? item.topic.some((entry) => entry.includes(topic))
+          : item.topic?.includes(topic)
+      )
+    : data;
   res.json({ hadith: filtered });
 });
 

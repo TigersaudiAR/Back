@@ -12,6 +12,7 @@ interface ToolbarProps {
   onFontChange: (delta: number) => void;
   onToggleAudio: () => void;
   onShowTafsir: () => void;
+  onResetFont?: () => void;
 }
 
 function HiddenToolbar({
@@ -24,7 +25,8 @@ function HiddenToolbar({
   onNext,
   onFontChange,
   onToggleAudio,
-  onShowTafsir
+  onShowTafsir,
+  onResetFont
 }: ToolbarProps) {
   return (
     <AnimatePresence>
@@ -70,6 +72,11 @@ function HiddenToolbar({
                 حجم +
               </button>
             </div>
+            {onResetFont && (
+              <button className="btn btn-sm" onClick={onResetFont}>
+                إعادة الضبط
+              </button>
+            )}
             <button className="btn btn-sm" onClick={onToggleAudio}>
               تشغيل / إيقاف التلاوة
             </button>
