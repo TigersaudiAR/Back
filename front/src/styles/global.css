@@ -36,3 +36,202 @@ a {
 #root {
   min-height: 100vh;
 }
+
+body.quran-page {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: #0b0f0e;
+  font-family: "Amiri Quran", "Noto Naskh Arabic", serif;
+  color: #f8f8e8;
+}
+
+body.quran-page main.quran-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  max-width: 100%;
+  width: 100vw;
+  padding: 2rem 0;
+  background: radial-gradient(circle at top, #0e1a18 0%, #000 100%);
+  box-sizing: border-box;
+}
+
+body.quran-page .quran-view-scroll {
+  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+body.quran-page .quran-frame {
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: rgba(20, 30, 28, 0.7);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.05);
+  width: 90%;
+  max-width: 900px;
+  position: relative;
+  isolation: isolate;
+}
+
+body.quran-page .quran-frame::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 215, 0, 0.12);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body.quran-page .quran-surah-title {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #d4af37;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.08rem;
+}
+
+body.quran-page .quran-text {
+  direction: rtl;
+  text-align: justify;
+  font-size: 1.75rem;
+  line-height: 2.8rem;
+  color: #f8f8e8;
+  word-spacing: 0.2rem;
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  min-height: 520px;
+}
+
+body.quran-page .quran-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.8rem;
+  color: rgba(248, 248, 232, 0.75);
+  min-height: 320px;
+  padding: 1rem;
+}
+
+body.quran-page .quran-status-text {
+  font-size: 1.1rem;
+  color: rgba(248, 248, 232, 0.85);
+}
+
+body.quran-page .quran-status-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+body.quran-page .quran-status-error p {
+  margin: 0;
+  font-size: 1rem;
+  color: #ffcdc2;
+}
+
+body.quran-page .quran-alert {
+  max-width: 760px;
+  width: 90%;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 177, 107, 0.35);
+  background: rgba(201, 177, 107, 0.12);
+  color: #fbe6b7;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+body.quran-page .quran-text-line {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+body.quran-page .quran-ayah {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
+  color: inherit;
+}
+
+body.quran-page .quran-ayah:hover,
+body.quran-page .quran-ayah:focus-visible {
+  outline: none;
+  border-color: rgba(255, 215, 0, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body.quran-page .quran-ayah.is-active {
+  background: rgba(201, 177, 107, 0.15);
+  border-color: rgba(201, 177, 107, 0.45);
+  color: #d4af37;
+}
+
+body.quran-page .quran-ayah-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 0.9rem;
+  color: #c9b16b;
+  margin: 0 0.4rem;
+  border-radius: 50%;
+  border: 1px solid #c9b16b;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+body.quran-page .quran-ayah-text {
+  font-family: "Amiri Quran", "Noto Naskh Arabic", serif;
+  letter-spacing: 0.02rem;
+}
+
+body.quran-page .quran-view * {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (max-width: 640px) {
+  body.quran-page main.quran-view {
+    padding: 1.5rem 0.5rem;
+  }
+
+  body.quran-page .quran-frame {
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  body.quran-page .quran-text {
+    font-size: 1.4rem;
+    line-height: 2.2rem;
+    gap: 1.2rem;
+  }
+
+  body.quran-page .quran-ayah {
+    padding: 0.35rem 0.6rem;
+  }
+}

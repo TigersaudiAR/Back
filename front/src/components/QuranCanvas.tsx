@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import type { Ayah } from "../types/quran";
 
 type Props = {
@@ -7,6 +8,8 @@ type Props = {
   onSelectAyah?: (ayah: Ayah) => void;
   onSwipe?: (direction: "next" | "prev") => void;
   fontSize?: number;
+  surahName?: string;
+  placeholder?: ReactNode;
 };
 
 const chunkAyat = (items: Ayah[], size: number) => {
@@ -25,7 +28,7 @@ const chunkAyat = (items: Ayah[], size: number) => {
   return result;
 };
 
-function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
+function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahName, placeholder }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
 
@@ -34,6 +37,13 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Prop
     if (ayat.length <= 18) return chunkAyat(ayat, 4);
     return chunkAyat(ayat, 5);
   }, [ayat]);
+
+  const textStyle = useMemo(() => {
+    if (!fontSize) return undefined;
+    const size = Math.max(18, Math.min(46, fontSize));
+    const lineHeight = Math.round(size * 1.6);
+    return { fontSize: `${size}px`, lineHeight: `${lineHeight}px` };
+  }, [fontSize]);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -61,47 +71,48 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Prop
     };
   }, [onSwipe]);
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelectAyah?.(ayah);
+    }
+  };
+
   return (
-    <div
-      ref={containerRef}
-      className="relative h-full w-full select-none overflow-x-hidden overflow-y-auto"
-    >
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.04]" />
-      <div className="relative flex h-full w-full items-center justify-center px-3 pb-32 pt-20 sm:px-6">
-        <div className="relative w-full max-w-[900px]">
-          <div className="relative mx-auto min-h-[520px] rounded-[42px] border border-primary-light/30 bg-primary-dark/60 p-6 shadow-[0_20px_60px_rgba(6,30,24,0.45)]">
-            <div className="pointer-events-none absolute inset-4 rounded-[34px] border border-primary-light/20" />
-            <div
-              className="relative mx-auto flex min-h-[480px] flex-col justify-center gap-6 rounded-[28px] bg-black/20 px-6 py-10 text-[clamp(18px,2.4vw,34px)] leading-[2.4] text-emerald-100 sm:px-12"
-              style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
-            >
-              {ayahGroups.map((group, lineIndex) => (
-                <p
-                  key={lineIndex}
-                  className="flex flex-nowrap items-center justify-evenly gap-4 whitespace-nowrap"
-                >
-                  {group.map((ayah) => (
-                    <span
-                      key={`${ayah.surah_id}-${ayah.ayah_number}`}
-                      className={`inline-flex items-center gap-2 rounded-3xl px-4 py-1.5 transition ${
-                        activeAyah === ayah.ayah_number
-                          ? "bg-accent/30 text-accent"
-                          : "hover:bg-primary-light/20"
-                      }`}
-                      onClick={() => onSelectAyah?.(ayah)}
-                    >
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-accent/30 text-[12px] text-accent">
-                        {ayah.ayah_number}
+    <div ref={containerRef} className="quran-view-scroll select-none">
+      <main className="quran-view">
+        <div className="quran-frame">
+          {surahName && <h1 className="quran-surah-title">{surahName}</h1>}
+          <div className="quran-text" style={textStyle}>
+            {ayat.length > 0 ? (
+              ayahGroups.map((group, lineIndex) => (
+                <div key={lineIndex} className="quran-text-line">
+                  {group.map((ayah) => {
+                    const isActive = activeAyah === ayah.ayah_number;
+                    return (
+                      <span
+                        key={`${ayah.surah_id}-${ayah.ayah_number}`}
+                        className={`quran-ayah${isActive ? " is-active" : ""}`}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => onSelectAyah?.(ayah)}
+                        onKeyDown={(event) => handleKeyDown(event, ayah)}
+                      >
+                        <span className="quran-ayah-text">{ayah.text_ar}</span>
+                        <span className="quran-ayah-number">{ayah.ayah_number}</span>
                       </span>
-                      <span style={{ fontFamily: '"Noto Naskh Arabic", serif' }}>{ayah.text_ar}</span>
-                    </span>
-                  ))}
-                </p>
-              ))}
-            </div>
+                    );
+                  })}
+                </div>
+              ))
+            ) : (
+              <div className="quran-placeholder">
+                {placeholder ?? "لا توجد آيات متاحة حالياً."}
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
