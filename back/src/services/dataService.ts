@@ -59,6 +59,32 @@ export function getFaqs(): { question: string; answer: string }[] {
   return loadJson("faq_scholars.json");
 }
 
+function normalizeHadithTopics(topic: unknown): string[] | undefined {
+  if (topic == null) {
+    return undefined;
+  }
+
+  const topics = Array.isArray(topic) ? topic : [topic];
+  const normalized: string[] = [];
+
+  for (const entry of topics) {
+    if (entry == null) {
+      continue;
+    }
+
+    if (typeof entry === "object") {
+      throw new Error("موضوع الحديث يجب أن يكون نصًا صالحًا");
+    }
+
+    const coerced = String(entry).trim();
+    if (coerced) {
+      normalized.push(coerced);
+    }
+  }
+
+  return normalized.length ? normalized : undefined;
+}
+
 function normalizeDhikrItems(setId: string, items: Dhikr[]): Dhikr[] {
   return items.map((item, index) => {
     if (!item.text?.trim()) {
@@ -125,11 +151,7 @@ export function saveHadith(input: Partial<Hadith>): Hadith {
     number: input.number?.trim(),
     text_ar: input.text_ar.trim(),
     grade: input.grade?.trim(),
-    topic: Array.isArray(input.topic)
-      ? input.topic
-      : input.topic
-        ? [input.topic]
-        : undefined
+    topic: normalizeHadithTopics(input.topic)
   };
 
   const stored = readStoredJson<Hadith[]>("hadith_custom.json") ?? [];
