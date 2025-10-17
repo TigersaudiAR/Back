@@ -134,6 +134,7 @@ function QuranModernPage() {
         )}
         {!loading && !error && ayat.length > 0 && (
           <QuranCanvas
+            surah={surah}
             ayat={ayat}
             activeAyah={activeAyah}
             onSelectAyah={(ayah) => {
