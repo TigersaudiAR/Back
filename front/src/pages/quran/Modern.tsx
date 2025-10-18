@@ -108,54 +108,54 @@ function QuranModernPage() {
 
   const recitations = data?.recitations ?? [];
 
-  return (
-    <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
-      <TopBar
-        surah={surah}
-        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
-        onOpenSearch={() => show()}
-      />
-      <div className="flex-1">
-        {data?.message && (
-          <div className="mx-auto my-4 max-w-4xl rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-xs text-amber-200">
-            {data.message}
-          </div>
-        )}
-        {loading && (
-          <div className="flex h-full items-center justify-center text-sm text-gray-300">جاري تحميل الآيات...</div>
-        )}
-        {!loading && error && (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-sm text-red-300">
+  const placeholderContent = loading
+    ? <span className="quran-status-text">جاري تحميل الآيات...</span>
+    : error
+      ? (
+          <div className="quran-status-error">
             <p>{error}</p>
             <button className="btn btn-sm" onClick={() => refresh(currentSurahId).catch(() => undefined)}>
               إعادة المحاولة
             </button>
           </div>
-        )}
-        {!loading && !error && ayat.length > 0 && (
-          <QuranCanvas
-            ayat={ayat}
-            activeAyah={activeAyah}
-            onSelectAyah={(ayah) => {
-              setActiveAyah(ayah.ayah_number);
-              try {
-                const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0) {
-                  const rect = selection.getRangeAt(0).getBoundingClientRect();
-                  setAnchorRect(rect ?? null);
-                } else {
-                  setAnchorRect(null);
-                }
-              } catch (err) {
-                console.warn("Failed to read selection", err);
+        )
+      : ayat.length === 0
+        ? <span className="quran-status-text">لا توجد آيات متاحة لهذه السورة حالياً.</span>
+        : null;
+
+  return (
+    <div className="relative flex min-h-[100dvh] w-full flex-col text-gray-100" onClick={() => show()}>
+      <TopBar
+        surah={surah}
+        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
+        onOpenSearch={() => show()}
+      />
+      <div className="relative flex flex-1 flex-col items-center gap-6 py-6">
+        {data?.message && <div className="quran-alert">{data.message}</div>}
+        <QuranCanvas
+          ayat={ayat}
+          activeAyah={activeAyah}
+          onSelectAyah={(ayah) => {
+            setActiveAyah(ayah.ayah_number);
+            try {
+              const selection = window.getSelection();
+              if (selection && selection.rangeCount > 0) {
+                const rect = selection.getRangeAt(0).getBoundingClientRect();
+                setAnchorRect(rect ?? null);
+              } else {
                 setAnchorRect(null);
               }
-              show();
-            }}
-            onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
-            fontSize={fontSize}
-          />
-        )}
+            } catch (err) {
+              console.warn("Failed to read selection", err);
+              setAnchorRect(null);
+            }
+            show();
+          }}
+          onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
+          fontSize={fontSize}
+          surahName={surah?.name_arabic}
+          placeholder={placeholderContent}
+        />
       </div>
       {recitations.length > 0 && (
         <AudioBar
