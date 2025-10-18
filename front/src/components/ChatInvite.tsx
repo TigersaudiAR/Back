@@ -37,8 +37,8 @@ function ChatInvite({ faqs }: ChatInviteProps) {
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3 text-accent">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10">
-              <MessageSquareText className="h-6 w-6" />
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10">
+              <MessageSquareText aria-hidden="true" className="h-6 w-6" />
             </span>
             <div>
               <h3 className="text-lg font-bold">تواصل فوري مع أهل العلم</h3>
@@ -66,7 +66,7 @@ function ChatInvite({ faqs }: ChatInviteProps) {
             />
           </label>
           <button className="btn btn-accent gap-2" onClick={sendQuestion} disabled={!question}>
-            <Send className="h-4 w-4" /> إرسال السؤال
+            <Send aria-hidden="true" className="h-4 w-4" /> إرسال السؤال
           </button>
           {status && <p className="text-xs text-gray-300">{status}</p>}
         </div>
