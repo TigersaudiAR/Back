@@ -3,9 +3,12 @@ import type {
   Ayah,
   DhikrSet,
   Hadith,
+  RecitationTimingMap,
   Surah,
   Tafsir
 } from "../types/index.js";
+
+let recitationTimingsCache: RecitationTimingMap | null = null;
 
 export function getSurahIndex(): Surah[] {
   return loadJson<Surah[]>("surah_index.json");
@@ -29,4 +32,11 @@ export function getHadith(): Hadith[] {
 
 export function getFaqs(): { question: string; answer: string }[] {
   return loadJson("faq_scholars.json");
+}
+
+export function getRecitationTimings(): RecitationTimingMap {
+  if (!recitationTimingsCache) {
+    recitationTimingsCache = loadJson<RecitationTimingMap>("recitation_timings.json");
+  }
+  return recitationTimingsCache;
 }

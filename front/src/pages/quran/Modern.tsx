@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import QuranCanvas from "../../components/QuranCanvas";
 import HiddenToolbar from "../../components/HiddenToolbar";
 import TopBar from "../../components/TopBar";
 import TafsirPopover from "../../components/TafsirPopover";
-import AudioBar from "../../components/AudioBar";
+import AudioBar, { type AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useAutoHide } from "../../hooks/useAutoHide";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
@@ -20,6 +20,7 @@ function QuranModernPage() {
   const [currentSurahId, setCurrentSurahId] = useState<number>(Number(query.get("surah")) || 1);
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const activeReciterRef = useRef<string | null>(null);
 
   const computeAutoFont = () => {
     if (typeof window === "undefined") return 30;
@@ -41,6 +42,7 @@ function QuranModernPage() {
   const surah: Surah | undefined = data?.surah;
   const ayat: Ayah[] = data?.ayat ?? [];
   const tafsirMap = useMemo(() => new Map<string, Tafsir>(), [data?.tafsir]);
+  const ayahNumbers = useMemo(() => new Set(ayat.map((item) => item.ayah_number)), [ayat]);
 
   if (data?.tafsir) {
     data.tafsir.forEach((item) => tafsirMap.set(`${item.surah_id}-${item.ayah_number}`, item));
@@ -108,6 +110,29 @@ function QuranModernPage() {
 
   const recitations = data?.recitations ?? [];
 
+  useEffect(() => {
+    activeReciterRef.current = null;
+    setActiveAyah(undefined);
+  }, [currentSurahId]);
+
+  const handleAudioProgress = useCallback(
+    (progress: AudioProgressPayload) => {
+      if (!progress) return;
+      const reciterChanged = activeReciterRef.current && activeReciterRef.current !== progress.reciterId;
+      activeReciterRef.current = progress.reciterId;
+
+      if (typeof progress.ayahNumber === "number" && ayahNumbers.has(progress.ayahNumber)) {
+        setActiveAyah(progress.ayahNumber);
+        return;
+      }
+
+      if (reciterChanged) {
+        setActiveAyah(undefined);
+      }
+    },
+    [ayahNumbers]
+  );
+
   return (
     <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
       <TopBar
@@ -160,10 +185,7 @@ function QuranModernPage() {
       {recitations.length > 0 && (
         <AudioBar
           recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
-          onProgress={(time) => {
-            const index = Math.floor(time / 5);
-            setActiveAyah(ayat[index]?.ayah_number);
-          }}
+          onProgress={handleAudioProgress}
         />
       )}
       <HiddenToolbar

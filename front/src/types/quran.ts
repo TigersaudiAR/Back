@@ -23,9 +23,17 @@ export type Tafsir = {
   text_ar: string;
 };
 
+export type AyahTiming = {
+  ayah_number: number;
+  start: number;
+  end: number;
+};
+
 export type Recitation = {
   surah_id: number;
   url: string;
   reciter: string;
   bitrate?: number;
+  reciter_id: string;
+  timings?: AyahTiming[];
 };

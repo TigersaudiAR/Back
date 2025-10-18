@@ -1,11 +1,37 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pause, Play, Radio } from "lucide-react";
-import type { Recitation } from "../types/quran";
+import type { AyahTiming, Recitation } from "../types/quran";
+
+export interface AudioProgressPayload {
+  ayahNumber?: number;
+  currentTime: number;
+  reciterId: string;
+  recitation: Recitation;
+}
 
 interface AudioBarProps {
   recitations: Recitation[];
-  onProgress?: (time: number) => void;
+  onProgress?: (payload: AudioProgressPayload) => void;
 }
+
+const findAyahAtTime = (timings: AyahTiming[] | undefined, time: number): number | undefined => {
+  if (!timings?.length) return undefined;
+  for (let index = 0; index < timings.length; index += 1) {
+    const segment = timings[index];
+    const next = timings[index + 1];
+    if (time >= segment.start && (time < segment.end || (!next && time <= segment.end + 0.25))) {
+      return segment.ayah_number;
+    }
+    if (next && time >= segment.end && time < next.start) {
+      return next.ayah_number;
+    }
+  }
+  const last = timings[timings.length - 1];
+  if (time >= last.start) {
+    return last.ayah_number;
+  }
+  return timings[0]?.ayah_number;
+};
 
 function AudioBar({ recitations, onProgress }: AudioBarProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -13,24 +39,53 @@ function AudioBar({ recitations, onProgress }: AudioBarProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const lastReportedAyah = useRef<number | undefined>(undefined);
 
   const track = recitations[current];
+  const sortedTimings = useMemo(() => {
+    if (!track?.timings?.length) return undefined;
+    return [...track.timings].sort((a, b) => a.start - b.start);
+  }, [track]);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !track) return;
     const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-      onProgress?.(audio.currentTime);
+      const time = audio.currentTime;
+      setCurrentTime(time);
+      const ayahNumber = findAyahAtTime(sortedTimings, time);
+      const shouldNotify = sortedTimings
+        ? lastReportedAyah.current !== ayahNumber || typeof ayahNumber === "undefined"
+        : true;
+      if (shouldNotify) {
+        lastReportedAyah.current = ayahNumber;
+        onProgress?.({
+          ayahNumber,
+          currentTime: time,
+          reciterId: track.reciter_id,
+          recitation: track
+        });
+      }
     };
-    const handleLoaded = () => setDuration(audio.duration);
+    const handleLoaded = () => {
+      setDuration(audio.duration);
+      setCurrentTime(0);
+      lastReportedAyah.current = undefined;
+      handleTimeUpdate();
+    };
+    const handleSeeked = () => {
+      lastReportedAyah.current = undefined;
+      handleTimeUpdate();
+    };
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("loadedmetadata", handleLoaded);
+    audio.addEventListener("seeked", handleSeeked);
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("loadedmetadata", handleLoaded);
+      audio.removeEventListener("seeked", handleSeeked);
     };
-  }, [onProgress, track?.url]);
+  }, [onProgress, sortedTimings, track]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -45,6 +100,7 @@ function AudioBar({ recitations, onProgress }: AudioBarProps) {
   useEffect(() => {
     setIsPlaying(false);
     setCurrentTime(0);
+    lastReportedAyah.current = undefined;
   }, [current]);
 
   const progress = useMemo(() => {

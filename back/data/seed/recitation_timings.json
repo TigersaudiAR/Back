@@ -1,0 +1,35 @@
+{
+  "mahermuaiqly": {
+    "1": [
+      { "ayah_number": 1, "start": 0.0, "end": 3.2 },
+      { "ayah_number": 2, "start": 3.2, "end": 6.1 },
+      { "ayah_number": 3, "start": 6.1, "end": 8.9 },
+      { "ayah_number": 4, "start": 8.9, "end": 11.4 },
+      { "ayah_number": 5, "start": 11.4, "end": 14.1 },
+      { "ayah_number": 6, "start": 14.1, "end": 16.8 },
+      { "ayah_number": 7, "start": 16.8, "end": 21.0 }
+    ]
+  },
+  "alafasy": {
+    "1": [
+      { "ayah_number": 1, "start": 0.0, "end": 2.6 },
+      { "ayah_number": 2, "start": 2.6, "end": 5.0 },
+      { "ayah_number": 3, "start": 5.0, "end": 7.3 },
+      { "ayah_number": 4, "start": 7.3, "end": 9.9 },
+      { "ayah_number": 5, "start": 9.9, "end": 12.5 },
+      { "ayah_number": 6, "start": 12.5, "end": 15.2 },
+      { "ayah_number": 7, "start": 15.2, "end": 19.0 }
+    ]
+  },
+  "husary": {
+    "1": [
+      { "ayah_number": 1, "start": 0.0, "end": 3.6 },
+      { "ayah_number": 2, "start": 3.6, "end": 7.1 },
+      { "ayah_number": 3, "start": 7.1, "end": 10.2 },
+      { "ayah_number": 4, "start": 10.2, "end": 13.4 },
+      { "ayah_number": 5, "start": 13.4, "end": 16.8 },
+      { "ayah_number": 6, "start": 16.8, "end": 20.5 },
+      { "ayah_number": 7, "start": 20.5, "end": 25.0 }
+    ]
+  }
+}
