@@ -6,6 +6,14 @@ import type { LearningLesson, LearningMap, LearningModule } from "../../types/le
 const modules = modulesData as LearningModule[];
 const lessonsMap = lessonsData as LearningMap;
 
+const resourceTypeLabels: Record<string, string> = {
+  interactive: "تفاعلي",
+  audio: "صوتي",
+  video: "مرئي",
+  document: "وثائقي",
+  guide: "إرشادي"
+};
+
 function SelfLearnPage() {
   const [activeModuleId, setActiveModuleId] = useState(modules[0]?.id ?? "");
   const [activeLessonId, setActiveLessonId] = useState<string | null>(() => {
@@ -119,15 +127,24 @@ function SelfLearnPage() {
                   })}
                 </ul>
               </div>
-              <div className="space-y-2 text-sm text-gray-200">
-                <h4 className="text-accent">مصادر الدرس</h4>
-                <ul className="space-y-2 text-xs">
+              <div className="space-y-3 text-sm text-gray-200">
+                <h4 className="text-accent">مصادر الدرس المدمجة</h4>
+                <ul className="space-y-3 text-xs">
                   {activeLesson.resources.map((resource) => (
-                    <li key={resource.url} className="flex items-center justify-between rounded-2xl border border-primary-light/30 bg-primary-dark/70 px-3 py-2">
-                      <span>{resource.label}</span>
-                      <a className="btn btn-xs btn-outline" href={resource.url} target="_blank" rel="noreferrer">
-                        فتح المصدر
-                      </a>
+                    <li
+                      key={resource.label}
+                      className="rounded-2xl border border-primary-light/30 bg-primary-dark/70 p-3 shadow-inner"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-accent">
+                        <span className="font-semibold">{resource.label}</span>
+                        <span className="badge badge-outline">{resourceTypeLabels[resource.type] ?? resource.type}</span>
+                      </div>
+                      <p className="mt-2 text-[0.8rem] leading-6 text-gray-200">{resource.description}</p>
+                      <ul className="mt-2 space-y-1 text-[0.75rem] leading-5 text-gray-300 list-disc pr-4">
+                        {resource.instructions.map((instruction) => (
+                          <li key={instruction}>{instruction}</li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>

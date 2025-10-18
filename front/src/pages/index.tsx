@@ -10,17 +10,17 @@ const livePrograms = [
   {
     title: "حلقة تحفيظ مباشرة",
     description: "متابعة أسبوعية مع إحصاءات الحفظ ومشاركة الشاشة على البث الخارجي للمسجد.",
-    icon: <Users2 className="h-5 w-5" />
+    icon: <Users2 aria-hidden="true" className="h-5 w-5" />
   },
   {
     title: "يوم علمي",
     description: "جلسات علمية مع بث مرئي وعرض الشرائح داخل التطبيق وخارجه دون تأثير على النسخة الحالية.",
-    icon: <CalendarDays className="h-5 w-5" />
+    icon: <CalendarDays aria-hidden="true" className="h-5 w-5" />
   },
   {
     title: "مسار التجويد المتقدم",
     description: "دروس متدرجة مع تقييم صوتي فوري وملفات جاهزة للطباعة والاستخدام في الفصول.",
-    icon: <GraduationCap className="h-5 w-5" />
+    icon: <GraduationCap aria-hidden="true" className="h-5 w-5" />
   }
 ];
 
@@ -28,12 +28,12 @@ const platformHighlights = [
   {
     title: "لوحة متابعة متكاملة",
     description: "إحصاءات فورية للحلقات والمشرفين مع دعم تام للشاشات الواسعة وقاعات العرض التعليمية.",
-    icon: <LayoutDashboard className="h-5 w-5" />
+    icon: <LayoutDashboard aria-hidden="true" className="h-5 w-5" />
   },
   {
     title: "تكامل مع المواقع الجغرافية",
     description: "عرض القبلة والمواقيت الدقيقة لأي مدينة مع بث مباشر على شاشات المساجد.",
-    icon: <MapPin className="h-5 w-5" />
+    icon: <MapPin aria-hidden="true" className="h-5 w-5" />
   }
 ];
 
@@ -138,12 +138,19 @@ function HomePage() {
           </p>
           <ul className="space-y-4 text-sm">
             {livePrograms.map((program) => (
-              <li key={program.title} className="rounded-2xl border border-primary-light/30 bg-primary-dark/70 p-4 shadow-inner">
-                <div className="flex items-center gap-3 text-accent">
-                  {program.icon}
-                  <h4 className="font-semibold">{program.title}</h4>
+              <li
+                key={program.title}
+                className="rounded-2xl border border-primary-light/30 bg-primary-dark/70 p-4 shadow-inner"
+              >
+                <div className="flex items-start gap-3 text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-accent/10">
+                    {program.icon}
+                  </span>
+                  <div>
+                    <h4 className="font-semibold">{program.title}</h4>
+                    <p className="mt-2 text-xs leading-6 text-gray-200">{program.description}</p>
+                  </div>
                 </div>
-                <p className="mt-2 text-xs leading-6 text-gray-200">{program.description}</p>
               </li>
             ))}
           </ul>
@@ -151,12 +158,19 @@ function HomePage() {
       </section>
       <section className="grid gap-6 md:grid-cols-2">
         {platformHighlights.map((highlight) => (
-          <div key={highlight.title} className="rounded-3xl border border-primary-light/30 bg-primary-dark/60 p-6 shadow-2xl">
-            <div className="flex items-center gap-3 text-accent">
-              {highlight.icon}
-              <h3 className="text-lg font-semibold">{highlight.title}</h3>
+          <div
+            key={highlight.title}
+            className="rounded-3xl border border-primary-light/30 bg-primary-dark/60 p-6 shadow-2xl"
+          >
+            <div className="flex items-start gap-3 text-accent">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-accent/10">
+                {highlight.icon}
+              </span>
+              <div>
+                <h3 className="text-lg font-semibold">{highlight.title}</h3>
+                <p className="mt-3 text-xs leading-7 text-gray-200 sm:text-sm">{highlight.description}</p>
+              </div>
             </div>
-            <p className="mt-3 text-xs leading-7 text-gray-200 sm:text-sm">{highlight.description}</p>
           </div>
         ))}
       </section>
