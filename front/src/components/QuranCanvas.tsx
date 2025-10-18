@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useRef } from "react";
-import type { Ayah } from "../types/quran";
+import type { Ayah, Surah } from "../types/quran";
 
 type Props = {
+  surah?: Surah;
   ayat: Ayah[];
   activeAyah?: number;
   onSelectAyah?: (ayah: Ayah) => void;
   onSwipe?: (direction: "next" | "prev") => void;
   fontSize?: number;
 };
+
+const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
 
 const chunkAyat = (items: Ayah[], size: number) => {
   const result: Ayah[][] = [];
@@ -25,9 +28,18 @@ const chunkAyat = (items: Ayah[], size: number) => {
   return result;
 };
 
-function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
+function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
+
+  const shouldRenderBismillah = useMemo(() => {
+    if (!surah || surah.id === 9) return false;
+    if (!surah.bismillah_pre || ayat.length === 0) return false;
+    const firstAyah = ayat[0];
+    const firstAyahText = firstAyah?.text_ar?.replace(/\s+/g, "");
+    const normalizedBismillah = BISMILLAH_TEXT.replace(/\s+/g, "");
+    return firstAyahText !== normalizedBismillah;
+  }, [surah, ayat]);
 
   const ayahGroups = useMemo(() => {
     if (ayat.length <= 9) return chunkAyat(ayat, 3);
@@ -72,6 +84,11 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Prop
               className="relative mx-auto flex min-h-[480px] flex-col justify-center gap-6 rounded-[28px] bg-black/20 px-6 py-10 text-[clamp(18px,2.4vw,34px)] leading-[2.4] text-emerald-100 sm:px-12"
               style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
             >
+              {shouldRenderBismillah && (
+                <p className="mb-2 text-center text-[clamp(22px,2.6vw,38px)] font-semibold text-amber-200">
+                  {BISMILLAH_TEXT}
+                </p>
+              )}
               {ayahGroups.map((group, lineIndex) => (
                 <p
                   key={lineIndex}
