@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import api from "../lib/api";
+import localSurahIndex from "../data/quran/surahs.json";
+import localTafsir from "../data/tafsir_samples.json";
+import {
+  RECITATION_AUDIO_BASE64,
+  RECITATION_MIME_TYPE
+} from "../data/quran/recitations";
 import type { Ayah, Recitation, Surah, Tafsir } from "../types/quran";
-
-type IndexResponse = { surahs: Surah[]; cached?: boolean };
 type SurahResponse = {
   surah: Surah;
   ayat: Ayah[];
@@ -13,170 +16,80 @@ type SurahResponse = {
 };
 
 const INDEX_STORAGE_KEY = "quran-surah-index-v1";
-
-const REMOTE_RECITERS: Array<{ id: string; name: string; bitrate: number }> = [
-  { id: "mahermuaiqly", name: "الشيخ ماهر المعيقلي", bitrate: 128 },
-  { id: "alafasy", name: "الشيخ مشاري العفاسي", bitrate: 128 },
-  { id: "husary", name: "الشيخ محمود الحصري", bitrate: 64 }
+const LOCAL_RECITERS: Array<{ id: string; name: string; bitrate: number }> = [
+  { id: "mahermuaiqly", name: "الشيخ ماهر المعيقلي", bitrate: 160 },
+  { id: "alafasy", name: "الشيخ مشاري العفاسي", bitrate: 160 },
+  { id: "husary", name: "الشيخ محمود الحصري", bitrate: 128 }
 ];
 
-const buildRecitations = (surahId: number): Recitation[] =>
-  REMOTE_RECITERS.map((reciter) => ({
-    surah_id: surahId,
-    reciter: reciter.name,
-    bitrate: reciter.bitrate,
-    url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`
-  }));
+const ayatModules = import.meta.glob<Ayah[]>("../data/quran/ayat/*.json", {
+  import: "default"
+});
 
-const fetchTafsirForSurah = async (surahId: number): Promise<Tafsir[]> => {
-  try {
-    const response = await api.get<{ tafsir: Tafsir[] }>("/quran/tafsir");
-    return response.data.tafsir.filter((item) => item.surah_id === surahId);
-  } catch (error) {
-    console.warn("Failed to fetch tafsir list", error);
-    return [];
+const tafsirDataset: Tafsir[] = Array.isArray(localTafsir) ? (localTafsir as Tafsir[]) : [];
+const surahDataset: Surah[] = Array.isArray(localSurahIndex) ? (localSurahIndex as Surah[]) : [];
+const localSurahCache = new Map<number, SurahResponse>();
+
+const reciterUrlCache = new Map<string, string>();
+
+const getReciterUrl = (reciterId: string) => {
+  if (!reciterUrlCache.has(reciterId)) {
+    const base64 = RECITATION_AUDIO_BASE64[reciterId];
+    if (!base64) {
+      throw new Error(`Missing recitation audio payload for ${reciterId}`);
+    }
+    const trimmed = base64.trim();
+    const dataUrl = `data:${RECITATION_MIME_TYPE};base64,${trimmed}`;
+    reciterUrlCache.set(reciterId, dataUrl);
   }
+  return reciterUrlCache.get(reciterId)!;
 };
 
-type RemoteSurahPayload = {
-  surah: Surah;
-  ayat: Ayah[];
+const buildRecitations = (surahId: number): Recitation[] => {
+  const padded = String(surahId).padStart(3, "0");
+  return LOCAL_RECITERS.map((reciter) => {
+    const baseUrl = getReciterUrl(reciter.id);
+    const url = `${baseUrl}#surah=${padded}`;
+    return {
+      surah_id: surahId,
+      reciter: reciter.name,
+      bitrate: reciter.bitrate,
+      url
+    };
+  });
 };
 
-const getRemoteSurahIndexFallback = (surahId: number): Surah | null => {
-  const cached = getStoredIndex();
-  if (!cached?.length) return null;
-  return cached.find((item) => item.id === surahId) ?? null;
+const loadLocalAyat = async (surahId: number): Promise<Ayah[]> => {
+  const padded = String(surahId).padStart(3, "0");
+  const key = `../data/quran/ayat/${padded}.json`;
+  const loader = ayatModules[key];
+  if (!loader) {
+    throw new Error(`Missing local ayat dataset for surah ${surahId}`);
+  }
+  const result = await loader();
+  return Array.isArray(result) ? (result as Ayah[]) : result;
 };
 
-const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
-  async (surahId) => {
-    const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}/ar`);
-    if (!response.ok) {
-      throw new Error(`alquran.cloud failed with status ${response.status}`);
-    }
-    const payload = await response.json();
-    const meta = payload?.data;
-    const ayahs = Array.isArray(meta?.ayahs)
-      ? (meta.ayahs as any[]).map((item) => ({
-          surah_id: surahId,
-          ayah_number: Number(item.numberInSurah),
-          text_ar: String(item.text)
-        }))
-      : [];
-    if (!ayahs.length) {
-      throw new Error("alquran.cloud responded without ayat");
-    }
-    const surah: Surah = {
-      id: Number(meta.number) || surahId,
-      name_ar: meta.name ?? getRemoteSurahIndexFallback(surahId)?.name_ar ?? "",
-      name_en: meta.englishName ?? getRemoteSurahIndexFallback(surahId)?.name_en,
-      revelation_place:
-        meta.revelationType === "Medinan" ? "Medina" : meta.revelationType === "Meccan" ? "Mecca" : getRemoteSurahIndexFallback(surahId)?.revelation_place,
-      ayah_count: Number(meta.numberOfAyahs) || ayahs.length,
-      bismillah_pre: surahId !== 1 && surahId !== 9
-    };
-    return { surah, ayat: ayahs };
-  },
-  async (surahId) => {
-    const [versesResponse, chapterResponse] = await Promise.all([
-      fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${surahId}`),
-      fetch(`https://api.quran.com/api/v4/chapters/${surahId}`)
-    ]);
-    if (!versesResponse.ok) {
-      throw new Error(`quran.com verses failed ${versesResponse.status}`);
-    }
-    if (!chapterResponse.ok) {
-      throw new Error(`quran.com chapter failed ${chapterResponse.status}`);
-    }
-    const versesPayload = await versesResponse.json();
-    const chapterPayload = await chapterResponse.json();
-    const verses = Array.isArray(versesPayload?.verses)
-      ? (versesPayload.verses as any[]).map((item) => {
-          const verseKey: string = item.verse_key ?? "";
-          const ayahNumber = Number(verseKey.split(":")[1] ?? item.verse_number ?? 0);
-          return {
-            surah_id: surahId,
-            ayah_number: ayahNumber,
-            text_ar: String(item.text_uthmani ?? item.text_indopak ?? item.text_madani ?? "")
-          };
-        })
-      : [];
-    if (!verses.length) {
-      throw new Error("quran.com responded without verses");
-    }
-    const chapter = chapterPayload?.chapter;
-    const surah: Surah = {
-      id: Number(chapter?.id) || surahId,
-      name_ar: chapter?.name_arabic ?? getRemoteSurahIndexFallback(surahId)?.name_ar ?? "",
-      name_en: chapter?.name_simple ?? getRemoteSurahIndexFallback(surahId)?.name_en,
-      revelation_place:
-        chapter?.revelation_place === "madinah"
-          ? "Medina"
-          : chapter?.revelation_place === "makkah"
-          ? "Mecca"
-          : getRemoteSurahIndexFallback(surahId)?.revelation_place,
-      ayah_count: Number(chapter?.verses_count) || verses.length,
-      bismillah_pre: surahId !== 1 && surahId !== 9
-    };
-    return { surah, ayat: verses };
-  },
-  async (surahId) => {
-    const padded = String(surahId).padStart(3, "0");
-    const response = await fetch(
-      `https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/chapters/surah-${padded}.json`
-    );
-    if (!response.ok) {
-      throw new Error(`cdn.jsdelivr failed ${response.status}`);
-    }
-    const payload = await response.json();
-    const verses = Array.isArray(payload?.verses)
-      ? (payload.verses as any[]).map((item) => ({
-          surah_id: surahId,
-          ayah_number: Number(item.id ?? item.verse ?? item.ayah ?? 0),
-          text_ar: String(item.text ?? item.ayat ?? "")
-        }))
-      : [];
-    if (!verses.length) {
-      throw new Error("cdn dataset missing verses");
-    }
-    const meta = payload?.chapter ?? payload;
-    const fallback = getRemoteSurahIndexFallback(surahId);
-    const surah: Surah = {
-      id: Number(meta?.id ?? surahId),
-      name_ar: meta?.nameArabic ?? meta?.name ?? fallback?.name_ar ?? "",
-      name_en: meta?.nameSimple ?? meta?.englishName ?? fallback?.name_en,
-      revelation_place:
-        meta?.revelationPlace === "medinan"
-          ? "Medina"
-          : meta?.revelationPlace === "meccan"
-          ? "Mecca"
-          : fallback?.revelation_place,
-      ayah_count: Number(meta?.versesCount ?? verses.length ?? fallback?.ayah_count ?? verses.length),
-      bismillah_pre: surahId !== 1 && surahId !== 9
-    };
-    return { surah, ayat: verses };
+const loadLocalSurah = async (surahId: number): Promise<SurahResponse> => {
+  if (localSurahCache.has(surahId)) {
+    return localSurahCache.get(surahId)!;
   }
-];
-
-const fetchRemoteSurah = async (surahId: number): Promise<SurahResponse | null> => {
-  for (const loader of remoteLoaders) {
-    try {
-      const result = await loader(surahId);
-      const tafsir = await fetchTafsirForSurah(surahId);
-      return {
-        surah: result.surah,
-        ayat: result.ayat,
-        tafsir,
-        recitations: buildRecitations(surahId),
-        cached: false,
-        message: "تم جلب السورة من مصدر خارجي مباشر"
-      };
-    } catch (error) {
-      console.warn("Remote surah loader failed", error);
-    }
+  const surah = surahDataset.find((item) => item.id === surahId);
+  if (!surah) {
+    throw new Error(`Surah ${surahId} not found in local dataset`);
   }
-  return null;
+  const ayat = await loadLocalAyat(surahId);
+  const tafsir = tafsirDataset.filter((item) => item.surah_id === surahId);
+  const response: SurahResponse = {
+    surah,
+    ayat,
+    tafsir,
+    recitations: buildRecitations(surahId),
+    cached: true,
+    message: "تم تحميل البيانات من النسخة المحلية"
+  };
+  localSurahCache.set(surahId, response);
+  return response;
 };
 
 const getStoredIndex = (): Surah[] | null => {
@@ -220,24 +133,27 @@ const setStoredSurah = (surahId: number, data: SurahResponse) => {
 };
 
 export function useSurahIndex() {
-  const [surahs, setSurahs] = useState<Surah[]>(() => getStoredIndex() ?? []);
+  const [surahs, setSurahs] = useState<Surah[]>(() => getStoredIndex() ?? surahDataset);
   const [loading, setLoading] = useState(surahs.length === 0);
   const [error, setError] = useState<string | null>(null);
-  const [fromCache, setFromCache] = useState(false);
+  const [fromCache, setFromCache] = useState<boolean>(() => Boolean(getStoredIndex()?.length));
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get<IndexResponse>("/quran/index");
-      setSurahs(response.data.surahs);
-      setFromCache(Boolean(response.data.cached));
-      setStoredIndex(response.data.surahs);
+      setSurahs(surahDataset);
+      setStoredIndex(surahDataset);
+      setFromCache(false);
     } catch (err) {
       console.error(err);
-      setError("تعذر تحميل فهرس السور، تحقق من الاتصال بالإنترنت.");
+      setError("تعذر تحميل فهرس السور من النسخة المحلية.");
       if (!surahs.length) {
-        setSurahs(getStoredIndex() ?? []);
+        const cached = getStoredIndex();
+        if (cached?.length) {
+          setSurahs(cached);
+          setFromCache(true);
+        }
       }
     } finally {
       setLoading(false);
@@ -263,41 +179,16 @@ export function useQuranSurah(surahId: number) {
       setLoading(true);
       setError(null);
       try {
-        const response = await api.get<SurahResponse>("/quran", { params: { surah: id } });
-        if (response.data.ayat.length === 0) {
-          const remote = await fetchRemoteSurah(id);
-          if (remote) {
-            setData(remote);
-            setStoredSurah(id, remote);
-            setError(null);
-            return;
-          }
-          setError(response.data.message ?? "تعذر تحميل بيانات السورة من المصدر المحلي.");
-          const cached = getStoredSurah(id);
-          if (cached) {
-            setData(cached);
-          }
-          return;
-        }
-        setData(response.data);
-        setStoredSurah(id, response.data);
-      } catch (err: any) {
+        const local = await loadLocalSurah(id);
+        setData(local);
+        setStoredSurah(id, local);
+        setError(null);
+      } catch (err) {
         console.error(err);
-        const remote = await fetchRemoteSurah(id);
-        if (remote) {
-          setData(remote);
-          setStoredSurah(id, remote);
-          setError(null);
-          return;
-        }
-        if (err?.response?.data?.message) {
-          setError(err.response.data.message as string);
-          const cached = getStoredSurah(id);
-          if (cached) {
-            setData(cached);
-          }
-        } else {
-          setError("تعذر تحميل بيانات السورة، يرجى التحقق من الاتصال بالإنترنت.");
+        setError("تعذر تحميل بيانات السورة من النسخة المحلية.");
+        const cached = getStoredSurah(id);
+        if (cached) {
+          setData(cached);
         }
       } finally {
         setLoading(false);

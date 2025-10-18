@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import QuranCanvas from "../../components/QuranCanvas";
 import HiddenToolbar from "../../components/HiddenToolbar";
@@ -40,15 +40,15 @@ function QuranModernPage() {
 
   const surah: Surah | undefined = data?.surah;
   const ayat: Ayah[] = data?.ayat ?? [];
-  const tafsirMap = useMemo(() => new Map<string, Tafsir>(), [data?.tafsir]);
-
-  if (data?.tafsir) {
-    data.tafsir.forEach((item) => tafsirMap.set(`${item.surah_id}-${item.ayah_number}`, item));
-  }
+  const tafsirMap = useMemo(() => {
+    const map = new Map<string, Tafsir>();
+    data?.tafsir?.forEach((item) => map.set(`${item.surah_id}-${item.ayah_number}`, item));
+    return map;
+  }, [data?.tafsir]);
 
   const tafsir = activeAyah ? tafsirMap.get(`${currentSurahId}-${activeAyah}`) : undefined;
 
-  const goPrev = () => {
+  const goPrev = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index > 0) {
@@ -56,9 +56,9 @@ function QuranModernPage() {
       setCurrentSurahId(target);
       navigate(`?surah=${target}`);
     }
-  };
+  }, [currentSurahId, navigate, surahs]);
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index >= 0 && index < surahs.length - 1) {
@@ -66,7 +66,7 @@ function QuranModernPage() {
       setCurrentSurahId(target);
       navigate(`?surah=${target}`);
     }
-  };
+  }, [currentSurahId, navigate, surahs]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
