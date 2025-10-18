@@ -25,7 +25,9 @@ const buildRecitations = (surahId: number): Recitation[] =>
     surah_id: surahId,
     reciter: reciter.name,
     bitrate: reciter.bitrate,
-    url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`
+    url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`,
+    reciter_id: reciter.id,
+    timings: undefined
   }));
 
 const fetchTafsirForSurah = async (surahId: number): Promise<Tafsir[]> => {

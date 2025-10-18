@@ -30,6 +30,23 @@ export interface Tafsir {
   text_ar: string;
 }
 
+export interface RecitationTimingSegment {
+  ayah_number: number;
+  start: number;
+  end: number;
+}
+
+export type RecitationTimingMap = Record<string, Record<string, RecitationTimingSegment[]>>;
+
+export interface Recitation {
+  surah_id: number;
+  url: string;
+  reciter: string;
+  bitrate?: number;
+  reciter_id: string;
+  timings?: RecitationTimingSegment[];
+}
+
 export interface Dhikr {
   id: string;
   title: string;

@@ -1,7 +1,8 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
-import { getTafsir } from "../services/dataService.js";
+import { getRecitationTimings, getTafsir } from "../services/dataService.js";
+import type { Recitation } from "../types/index.js";
 import { fetchSurahAyat, fetchSurahIndex } from "../services/quranRemoteService.js";
 
 const router = express.Router();
@@ -12,13 +13,20 @@ const RECITERS = [
   { id: "husary", name: "الشيخ محمود الحصري", bitrate: 64 }
 ];
 
-const formatRecitations = (surahId: number) =>
-  RECITERS.map((reciter) => ({
-    surah_id: surahId,
-    url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`,
-    reciter: reciter.name,
-    bitrate: reciter.bitrate
-  }));
+const recitationTimings = getRecitationTimings();
+
+const formatRecitations = (surahId: number): Recitation[] =>
+  RECITERS.map((reciter) => {
+    const timings = recitationTimings[reciter.id]?.[String(surahId)];
+    return {
+      surah_id: surahId,
+      url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`,
+      reciter: reciter.name,
+      bitrate: reciter.bitrate,
+      reciter_id: reciter.id,
+      timings: timings ? [...timings] : undefined
+    };
+  });
 
 router.get("/index", async (_req, res) => {
   const result = await fetchSurahIndex();
