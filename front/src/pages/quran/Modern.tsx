@@ -8,16 +8,19 @@ import AudioBar, { type AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useAutoHide } from "../../hooks/useAutoHide";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { findSurahBySlug } from "../../utils/quran";
 
 function QuranModernPage() {
-  const query = useQuery();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const navigate = useNavigate();
   const { visible, show, setVisible } = useAutoHide();
-  const [currentSurahId, setCurrentSurahId] = useState<number>(Number(query.get("surah")) || 1);
+  const surahParam = query.get("surah");
+  const slugParam = query.get("slug") ?? undefined;
+  const parsedSurahId = surahParam ? Number(surahParam) : NaN;
+  const hasValidSurahParam = !Number.isNaN(parsedSurahId) && parsedSurahId > 0;
+  const initialSurahId = hasValidSurahParam ? parsedSurahId : 1;
+  const [currentSurahId, setCurrentSurahId] = useState<number>(initialSurahId);
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const activeReciterRef = useRef<string | null>(null);
@@ -37,6 +40,46 @@ function QuranModernPage() {
   const [isAutoFont, setIsAutoFont] = useState(true);
 
   const { surahs, loading: loadingIndex } = useSurahIndex();
+
+  useEffect(() => {
+    if (hasValidSurahParam && !Number.isNaN(parsedSurahId) && parsedSurahId !== currentSurahId) {
+      setCurrentSurahId(parsedSurahId);
+    }
+  }, [hasValidSurahParam, parsedSurahId, currentSurahId]);
+
+  useEffect(() => {
+    if (hasValidSurahParam || !slugParam || !surahs.length) {
+      return;
+    }
+    const match = findSurahBySlug(surahs, slugParam);
+    if (match && match.id !== currentSurahId) {
+      setCurrentSurahId(match.id);
+    }
+  }, [hasValidSurahParam, slugParam, surahs, currentSurahId]);
+
+  const buildQueryForSurah = useCallback(
+    (id: number) => {
+      const params = new URLSearchParams();
+      params.set("surah", String(id));
+      const info = surahs.find((item) => item.id === id);
+      if (info?.slug) {
+        params.set("slug", info.slug);
+      }
+      return `?${params.toString()}`;
+    },
+    [surahs]
+  );
+
+  useEffect(() => {
+    if (!surahs.length) {
+      return;
+    }
+    const expected = buildQueryForSurah(currentSurahId);
+    if (expected !== location.search) {
+      navigate(expected, { replace: true });
+    }
+  }, [surahs, currentSurahId, buildQueryForSurah, location.search, navigate]);
+
   const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   const surah: Surah | undefined = data?.surah;
@@ -56,7 +99,7 @@ function QuranModernPage() {
     if (index > 0) {
       const target = surahs[index - 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigate(buildQueryForSurah(target));
     }
   };
 
@@ -66,7 +109,7 @@ function QuranModernPage() {
     if (index >= 0 && index < surahs.length - 1) {
       const target = surahs[index + 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigate(buildQueryForSurah(target));
     }
   };
 
@@ -137,7 +180,7 @@ function QuranModernPage() {
     <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
       <TopBar
         surah={surah}
-        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
+        onToggleMode={() => navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`)}
         onOpenSearch={() => show()}
       />
       <div className="flex-1">
@@ -193,10 +236,10 @@ function QuranModernPage() {
         visible={visible}
         surahList={surahs}
         currentSurah={surah}
-        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
+        onToggleMode={() => navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`)}
         onSelectSurah={(id) => {
           setCurrentSurahId(id);
-          navigate(`?surah=${id}`);
+          navigate(buildQueryForSurah(id));
         }}
         onPrev={goPrev}
         onNext={goNext}

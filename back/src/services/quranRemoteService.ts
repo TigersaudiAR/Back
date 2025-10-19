@@ -1,4 +1,5 @@
 import type { Ayah, Surah } from "../types/index.js";
+import { ensureSurahListSlugs } from "../utils/surah.js";
 import { getAyat, getSurahIndex } from "./dataService.js";
 
 const API_BASE = "https://api.alquran.cloud/v1";
@@ -40,11 +41,12 @@ export async function fetchSurahIndex(): Promise<{ surahs: Surah[]; fromCache: b
     if (!surahs.length) {
       throw new Error("Empty surah list from API");
     }
-    cachedSurahIndex = surahs;
-    return { surahs, fromCache: false };
+    const normalized = ensureSurahListSlugs(surahs);
+    cachedSurahIndex = normalized;
+    return { surahs: normalized, fromCache: false };
   } catch (error) {
     console.error("Remote surah index failed", error);
-    const fallback = getSurahIndex();
+    const fallback = ensureSurahListSlugs(getSurahIndex());
     cachedSurahIndex = fallback;
     return { surahs: fallback, fromCache: true };
   }

@@ -5,6 +5,7 @@ export type Surah = {
   revelation_place?: "Mecca" | "Medina";
   ayah_count: number;
   bismillah_pre?: boolean;
+  slug?: string;
 };
 
 export type Ayah = {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import api from "../lib/api";
 import type { Ayah, Recitation, Surah, Tafsir } from "../types/quran";
+import { ensureSurahListSlugs, ensureSurahSlug } from "../utils/quran";
 
 type IndexResponse = { surahs: Surah[]; cached?: boolean };
 type SurahResponse = {
@@ -78,7 +79,7 @@ const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
       ayah_count: Number(meta.numberOfAyahs) || ayahs.length,
       bismillah_pre: surahId !== 1 && surahId !== 9
     };
-    return { surah, ayat: ayahs };
+    return { surah: ensureSurahSlug(surah), ayat: ayahs };
   },
   async (surahId) => {
     const [versesResponse, chapterResponse] = await Promise.all([
@@ -121,7 +122,7 @@ const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
       ayah_count: Number(chapter?.verses_count) || verses.length,
       bismillah_pre: surahId !== 1 && surahId !== 9
     };
-    return { surah, ayat: verses };
+    return { surah: ensureSurahSlug(surah), ayat: verses };
   },
   async (surahId) => {
     const padded = String(surahId).padStart(3, "0");
@@ -157,7 +158,7 @@ const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
       ayah_count: Number(meta?.versesCount ?? verses.length ?? fallback?.ayah_count ?? verses.length),
       bismillah_pre: surahId !== 1 && surahId !== 9
     };
-    return { surah, ayat: verses };
+    return { surah: ensureSurahSlug(surah), ayat: verses };
   }
 ];
 
@@ -187,7 +188,7 @@ const getStoredIndex = (): Surah[] | null => {
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed as Surah[];
+    if (Array.isArray(parsed)) return ensureSurahListSlugs(parsed as Surah[]);
   } catch (error) {
     console.warn("Failed to parse cached surah index", error);
   }
@@ -196,7 +197,8 @@ const getStoredIndex = (): Surah[] | null => {
 
 const setStoredIndex = (data: Surah[]) => {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(INDEX_STORAGE_KEY, JSON.stringify(data));
+  const normalized = ensureSurahListSlugs(data);
+  window.localStorage.setItem(INDEX_STORAGE_KEY, JSON.stringify(normalized));
 };
 
 const getSurahStorageKey = (surahId: number) => `quran-surah-${surahId}-v1`;
@@ -208,7 +210,8 @@ const getStoredSurah = (surahId: number): SurahResponse | null => {
   try {
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === "object" && Array.isArray(parsed.ayat)) {
-      return parsed as SurahResponse;
+      const surah = parsed.surah ? ensureSurahSlug(parsed.surah as Surah) : undefined;
+      return { ...parsed, surah } as SurahResponse;
     }
   } catch (error) {
     console.warn("Failed to parse cached surah", error);
@@ -218,7 +221,11 @@ const getStoredSurah = (surahId: number): SurahResponse | null => {
 
 const setStoredSurah = (surahId: number, data: SurahResponse) => {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(getSurahStorageKey(surahId), JSON.stringify(data));
+  const normalized: SurahResponse = {
+    ...data,
+    surah: data.surah ? ensureSurahSlug(data.surah) : data.surah
+  };
+  window.localStorage.setItem(getSurahStorageKey(surahId), JSON.stringify(normalized));
 };
 
 export function useSurahIndex() {
@@ -232,9 +239,10 @@ export function useSurahIndex() {
     setError(null);
     try {
       const response = await api.get<IndexResponse>("/quran/index");
-      setSurahs(response.data.surahs);
+      const normalized = ensureSurahListSlugs(response.data.surahs);
+      setSurahs(normalized);
       setFromCache(Boolean(response.data.cached));
-      setStoredIndex(response.data.surahs);
+      setStoredIndex(normalized);
     } catch (err) {
       console.error(err);
       setError("تعذر تحميل فهرس السور، تحقق من الاتصال بالإنترنت.");
@@ -266,7 +274,11 @@ export function useQuranSurah(surahId: number) {
       setError(null);
       try {
         const response = await api.get<SurahResponse>("/quran", { params: { surah: id } });
-        if (response.data.ayat.length === 0) {
+        const normalizedResponse: SurahResponse = {
+          ...response.data,
+          surah: response.data.surah ? ensureSurahSlug(response.data.surah) : response.data.surah
+        };
+        if (normalizedResponse.ayat.length === 0) {
           const remote = await fetchRemoteSurah(id);
           if (remote) {
             setData(remote);
@@ -274,15 +286,15 @@ export function useQuranSurah(surahId: number) {
             setError(null);
             return;
           }
-          setError(response.data.message ?? "تعذر تحميل بيانات السورة من المصدر المحلي.");
+          setError(normalizedResponse.message ?? "تعذر تحميل بيانات السورة من المصدر المحلي.");
           const cached = getStoredSurah(id);
           if (cached) {
             setData(cached);
           }
           return;
         }
-        setData(response.data);
-        setStoredSurah(id, response.data);
+        setData(normalizedResponse);
+        setStoredSurah(id, normalizedResponse);
       } catch (err: any) {
         console.error(err);
         const remote = await fetchRemoteSurah(id);
