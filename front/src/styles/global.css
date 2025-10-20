@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "UthmanicHafs";
+  src: url("https://cdn.jsdelivr.net/gh/quran/quran.com-frontend-next/public/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2")
+      format("woff2");
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
 }
@@ -35,4 +42,8 @@ a {
 
 #root {
   min-height: 100vh;
+}
+
+.font-mushaf {
+  font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
 }

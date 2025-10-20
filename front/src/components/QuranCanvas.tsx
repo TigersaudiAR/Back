@@ -10,11 +10,21 @@ type Props = {
   fontSize?: number;
 };
 
-const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+const BISMILLAH_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ";
+const FONT_STACK = '"UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif';
 
 function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
+
+  const meta = useMemo(() => {
+    const first = ayat[0];
+    return {
+      page: first?.page,
+      juz: first?.juz,
+      hizb: first?.hizb
+    };
+  }, [ayat]);
 
   const shouldRenderBismillah = useMemo(() => {
     if (!surah || surah.id === 9) return false;
@@ -24,6 +34,19 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
     const normalizedBismillah = BISMILLAH_TEXT.replace(/\s+/g, "");
     return firstAyahText !== normalizedBismillah;
   }, [surah, ayat]);
+
+  const baseFontSize = fontSize ?? 32;
+  const verseLineStyle = useMemo(() => ({
+    fontSize: `${baseFontSize}px`,
+    lineHeight: baseFontSize >= 36 ? 2 : 2.2,
+    fontFamily: FONT_STACK
+  }), [baseFontSize]);
+
+  const bismillahStyle = useMemo(() => ({
+    fontSize: `${Math.min(baseFontSize + 4, baseFontSize * 1.15)}px`,
+    lineHeight: 2.4,
+    fontFamily: FONT_STACK
+  }), [baseFontSize]);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -52,45 +75,92 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
     };
   }, [onSwipe]);
 
+  const scrollToTop = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div ref={containerRef} className="relative h-full w-full select-none overflow-hidden">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.05]" />
-      <div className="relative flex h-full w-full flex-col items-center overflow-y-auto px-3 pb-36 pt-8 sm:px-6">
-        <div className="relative w-full max-w-4xl">
-          <div className="relative mx-auto rounded-[40px] border border-primary-light/20 bg-primary-dark/70 p-4 shadow-[0_24px_60px_rgba(6,26,22,0.55)] sm:p-8">
-            <div className="pointer-events-none absolute inset-4 rounded-[30px] border border-primary-light/15" />
-            <div
-              className="relative rounded-[26px] bg-black/25 px-4 py-10 text-[clamp(20px,5vw,34px)] leading-[2.7] text-emerald-50 sm:px-10"
-              style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
-            >
-              {shouldRenderBismillah && (
-                <p className="mb-6 text-center text-[clamp(22px,6vw,36px)] font-semibold text-amber-200">
-                  {BISMILLAH_TEXT}
-                </p>
-              )}
-              <div className="flex flex-col gap-6 text-right">
-                {ayat.map((ayah) => (
+    <div ref={containerRef} className="relative h-full w-full overflow-y-auto px-4 pb-24 pt-8 sm:px-6">
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="relative overflow-hidden rounded-[36px] border border-emerald-900/15 bg-white/95 text-emerald-900 shadow-[0_24px_70px_rgba(15,64,50,0.12)]">
+          <header className="border-b border-emerald-100 px-6 py-6 sm:px-10">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="text-sm text-emerald-700/80">
+                <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
+                  {meta.juz && <span>جزء {meta.juz}</span>}
+                  {meta.hizb && <span>حزب {meta.hizb}</span>}
+                  {meta.page && <span>صفحة {meta.page}</span>}
+                </div>
+                {surah?.revelation_place && (
+                  <p className="mt-1 text-xs text-emerald-700/60">
+                    {surah.revelation_place === "Mecca" ? "سورة مكية" : "سورة مدنية"} • عدد الآيات: {surah.ayah_count}
+                  </p>
+                )}
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-semibold text-emerald-900">{surah?.name_ar ?? ""}</p>
+                {surah?.id && (
+                  <p className="text-xs text-emerald-700/70">رقم السورة: {surah.id}</p>
+                )}
+              </div>
+            </div>
+          </header>
+
+          <div className="px-6 py-10 sm:px-12">
+            {shouldRenderBismillah && (
+              <p className="mb-10 text-center text-emerald-900" style={bismillahStyle}>
+                {BISMILLAH_TEXT}
+              </p>
+            )}
+            <div className="flex flex-col gap-6 text-right">
+              {ayat.map((ayah) => {
+                const isActive = activeAyah === ayah.ayah_number;
+                return (
                   <button
                     key={`${ayah.surah_id}-${ayah.ayah_number}`}
                     type="button"
                     data-ayah-id={ayah.ayah_number}
-                    className={`w-full rounded-3xl px-4 py-3 transition duration-150 focus:outline-none focus:ring-2 focus:ring-accent/60 ${
-                      activeAyah === ayah.ayah_number ? "bg-accent/15 text-accent" : "hover:bg-primary-light/10"
+                    className={`group flex w-full justify-end rounded-[30px] border border-transparent bg-transparent px-4 py-4 text-right transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                      isActive ? "border-emerald-300 bg-emerald-50 shadow-inner" : "hover:border-emerald-200 hover:bg-emerald-50/60"
                     }`}
                     onClick={(event) => {
                       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
                       onSelectAyah?.(ayah, rect ?? null);
                     }}
                   >
-                    <span style={{ fontFamily: '"Noto Naskh Arabic", serif' }}>
-                      {ayah.text_ar}
-                      <span className="mx-2 text-[0.6em] text-amber-300">﴿{ayah.ayah_number}﴾</span>
+                    <span className="flex-1 text-center text-emerald-900" style={verseLineStyle}>
+                      <span className="font-mushaf inline-block whitespace-normal">
+                        {ayah.text_ar}
+                        <span className="ml-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 bg-white text-base font-semibold text-emerald-700">
+                          {ayah.ayah_number}
+                        </span>
+                      </span>
                     </span>
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </div>
+
+          <footer className="border-t border-emerald-100 px-6 py-5 sm:px-10">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button type="button" className="btn btn-sm" onClick={scrollToTop}>
+                بداية السورة
+              </button>
+              {onSwipe && (
+                <>
+                  <button type="button" className="btn btn-sm" onClick={() => onSwipe("prev")}>
+                    السورة السابقة
+                  </button>
+                  <button type="button" className="btn btn-sm" onClick={() => onSwipe("next")}>
+                    السورة التالية
+                  </button>
+                </>
+              )}
+            </div>
+          </footer>
         </div>
       </div>
     </div>

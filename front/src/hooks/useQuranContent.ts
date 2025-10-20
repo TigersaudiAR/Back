@@ -98,10 +98,22 @@ const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
       ? (versesPayload.verses as any[]).map((item) => {
           const verseKey: string = item.verse_key ?? "";
           const ayahNumber = Number(verseKey.split(":")[1] ?? item.verse_number ?? 0);
+          const candidates = [
+            item.text_uthmani,
+            item.text_uthmani_simple,
+            item.text_indopak,
+            item.text_madani,
+            item.text_imlaei,
+            item.text
+          ];
+          const text = candidates.find((value) => typeof value === "string" && value.trim().length > 0) ?? "";
           return {
             surah_id: surahId,
             ayah_number: ayahNumber,
-            text_ar: String(item.text_uthmani ?? item.text_indopak ?? item.text_madani ?? "")
+            text_ar: String(text),
+            page: typeof item.page_number === "number" ? item.page_number : undefined,
+            juz: typeof item.juz_number === "number" ? item.juz_number : undefined,
+            hizb: typeof item.hizb_number === "number" ? item.hizb_number : undefined
           };
         })
       : [];
