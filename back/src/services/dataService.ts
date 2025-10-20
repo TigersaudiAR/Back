@@ -1,4 +1,5 @@
 import { loadJson } from "../utils/loadData.js";
+import { ensureSurahListSlugs } from "../utils/surah.js";
 import type {
   Ayah,
   DhikrSet,
@@ -11,7 +12,8 @@ import type {
 let recitationTimingsCache: RecitationTimingMap | null = null;
 
 export function getSurahIndex(): Surah[] {
-  return loadJson<Surah[]>("surah_index.json");
+  const surahs = loadJson<Surah[]>("surah_index.json");
+  return ensureSurahListSlugs(surahs);
 }
 
 export function getAyat(): Ayah[] {

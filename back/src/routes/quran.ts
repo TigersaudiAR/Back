@@ -2,8 +2,9 @@ import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
 import { getRecitationTimings, getTafsir } from "../services/dataService.js";
-import type { Recitation } from "../types/index.js";
+import type { Recitation, Surah } from "../types/index.js";
 import { fetchSurahAyat, fetchSurahIndex } from "../services/quranRemoteService.js";
+import { findSurahBySlug } from "../utils/surah.js";
 
 const router = express.Router();
 
@@ -38,26 +39,46 @@ router.get("/tafsir", (_req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const surahId = Number(req.query.surah) || 1;
+  const rawSurah = Number(req.query.surah);
+  const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
   try {
-    const [indexResult, ayatResult] = await Promise.all([
-      fetchSurahIndex(),
-      fetchSurahAyat(surahId)
-    ]);
+    const indexResult = await fetchSurahIndex();
+    const surahIndex = indexResult.surahs;
 
-    const surah = indexResult.surahs.find((item) => item.id === surahId) ?? null;
-    const tafsir = getTafsir().filter((entry) => entry.surah_id === surahId);
+    let surah: Surah | undefined;
+    let surahId: number | undefined = Number.isNaN(rawSurah) ? undefined : rawSurah;
+
+    if (slugQuery) {
+      const slugMatch = findSurahBySlug(surahIndex, slugQuery);
+      if (!slugMatch) {
+        return res.status(404).json({ message: "تعذر العثور على السورة المطلوبة بالمعرّف النصي" });
+      }
+      surah = slugMatch;
+      surahId = slugMatch.id;
+    }
+
+    if (!surah && typeof surahId === "number") {
+      surah = surahIndex.find((item) => item.id === surahId);
+    }
 
     if (!surah) {
+      surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
+      surahId = surah?.id;
+    }
+
+    if (!surah || typeof surahId !== "number") {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
+
+    const tafsirList = getTafsir().filter((entry) => entry.surah_id === surahId);
+    const ayatResult = await fetchSurahAyat(surahId);
 
     if (!ayatResult.ayat.length) {
       return res.status(503).json({
         message: "تعذر تحميل الآيات من المصدر الخارجي ولم تتوافر نسخة محلية لهذه السورة",
         surah,
-        tafsir,
+        tafsir: tafsirList,
         recitations: formatRecitations(surahId),
         cached: true
       });
@@ -71,7 +92,7 @@ router.get("/", async (req, res) => {
     res.json({
       surah,
       ayat: ayatResult.ayat,
-      tafsir,
+      tafsir: tafsirList,
       recitations: formatRecitations(surahId),
       cached: ayatResult.fromCache || indexResult.fromCache,
       message

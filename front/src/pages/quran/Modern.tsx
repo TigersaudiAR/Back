@@ -4,22 +4,25 @@ import QuranCanvas from "../../components/QuranCanvas";
 import HiddenToolbar from "../../components/HiddenToolbar";
 import TopBar from "../../components/TopBar";
 import TafsirPopover from "../../components/TafsirPopover";
-import AudioBar, { type AudioProgressPayload } from "../../components/AudioBar";
+import type { AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
-import { useAutoHide } from "../../hooks/useAutoHide";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { findSurahBySlug } from "../../utils/quran";
 
 function QuranModernPage() {
-  const query = useQuery();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const navigate = useNavigate();
-  const { visible, show, setVisible } = useAutoHide();
-  const [currentSurahId, setCurrentSurahId] = useState<number>(Number(query.get("surah")) || 1);
+  const surahParam = query.get("surah");
+  const slugParam = query.get("slug") ?? undefined;
+  const parsedSurahId = surahParam ? Number(surahParam) : NaN;
+  const hasValidSurahParam = !Number.isNaN(parsedSurahId) && parsedSurahId > 0;
+  const initialSurahId = hasValidSurahParam ? parsedSurahId : 1;
+  const [currentSurahId, setCurrentSurahId] = useState<number>(initialSurahId);
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const [controlsOpen, setControlsOpen] = useState(false);
+  const [pendingSearchFocus, setPendingSearchFocus] = useState(false);
   const activeReciterRef = useRef<string | null>(null);
 
   const computeAutoFont = () => {
@@ -37,6 +40,46 @@ function QuranModernPage() {
   const [isAutoFont, setIsAutoFont] = useState(true);
 
   const { surahs, loading: loadingIndex } = useSurahIndex();
+
+  useEffect(() => {
+    if (hasValidSurahParam && !Number.isNaN(parsedSurahId) && parsedSurahId !== currentSurahId) {
+      setCurrentSurahId(parsedSurahId);
+    }
+  }, [hasValidSurahParam, parsedSurahId, currentSurahId]);
+
+  useEffect(() => {
+    if (hasValidSurahParam || !slugParam || !surahs.length) {
+      return;
+    }
+    const match = findSurahBySlug(surahs, slugParam);
+    if (match && match.id !== currentSurahId) {
+      setCurrentSurahId(match.id);
+    }
+  }, [hasValidSurahParam, slugParam, surahs, currentSurahId]);
+
+  const buildQueryForSurah = useCallback(
+    (id: number) => {
+      const params = new URLSearchParams();
+      params.set("surah", String(id));
+      const info = surahs.find((item) => item.id === id);
+      if (info?.slug) {
+        params.set("slug", info.slug);
+      }
+      return `?${params.toString()}`;
+    },
+    [surahs]
+  );
+
+  useEffect(() => {
+    if (!surahs.length) {
+      return;
+    }
+    const expected = buildQueryForSurah(currentSurahId);
+    if (expected !== location.search) {
+      navigate(expected, { replace: true });
+    }
+  }, [surahs, currentSurahId, buildQueryForSurah, location.search, navigate]);
+
   const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   const surah: Surah | undefined = data?.surah;
@@ -56,7 +99,7 @@ function QuranModernPage() {
     if (index > 0) {
       const target = surahs[index - 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigate(buildQueryForSurah(target));
     }
   };
 
@@ -66,25 +109,25 @@ function QuranModernPage() {
     if (index >= 0 && index < surahs.length - 1) {
       const target = surahs[index + 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigate(buildQueryForSurah(target));
     }
   };
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === "t") {
-        setVisible((prev) => !prev);
-      }
       if (event.key === "ArrowRight") {
         goNext();
       }
       if (event.key === "ArrowLeft") {
         goPrev();
       }
+      if (event.key.toLowerCase() === "b") {
+        setControlsOpen((prev) => !prev);
+      }
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [goNext, goPrev, setVisible]);
+  }, [goNext, goPrev]);
 
   useEffect(() => {
     localStorage.setItem("last-reading", JSON.stringify({ surah: currentSurahId, ayah: activeAyah }));
@@ -133,14 +176,48 @@ function QuranModernPage() {
     [ayahNumbers]
   );
 
+  const handleToggleControls = () => setControlsOpen((prev) => !prev);
+
+  const handleShowTafsir = () => {
+    if (!activeAyah && ayat[0]) {
+      const fallbackAyah = ayat[0];
+      setActiveAyah(fallbackAyah.ayah_number);
+      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${fallbackAyah.ayah_number}"]`);
+      if (element) {
+        setAnchorRect(element.getBoundingClientRect());
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    if (activeAyah && !anchorRect) {
+      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${activeAyah}"]`);
+      if (element) {
+        setAnchorRect(element.getBoundingClientRect());
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    setControlsOpen(false);
+  };
+
+  const handleSelectAyah = (ayah: Ayah, rect: DOMRect | null) => {
+    setActiveAyah(ayah.ayah_number);
+    setAnchorRect(rect);
+  };
+
   return (
-    <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
+    <div className="relative flex min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100">
       <TopBar
         surah={surah}
-        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
-        onOpenSearch={() => show()}
+        onToggleMode={() => {
+          setControlsOpen(false);
+          navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
+        }}
+        onOpenSearch={() => {
+          setControlsOpen(true);
+          setPendingSearchFocus(true);
+        }}
       />
-      <div className="flex-1">
+      <div className="flex-1 pt-16">
         {data?.message && (
           <div className="mx-auto my-4 max-w-4xl rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-xs text-amber-200">
             {data.message}
@@ -162,48 +239,41 @@ function QuranModernPage() {
             surah={surah}
             ayat={ayat}
             activeAyah={activeAyah}
-            onSelectAyah={(ayah) => {
-              setActiveAyah(ayah.ayah_number);
-              try {
-                const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0) {
-                  const rect = selection.getRangeAt(0).getBoundingClientRect();
-                  setAnchorRect(rect ?? null);
-                } else {
-                  setAnchorRect(null);
-                }
-              } catch (err) {
-                console.warn("Failed to read selection", err);
-                setAnchorRect(null);
-              }
-              show();
-            }}
+            onSelectAyah={handleSelectAyah}
             onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
             fontSize={fontSize}
           />
         )}
       </div>
-      {recitations.length > 0 && (
-        <AudioBar
-          recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
-          onProgress={handleAudioProgress}
-        />
-      )}
       <HiddenToolbar
-        visible={visible}
+        open={controlsOpen}
+        onToggle={handleToggleControls}
         surahList={surahs}
         currentSurah={surah}
-        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
+        recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
+        onToggleMode={() => {
+          setControlsOpen(false);
+          navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
+        }}
         onSelectSurah={(id) => {
           setCurrentSurahId(id);
-          navigate(`?surah=${id}`);
+          navigate(buildQueryForSurah(id));
+          setControlsOpen(false);
         }}
-        onPrev={goPrev}
-        onNext={goNext}
+        onPrev={() => {
+          goPrev();
+          setControlsOpen(false);
+        }}
+        onNext={() => {
+          goNext();
+          setControlsOpen(false);
+        }}
         onFontChange={handleFontChange}
-        onToggleAudio={() => show()}
-        onShowTafsir={() => show()}
+        onShowTafsir={handleShowTafsir}
         onResetFont={resetFont}
+        onAudioProgress={handleAudioProgress}
+        shouldFocusSearch={pendingSearchFocus}
+        onSearchFocusHandled={() => setPendingSearchFocus(false)}
       />
       <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
       {!loadingIndex && !surahs.length && (

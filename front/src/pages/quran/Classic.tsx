@@ -1,25 +1,36 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Ayah } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { findSurahBySlug } from "../../utils/quran";
 
 function QuranClassicPage() {
-  const query = useQuery();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const navigate = useNavigate();
-  const initialId = Number(query.get("surah")) || 1;
+  const surahParam = query.get("surah");
+  const slugParam = query.get("slug") ?? undefined;
+  const parsedSurahId = surahParam ? Number(surahParam) : NaN;
+  const hasValidSurahParam = !Number.isNaN(parsedSurahId) && parsedSurahId > 0;
+  const initialId = hasValidSurahParam ? parsedSurahId : 1;
   const [currentSurahId, setCurrentSurahId] = useState(initialId);
   const { surahs } = useSurahIndex();
-  const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   useEffect(() => {
-    if (initialId !== currentSurahId) {
-      setCurrentSurahId(initialId);
+    if (hasValidSurahParam && !Number.isNaN(parsedSurahId) && parsedSurahId !== currentSurahId) {
+      setCurrentSurahId(parsedSurahId);
     }
-  }, [initialId, currentSurahId]);
+  }, [hasValidSurahParam, parsedSurahId, currentSurahId]);
+
+  useEffect(() => {
+    if (hasValidSurahParam || !slugParam || !surahs.length) {
+      return;
+    }
+    const match = findSurahBySlug(surahs, slugParam);
+    if (match && match.id !== currentSurahId) {
+      setCurrentSurahId(match.id);
+    }
+  }, [hasValidSurahParam, slugParam, surahs, currentSurahId]);
 
   const surahExists = surahs.some((item) => item.id === currentSurahId);
 
@@ -28,6 +39,31 @@ function QuranClassicPage() {
       setCurrentSurahId(surahs[0].id);
     }
   }, [surahs, surahExists]);
+
+  const buildQueryForSurah = useCallback(
+    (id: number) => {
+      const params = new URLSearchParams();
+      params.set("surah", String(id));
+      const info = surahs.find((item) => item.id === id);
+      if (info?.slug) {
+        params.set("slug", info.slug);
+      }
+      return `?${params.toString()}`;
+    },
+    [surahs]
+  );
+
+  useEffect(() => {
+    if (!surahs.length) {
+      return;
+    }
+    const expected = buildQueryForSurah(currentSurahId);
+    if (expected !== location.search) {
+      navigate(expected, { replace: true });
+    }
+  }, [surahs, currentSurahId, buildQueryForSurah, location.search, navigate]);
+
+  const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   const ayat: Ayah[] = data?.ayat ?? [];
   const surah = data?.surah;
@@ -73,7 +109,7 @@ function QuranClassicPage() {
         <div className="mt-10 flex flex-wrap justify-between gap-3">
           <button
             className="rounded border border-gray-400 px-4 py-2"
-            onClick={() => navigate(`/quran/modern?surah=${currentSurahId}`)}
+            onClick={() => navigate(`/quran/modern${buildQueryForSurah(currentSurahId)}`)}
           >
             العودة للوضع الحديث
           </button>

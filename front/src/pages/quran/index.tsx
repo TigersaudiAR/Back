@@ -42,7 +42,15 @@ function QuranIndexPage() {
           {surahs.length > 0 ? (
             <SurahNavigator
               surahList={surahs}
-              onSelect={(id) => window.open(`/quran/modern?surah=${id}`, "_self")}
+              onSelect={(id) => {
+                const params = new URLSearchParams();
+                params.set("surah", String(id));
+                const info = surahs.find((item) => item.id === id);
+                if (info?.slug) {
+                  params.set("slug", info.slug);
+                }
+                window.open(`/quran/modern?${params.toString()}`, "_self");
+              }}
             />
           ) : (
             <div className="flex h-full items-center justify-center text-sm text-gray-400">

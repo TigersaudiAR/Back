@@ -15,12 +15,16 @@ export interface Surah {
   revelation_place?: "Mecca" | "Medina";
   ayah_count: number;
   bismillah_pre?: boolean;
+  slug?: string;
 }
 
 export interface Ayah {
   surah_id: number;
   ayah_number: number;
   text_ar: string;
+  page?: number;
+  juz?: number;
+  hizb?: number;
 }
 
 export interface Tafsir {
