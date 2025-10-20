@@ -100,8 +100,9 @@ export async function fetchSurahIndex(): Promise<{ surahs: Surah[]; fromCache: b
 }
 
 export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; fromCache: boolean }> {
-  if (cachedAyat.has(surahId)) {
-    return { ayat: cachedAyat.get(surahId)! as Ayah[], fromCache: true };
+  const cached = cachedAyat.get(surahId);
+  if (cached?.length) {
+    return { ayat: cached, fromCache: true };
   }
 
   try {
@@ -131,7 +132,6 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     const fallback = getAyat().filter((item) => item.surah_id === surahId);
     if (!fallback.length) {
       console.warn(`No local fallback for surah ${surahId}`);
-      cachedAyat.set(surahId, []);
       return { ayat: [], fromCache: true };
     }
     cachedAyat.set(surahId, fallback);
