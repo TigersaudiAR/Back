@@ -5,28 +5,12 @@ type Props = {
   surah?: Surah;
   ayat: Ayah[];
   activeAyah?: number;
-  onSelectAyah?: (ayah: Ayah) => void;
+  onSelectAyah?: (ayah: Ayah, rect: DOMRect | null) => void;
   onSwipe?: (direction: "next" | "prev") => void;
   fontSize?: number;
 };
 
 const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
-
-const chunkAyat = (items: Ayah[], size: number) => {
-  const result: Ayah[][] = [];
-  let buffer: Ayah[] = [];
-  items.forEach((item) => {
-    buffer.push(item);
-    if (buffer.length === size) {
-      result.push(buffer);
-      buffer = [];
-    }
-  });
-  if (buffer.length) {
-    result.push(buffer);
-  }
-  return result;
-};
 
 function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -41,12 +25,6 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
     return firstAyahText !== normalizedBismillah;
   }, [surah, ayat]);
 
-  const ayahGroups = useMemo(() => {
-    if (ayat.length <= 9) return chunkAyat(ayat, 3);
-    if (ayat.length <= 18) return chunkAyat(ayat, 4);
-    return chunkAyat(ayat, 5);
-  }, [ayat]);
-
   useEffect(() => {
     const element = containerRef.current;
     if (!element || !onSwipe) return;
@@ -58,7 +36,8 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
     const handlePointerUp = (event: PointerEvent) => {
       if (!pointer.current) return;
       const diffX = event.clientX - pointer.current.x;
-      if (Math.abs(diffX) > 80) {
+      const diffY = event.clientY - pointer.current.y;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 80) {
         onSwipe(diffX < 0 ? "next" : "prev");
       }
       pointer.current = null;
@@ -75,43 +54,41 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
 
   return (
     <div ref={containerRef} className="relative h-full w-full select-none overflow-hidden">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.04]" />
-      <div className="relative flex h-full w-full items-center justify-center px-3 pb-32 pt-20 sm:px-6">
-        <div className="relative w-full max-w-[900px]">
-          <div className="relative mx-auto min-h-[520px] rounded-[42px] border border-primary-light/30 bg-primary-dark/60 p-6 shadow-[0_20px_60px_rgba(6,30,24,0.45)]">
-            <div className="pointer-events-none absolute inset-4 rounded-[34px] border border-primary-light/20" />
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-[0.05]" />
+      <div className="relative flex h-full w-full flex-col items-center overflow-y-auto px-3 pb-36 pt-8 sm:px-6">
+        <div className="relative w-full max-w-4xl">
+          <div className="relative mx-auto rounded-[40px] border border-primary-light/20 bg-primary-dark/70 p-4 shadow-[0_24px_60px_rgba(6,26,22,0.55)] sm:p-8">
+            <div className="pointer-events-none absolute inset-4 rounded-[30px] border border-primary-light/15" />
             <div
-              className="relative mx-auto flex min-h-[480px] flex-col justify-center gap-6 rounded-[28px] bg-black/20 px-6 py-10 text-[clamp(18px,2.4vw,34px)] leading-[2.4] text-emerald-100 sm:px-12"
+              className="relative rounded-[26px] bg-black/25 px-4 py-10 text-[clamp(20px,5vw,34px)] leading-[2.7] text-emerald-50 sm:px-10"
               style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
             >
               {shouldRenderBismillah && (
-                <p className="mb-2 text-center text-[clamp(22px,2.6vw,38px)] font-semibold text-amber-200">
+                <p className="mb-6 text-center text-[clamp(22px,6vw,36px)] font-semibold text-amber-200">
                   {BISMILLAH_TEXT}
                 </p>
               )}
-              {ayahGroups.map((group, lineIndex) => (
-                <p
-                  key={lineIndex}
-                  className="flex flex-nowrap items-center justify-evenly gap-4 whitespace-nowrap"
-                >
-                  {group.map((ayah) => (
-                    <span
-                      key={`${ayah.surah_id}-${ayah.ayah_number}`}
-                      className={`inline-flex items-center gap-2 rounded-3xl px-4 py-1.5 transition ${
-                        activeAyah === ayah.ayah_number
-                          ? "bg-accent/30 text-accent"
-                          : "hover:bg-primary-light/20"
-                      }`}
-                      onClick={() => onSelectAyah?.(ayah)}
-                    >
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-accent/30 text-[12px] text-accent">
-                        {ayah.ayah_number}
-                      </span>
-                      <span style={{ fontFamily: '"Noto Naskh Arabic", serif' }}>{ayah.text_ar}</span>
+              <div className="flex flex-col gap-6 text-right">
+                {ayat.map((ayah) => (
+                  <button
+                    key={`${ayah.surah_id}-${ayah.ayah_number}`}
+                    type="button"
+                    data-ayah-id={ayah.ayah_number}
+                    className={`w-full rounded-3xl px-4 py-3 transition duration-150 focus:outline-none focus:ring-2 focus:ring-accent/60 ${
+                      activeAyah === ayah.ayah_number ? "bg-accent/15 text-accent" : "hover:bg-primary-light/10"
+                    }`}
+                    onClick={(event) => {
+                      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+                      onSelectAyah?.(ayah, rect ?? null);
+                    }}
+                  >
+                    <span style={{ fontFamily: '"Noto Naskh Arabic", serif' }}>
+                      {ayah.text_ar}
+                      <span className="mx-2 text-[0.6em] text-amber-300">﴿{ayah.ayah_number}﴾</span>
                     </span>
-                  ))}
-                </p>
-              ))}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
