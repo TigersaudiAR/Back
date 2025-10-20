@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "url_template": "{{base_url}}{{surah_padded}}.mp3",
+  "reciters": [
+    {
+      "id": "mahermuaiqly",
+      "name": "الشيخ ماهر المعيقلي",
+      "style": "murattal",
+      "bitrate": 128,
+      "base_url": "https://download.quranicaudio.com/quran/maher_al_muaiqly/"
+    },
+    {
+      "id": "alafasy",
+      "name": "الشيخ مشاري العفاسي",
+      "style": "murattal",
+      "bitrate": 128,
+      "base_url": "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afasy/"
+    },
+    {
+      "id": "husary",
+      "name": "الشيخ محمود الحصري",
+      "style": "murattal",
+      "bitrate": 64,
+      "base_url": "https://download.quranicaudio.com/quran/muhammad_siddeeq_al-minshaawee/"
+    }
+  ]
+}

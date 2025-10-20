@@ -30,6 +30,20 @@ export interface Tafsir {
   text_ar: string;
 }
 
+export interface ReciterConfig {
+  id: string;
+  name: string;
+  base_url: string;
+  bitrate?: number;
+  style?: string;
+}
+
+export interface RecitationConfig {
+  version?: number;
+  url_template: string;
+  reciters: ReciterConfig[];
+}
+
 export interface Dhikr {
   id: string;
   title: string;
