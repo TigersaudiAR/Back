@@ -4,7 +4,13 @@ import { getAyat, getSurahIndex } from "./dataService.js";
 const API_BASE = "https://api.alquran.cloud/v1";
 
 let cachedSurahIndex: Surah[] | null = null;
-const cachedAyat = new Map<number, Ayah[]>();
+type CachedAyatEntry = {
+  ayat: Ayah[];
+  expiresAt: number | null;
+};
+
+const cachedAyat = new Map<number, CachedAyatEntry>();
+const FALLBACK_TTL_MS = 5 * 60 * 1000;
 
 function mapSurah(item: any): Surah {
   return {
@@ -51,8 +57,13 @@ export async function fetchSurahIndex(): Promise<{ surahs: Surah[]; fromCache: b
 }
 
 export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; fromCache: boolean }> {
-  if (cachedAyat.has(surahId)) {
-    return { ayat: cachedAyat.get(surahId)! as Ayah[], fromCache: true };
+  const cachedEntry = cachedAyat.get(surahId);
+  if (cachedEntry) {
+    if (cachedEntry.expiresAt && cachedEntry.expiresAt <= Date.now()) {
+      cachedAyat.delete(surahId);
+    } else {
+      return { ayat: cachedEntry.ayat, fromCache: true };
+    }
   }
 
   try {
@@ -67,17 +78,20 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     if (!verses.length) {
       throw new Error("Empty ayah list from API");
     }
-    cachedAyat.set(surahId, verses);
+    cachedAyat.set(surahId, { ayat: verses, expiresAt: null });
     return { ayat: verses, fromCache: false };
   } catch (error) {
     console.error(`Remote surah ${surahId} failed`, error);
     const fallback = getAyat().filter((item) => item.surah_id === surahId);
     if (!fallback.length) {
       console.warn(`No local fallback for surah ${surahId}`);
-      cachedAyat.set(surahId, []);
+      cachedAyat.delete(surahId);
       return { ayat: [], fromCache: true };
     }
-    cachedAyat.set(surahId, fallback);
+    cachedAyat.set(surahId, {
+      ayat: fallback,
+      expiresAt: Date.now() + FALLBACK_TTL_MS
+    });
     return { ayat: fallback, fromCache: true };
   }
 }
