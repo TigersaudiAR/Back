@@ -25,7 +25,7 @@ function QuranModernPage() {
   const [pendingSearchFocus, setPendingSearchFocus] = useState(false);
   const activeReciterRef = useRef<string | null>(null);
 
-  const computeAutoFont = () => {
+  const computeAutoFont = useCallback(() => {
     if (typeof window === "undefined") return 30;
     const width = window.innerWidth;
     if (width >= 1600) return 38;
@@ -34,7 +34,7 @@ function QuranModernPage() {
     if (width >= 768) return 26;
     if (width >= 480) return 22;
     return 20;
-  };
+  }, []);
 
   const [fontSize, setFontSize] = useState<number>(() => computeAutoFont());
   const [isAutoFont, setIsAutoFont] = useState(true);
@@ -83,17 +83,20 @@ function QuranModernPage() {
   const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   const surah: Surah | undefined = data?.surah;
-  const ayat: Ayah[] = data?.ayat ?? [];
-  const tafsirMap = useMemo(() => new Map<string, Tafsir>(), [data?.tafsir]);
-  const ayahNumbers = useMemo(() => new Set(ayat.map((item) => item.ayah_number)), [ayat]);
+  const ayat: Ayah[] = useMemo(() => data?.ayat ?? [], [data?.ayat]);
+  const tafsirMap = useMemo(() => {
+    const map = new Map<string, Tafsir>();
+    data?.tafsir?.forEach((item) => {
+      map.set(`${item.surah_id}-${item.ayah_number}`, item);
+    });
+    return map;
+  }, [data?.tafsir]);
 
-  if (data?.tafsir) {
-    data.tafsir.forEach((item) => tafsirMap.set(`${item.surah_id}-${item.ayah_number}`, item));
-  }
+  const ayahNumbers = useMemo(() => new Set(ayat.map((item) => item.ayah_number)), [ayat]);
 
   const tafsir = activeAyah ? tafsirMap.get(`${currentSurahId}-${activeAyah}`) : undefined;
 
-  const goPrev = () => {
+  const goPrev = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index > 0) {
@@ -101,9 +104,9 @@ function QuranModernPage() {
       setCurrentSurahId(target);
       navigate(buildQueryForSurah(target));
     }
-  };
+  }, [buildQueryForSurah, currentSurahId, navigate, surahs]);
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index >= 0 && index < surahs.length - 1) {
@@ -111,7 +114,7 @@ function QuranModernPage() {
       setCurrentSurahId(target);
       navigate(buildQueryForSurah(target));
     }
-  };
+  }, [buildQueryForSurah, currentSurahId, navigate, surahs]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -139,17 +142,17 @@ function QuranModernPage() {
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [isAutoFont]);
+  }, [computeAutoFont, isAutoFont]);
 
-  const handleFontChange = (delta: number) => {
+  const handleFontChange = useCallback((delta: number) => {
     setIsAutoFont(false);
     setFontSize((prev) => Math.min(46, Math.max(18, prev + delta)));
-  };
+  }, []);
 
-  const resetFont = () => {
+  const resetFont = useCallback(() => {
     setIsAutoFont(true);
     setFontSize(computeAutoFont());
-  };
+  }, [computeAutoFont]);
 
   const recitations = data?.recitations ?? [];
 
@@ -176,47 +179,85 @@ function QuranModernPage() {
     [ayahNumbers]
   );
 
-  const handleToggleControls = () => setControlsOpen((prev) => !prev);
+  const handleToggleControls = useCallback(() => setControlsOpen((prev) => !prev), []);
 
-  const handleShowTafsir = () => {
+  const handleShowTafsir = useCallback(() => {
+    const ensureAnchor = (ayahNumber: number) => {
+      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${ayahNumber}"]`);
+      if (element) {
+        setAnchorRect(element.getBoundingClientRect());
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+
     if (!activeAyah && ayat[0]) {
       const fallbackAyah = ayat[0];
       setActiveAyah(fallbackAyah.ayah_number);
-      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${fallbackAyah.ayah_number}"]`);
-      if (element) {
-        setAnchorRect(element.getBoundingClientRect());
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+      ensureAnchor(fallbackAyah.ayah_number);
     }
 
     if (activeAyah && !anchorRect) {
-      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${activeAyah}"]`);
-      if (element) {
-        setAnchorRect(element.getBoundingClientRect());
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+      ensureAnchor(activeAyah);
     }
     setControlsOpen(false);
-  };
+  }, [activeAyah, anchorRect, ayat]);
 
-  const handleSelectAyah = (ayah: Ayah, rect: DOMRect | null) => {
+  const handleSelectAyah = useCallback((ayah: Ayah, rect: DOMRect | null) => {
     setActiveAyah(ayah.ayah_number);
     setAnchorRect(rect);
-  };
+  }, []);
+
+  const handleSwipe = useCallback(
+    (direction: "next" | "prev") => {
+      if (direction === "next") {
+        goNext();
+        return;
+      }
+      goPrev();
+    },
+    [goNext, goPrev]
+  );
+
+  const handleNavigateToClassic = useCallback(() => {
+    setControlsOpen(false);
+    navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
+  }, [buildQueryForSurah, currentSurahId, navigate]);
+
+  const handleOpenSearch = useCallback(() => {
+    setControlsOpen(true);
+    setPendingSearchFocus(true);
+  }, []);
+
+  const handleSelectSurah = useCallback(
+    (id: number) => {
+      setCurrentSurahId(id);
+      navigate(buildQueryForSurah(id));
+      setControlsOpen(false);
+    },
+    [buildQueryForSurah, navigate]
+  );
+
+  const handlePrevFromToolbar = useCallback(() => {
+    goPrev();
+    setControlsOpen(false);
+  }, [goPrev]);
+
+  const handleNextFromToolbar = useCallback(() => {
+    goNext();
+    setControlsOpen(false);
+  }, [goNext]);
+
+  const handleSearchFocusHandled = useCallback(() => setPendingSearchFocus(false), []);
+
+  const handleCloseTafsir = useCallback(() => setActiveAyah(undefined), []);
+
+  const handleRetry = useCallback(() => {
+    void refresh(currentSurahId).catch(() => undefined);
+  }, [currentSurahId, refresh]);
 
   return (
     <div className="relative flex min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100">
-      <TopBar
-        surah={surah}
-        onToggleMode={() => {
-          setControlsOpen(false);
-          navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
-        }}
-        onOpenSearch={() => {
-          setControlsOpen(true);
-          setPendingSearchFocus(true);
-        }}
-      />
+      <TopBar surah={surah} onToggleMode={handleNavigateToClassic} onOpenSearch={handleOpenSearch} />
       <div className="flex-1 pt-16">
         {data?.message && (
           <div className="mx-auto my-4 max-w-4xl rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-xs text-amber-200">
@@ -229,7 +270,7 @@ function QuranModernPage() {
         {!loading && error && (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-sm text-red-300">
             <p>{error}</p>
-            <button className="btn btn-sm" onClick={() => refresh(currentSurahId).catch(() => undefined)}>
+            <button className="btn btn-sm" onClick={handleRetry}>
               إعادة المحاولة
             </button>
           </div>
@@ -240,7 +281,7 @@ function QuranModernPage() {
             ayat={ayat}
             activeAyah={activeAyah}
             onSelectAyah={handleSelectAyah}
-            onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
+            onSwipe={handleSwipe}
             fontSize={fontSize}
           />
         )}
@@ -251,31 +292,18 @@ function QuranModernPage() {
         surahList={surahs}
         currentSurah={surah}
         recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
-        onToggleMode={() => {
-          setControlsOpen(false);
-          navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
-        }}
-        onSelectSurah={(id) => {
-          setCurrentSurahId(id);
-          navigate(buildQueryForSurah(id));
-          setControlsOpen(false);
-        }}
-        onPrev={() => {
-          goPrev();
-          setControlsOpen(false);
-        }}
-        onNext={() => {
-          goNext();
-          setControlsOpen(false);
-        }}
+        onToggleMode={handleNavigateToClassic}
+        onSelectSurah={handleSelectSurah}
+        onPrev={handlePrevFromToolbar}
+        onNext={handleNextFromToolbar}
         onFontChange={handleFontChange}
         onShowTafsir={handleShowTafsir}
         onResetFont={resetFont}
         onAudioProgress={handleAudioProgress}
         shouldFocusSearch={pendingSearchFocus}
-        onSearchFocusHandled={() => setPendingSearchFocus(false)}
+        onSearchFocusHandled={handleSearchFocusHandled}
       />
-      <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
+      <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={handleCloseTafsir} />
       {!loadingIndex && !surahs.length && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary-dark/80 text-sm text-red-200">
           تعذر تحميل فهرس السور، يرجى التحقق من الاتصال.

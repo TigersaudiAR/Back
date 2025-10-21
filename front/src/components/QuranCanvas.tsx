@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { Ayah, Surah } from "../types/quran";
+import "../styles/quran.css";
 
 type Props = {
   surah?: Surah;
@@ -36,17 +37,30 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
   }, [surah, ayat]);
 
   const baseFontSize = fontSize ?? 32;
-  const verseLineStyle = useMemo(() => ({
-    fontSize: `${baseFontSize}px`,
-    lineHeight: baseFontSize >= 36 ? 2 : 2.2,
-    fontFamily: FONT_STACK
-  }), [baseFontSize]);
+  const verseLineStyle = useMemo(
+    () => ({
+      fontSize: `${baseFontSize}px`,
+      lineHeight: baseFontSize >= 36 ? 2 : 2.2,
+      fontFamily: FONT_STACK,
+      whiteSpace: "pre-wrap" as const,
+      textAlign: "justify" as const,
+      wordSpacing: baseFontSize >= 36 ? "0.45rem" : "0.35rem",
+      direction: "rtl" as const
+    }),
+    [baseFontSize]
+  );
 
   const bismillahStyle = useMemo(() => ({
     fontSize: `${Math.min(baseFontSize + 4, baseFontSize * 1.15)}px`,
     lineHeight: 2.4,
     fontFamily: FONT_STACK
   }), [baseFontSize]);
+
+  const handleScrollToTop = useCallback(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -75,17 +89,15 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
     };
   }, [onSwipe]);
 
-  const scrollToTop = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   return (
     <div ref={containerRef} className="relative h-full w-full overflow-y-auto px-4 pb-24 pt-8 sm:px-6">
       <div className="mx-auto w-full max-w-4xl">
-        <div className="relative overflow-hidden rounded-[36px] border border-emerald-900/15 bg-white/95 text-emerald-900 shadow-[0_24px_70px_rgba(15,64,50,0.12)]">
-          <header className="border-b border-emerald-100 px-6 py-6 sm:px-10">
+        <div
+          className="relative overflow-hidden rounded-[36px] border border-emerald-900/15 bg-white/95 text-emerald-900 shadow-[0_24px_70px_rgba(15,64,50,0.12)]"
+          lang="ar"
+          role="document"
+        >
+          <header className="quran-manuscript__body border-b border-emerald-100 pb-6 pt-6 sm:px-10 sm:pt-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-sm text-emerald-700/80">
                 <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
@@ -108,37 +120,43 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
             </div>
           </header>
 
-          <div className="px-6 py-10 sm:px-12">
+          <div className="quran-manuscript quran-manuscript__body">
             {shouldRenderBismillah && (
-              <p className="mb-10 text-center text-emerald-900" style={bismillahStyle}>
+              <p className="quran-bismillah" style={bismillahStyle}>
                 {BISMILLAH_TEXT}
               </p>
             )}
-            <div className="flex flex-col gap-6 text-right">
+            <div>
               {ayat.map((ayah) => {
                 const isActive = activeAyah === ayah.ayah_number;
+                const ayahId = `ayah-${ayah.surah_id}-${ayah.ayah_number}`;
+                const srId = `${ayahId}-sr`;
                 return (
-                  <button
-                    key={`${ayah.surah_id}-${ayah.ayah_number}`}
-                    type="button"
-                    data-ayah-id={ayah.ayah_number}
-                    className={`group flex w-full justify-end rounded-[30px] border border-transparent bg-transparent px-4 py-4 text-right transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                      isActive ? "border-emerald-300 bg-emerald-50 shadow-inner" : "hover:border-emerald-200 hover:bg-emerald-50/60"
-                    }`}
-                    onClick={(event) => {
-                      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-                      onSelectAyah?.(ayah, rect ?? null);
-                    }}
-                  >
-                    <span className="flex-1 text-center text-emerald-900" style={verseLineStyle}>
-                      <span className="font-mushaf inline-block whitespace-normal">
+                  <div key={`${ayah.surah_id}-${ayah.ayah_number}`} className="quran-ayah" data-ayah-id={ayah.ayah_number}>
+                    <button
+                      type="button"
+                      aria-labelledby={`${ayahId}-text ${srId}`}
+                      className={`quran-ayah__button ${isActive ? "is-active" : ""}`}
+                      onClick={(event) => {
+                        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+                        onSelectAyah?.(ayah, rect ?? null);
+                      }}
+                    >
+                      <span
+                        id={`${ayahId}-text`}
+                        className="quran-ayah__text font-mushaf text-emerald-900"
+                        style={verseLineStyle}
+                      >
                         {ayah.text_ar}
-                        <span className="ml-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 bg-white text-base font-semibold text-emerald-700">
-                          {ayah.ayah_number}
-                        </span>
                       </span>
-                    </span>
-                  </button>
+                      <span id={`${ayahId}-number`} className="quran-ayah__number" aria-hidden="true">
+                        ﴿{ayah.ayah_number}﴾
+                      </span>
+                      <span id={srId} className="sr-only">
+                        تحديد الآية رقم {ayah.ayah_number}
+                      </span>
+                    </button>
+                  </div>
                 );
               })}
             </div>
@@ -146,7 +164,7 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
 
           <footer className="border-t border-emerald-100 px-6 py-5 sm:px-10">
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <button type="button" className="btn btn-sm" onClick={scrollToTop}>
+              <button type="button" className="btn btn-sm" onClick={handleScrollToTop}>
                 بداية السورة
               </button>
               {onSwipe && (

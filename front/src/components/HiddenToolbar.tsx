@@ -128,6 +128,7 @@ function HiddenToolbar({
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
                         placeholder="ابحث عن سورة بالاسم أو الرقم"
+                        aria-label="بحث عن سورة بالاسم أو الرقم"
                         className="input input-sm flex-1 bg-primary-dark/60 text-right"
                       />
                     </div>
