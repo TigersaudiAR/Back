@@ -8,6 +8,7 @@ import type { AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { findSurahBySlug } from "../../utils/quran";
+import { useAuthStore } from "../../store/auth";
 
 function QuranModernPage() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function QuranModernPage() {
   const [controlsOpen, setControlsOpen] = useState(false);
   const [pendingSearchFocus, setPendingSearchFocus] = useState(false);
   const activeReciterRef = useRef<string | null>(null);
+  const { role } = useAuthStore();
 
   const computeAutoFont = () => {
     if (typeof window === "undefined") return 30;
@@ -216,6 +218,8 @@ function QuranModernPage() {
           setControlsOpen(true);
           setPendingSearchFocus(true);
         }}
+        role={role}
+        onGoHome={() => navigate("/")}
       />
       <div className="flex-1 pt-16">
         {data?.message && (
