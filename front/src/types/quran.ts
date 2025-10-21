@@ -16,6 +16,13 @@ export type Ayah = {
   hizb?: number;
 };
 
+export type AyahTranslation = {
+  surah_id: number;
+  ayah_number: number;
+  text: string;
+  source?: string;
+};
+
 export type Tafsir = {
   surah_id: number;
   ayah_number: number;

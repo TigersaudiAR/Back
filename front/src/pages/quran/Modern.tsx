@@ -5,19 +5,26 @@ import HiddenToolbar from "../../components/HiddenToolbar";
 import TopBar from "../../components/TopBar";
 import TafsirPopover from "../../components/TafsirPopover";
 import AudioBar, { type AudioProgressPayload } from "../../components/AudioBar";
+import ReadingPreferenceSwitcher from "../../components/ReadingPreferenceSwitcher";
+import QuranTranslationView from "../../components/QuranTranslationView";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useAutoHide } from "../../hooks/useAutoHide";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
+import { useSurahTranslation } from "../../hooks/useSurahTranslation";
 
 function useQuery() {
-  return new URLSearchParams(useLocation().search);
+  const location = useLocation();
+  return useMemo(() => new URLSearchParams(location.search), [location.search]);
 }
+
+type ViewMode = "reading" | "translation";
 
 function QuranModernPage() {
   const query = useQuery();
   const navigate = useNavigate();
   const { visible, show, setVisible } = useAutoHide();
   const [currentSurahId, setCurrentSurahId] = useState<number>(Number(query.get("surah")) || 1);
+  const [viewMode, setViewMode] = useState<ViewMode>(query.get("view") === "translation" ? "translation" : "reading");
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const activeReciterRef = useRef<string | null>(null);
@@ -38,37 +45,68 @@ function QuranModernPage() {
 
   const { surahs, loading: loadingIndex } = useSurahIndex();
   const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
+  const {
+    translations,
+    loading: translationsLoading,
+    error: translationsError,
+    source: translationSource,
+    refresh: refreshTranslations
+  } = useSurahTranslation(currentSurahId, 131, viewMode === "translation");
 
   const surah: Surah | undefined = data?.surah;
-  const ayat: Ayah[] = data?.ayat ?? [];
-  const tafsirMap = useMemo(() => new Map<string, Tafsir>(), [data?.tafsir]);
+  const ayat: Ayah[] = useMemo(() => data?.ayat ?? [], [data?.ayat]);
+  const tafsirMap = useMemo(() => {
+    const map = new Map<string, Tafsir>();
+    data?.tafsir?.forEach((item) => {
+      map.set(`${item.surah_id}-${item.ayah_number}`, item);
+    });
+    return map;
+  }, [data?.tafsir]);
   const ayahNumbers = useMemo(() => new Set(ayat.map((item) => item.ayah_number)), [ayat]);
-
-  if (data?.tafsir) {
-    data.tafsir.forEach((item) => tafsirMap.set(`${item.surah_id}-${item.ayah_number}`, item));
-  }
+  const translationMap = useMemo(() => {
+    return new Map(translations.map((item) => [item.ayah_number, item]));
+  }, [translations]);
 
   const tafsir = activeAyah ? tafsirMap.get(`${currentSurahId}-${activeAyah}`) : undefined;
 
-  const goPrev = () => {
+  const buildSearch = useCallback(
+    (surahId: number, mode: ViewMode = viewMode) => {
+      const params = new URLSearchParams();
+      params.set("surah", String(surahId));
+      if (mode === "translation") {
+        params.set("view", "translation");
+      }
+      return `?${params.toString()}`;
+    },
+    [viewMode]
+  );
+
+  const navigateToSurah = useCallback(
+    (surahId: number, mode: ViewMode = viewMode) => {
+      navigate(buildSearch(surahId, mode));
+    },
+    [buildSearch, navigate, viewMode]
+  );
+
+  const goPrev = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index > 0) {
       const target = surahs[index - 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigateToSurah(target);
     }
-  };
+  }, [currentSurahId, navigateToSurah, surahs]);
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (!surahs.length) return;
     const index = surahs.findIndex((s) => s.id === currentSurahId);
     if (index >= 0 && index < surahs.length - 1) {
       const target = surahs[index + 1].id;
       setCurrentSurahId(target);
-      navigate(`?surah=${target}`);
+      navigateToSurah(target);
     }
-  };
+  }, [currentSurahId, navigateToSurah, surahs]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -87,8 +125,11 @@ function QuranModernPage() {
   }, [goNext, goPrev, setVisible]);
 
   useEffect(() => {
-    localStorage.setItem("last-reading", JSON.stringify({ surah: currentSurahId, ayah: activeAyah }));
-  }, [currentSurahId, activeAyah]);
+    localStorage.setItem(
+      "last-reading",
+      JSON.stringify({ surah: currentSurahId, ayah: activeAyah, view: viewMode })
+    );
+  }, [currentSurahId, activeAyah, viewMode]);
 
   useEffect(() => {
     if (!isAutoFont) return;
@@ -133,12 +174,56 @@ function QuranModernPage() {
     [ayahNumbers]
   );
 
+  useEffect(() => {
+    const targetSurah = Number(query.get("surah")) || 1;
+    if (targetSurah !== currentSurahId) {
+      setCurrentSurahId(targetSurah);
+    }
+    const queryView = query.get("view") === "translation" ? "translation" : "reading";
+    if (queryView !== viewMode) {
+      setViewMode(queryView);
+    }
+  }, [query, currentSurahId, viewMode]);
+
+  const handleViewChange = (mode: ViewMode) => {
+    if (mode === viewMode) return;
+    setViewMode(mode);
+    navigate(buildSearch(currentSurahId, mode), { replace: true });
+  };
+
+  const handleAyahSelection = useCallback(
+    (ayah: Ayah, fallbackRect?: DOMRect | null) => {
+      setActiveAyah(ayah.ayah_number);
+      let rect: DOMRect | null = null;
+      try {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          rect = selection.getRangeAt(0).getBoundingClientRect();
+        }
+      } catch (err) {
+        console.warn("Failed to read selection", err);
+      }
+      if (!rect && fallbackRect) {
+        rect = fallbackRect;
+      }
+      setAnchorRect(rect ?? null);
+      show();
+    },
+    [show]
+  );
+
   return (
     <div className="relative flex h-full min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" onClick={() => show()}>
       <TopBar
         surah={surah}
         onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
         onOpenSearch={() => show()}
+      />
+      <ReadingPreferenceSwitcher
+        mode={viewMode}
+        onChange={handleViewChange}
+        translationSource={translationSource}
+        translationLoading={translationsLoading}
       />
       <div className="flex-1">
         {data?.message && (
@@ -157,29 +242,25 @@ function QuranModernPage() {
             </button>
           </div>
         )}
-        {!loading && !error && ayat.length > 0 && (
+        {!loading && !error && ayat.length > 0 && viewMode === "reading" && (
           <QuranCanvas
             surah={surah}
             ayat={ayat}
             activeAyah={activeAyah}
-            onSelectAyah={(ayah) => {
-              setActiveAyah(ayah.ayah_number);
-              try {
-                const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0) {
-                  const rect = selection.getRangeAt(0).getBoundingClientRect();
-                  setAnchorRect(rect ?? null);
-                } else {
-                  setAnchorRect(null);
-                }
-              } catch (err) {
-                console.warn("Failed to read selection", err);
-                setAnchorRect(null);
-              }
-              show();
-            }}
+            onSelectAyah={(ayah) => handleAyahSelection(ayah)}
             onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
             fontSize={fontSize}
+          />
+        )}
+        {!loading && !error && ayat.length > 0 && viewMode === "translation" && (
+          <QuranTranslationView
+            ayat={ayat}
+            translations={translationMap}
+            loading={translationsLoading}
+            error={translationsError}
+            onRetry={() => refreshTranslations(currentSurahId).catch(() => undefined)}
+            activeAyah={activeAyah}
+            onSelectAyah={(ayah, rect) => handleAyahSelection(ayah, rect)}
           />
         )}
       </div>
@@ -196,7 +277,7 @@ function QuranModernPage() {
         onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
         onSelectSurah={(id) => {
           setCurrentSurahId(id);
-          navigate(`?surah=${id}`);
+          navigateToSurah(id);
         }}
         onPrev={goPrev}
         onNext={goNext}
