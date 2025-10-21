@@ -10,7 +10,7 @@ type Props = {
   fontSize?: number;
 };
 
-const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+export const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
 
 const chunkAyat = (items: Ayah[], size: number) => {
   const result: Ayah[][] = [];
