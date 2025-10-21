@@ -68,3 +68,9 @@ export const findSurahBySlug = (surahs: Surah[], slug: string): Surah | undefine
     return slugMatches(candidate, slug);
   });
 };
+
+export const buildAyahAudioUrl = (surahId: number, ayahNumber: number, reciterId = "mahermuaiqly"): string => {
+  const paddedSurah = String(surahId).padStart(3, "0");
+  const paddedAyah = String(ayahNumber).padStart(3, "0");
+  return `https://cdn.islamic.network/quran/audio/128/ar.${reciterId}/${paddedSurah}${paddedAyah}.mp3`;
+};

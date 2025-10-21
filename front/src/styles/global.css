@@ -4,8 +4,7 @@
 
 @font-face {
   font-family: "UthmanicHafs";
-  src: url("https://cdn.jsdelivr.net/gh/quran/quran.com-frontend-next/public/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2")
-      format("woff2");
+  src: url("https://cdn.islamic.network/fonts/UthmanicHafs-Regular.woff2") format("woff2");
   font-display: swap;
 }
 
@@ -46,4 +45,92 @@ a {
 
 .font-mushaf {
   font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
+}
+
+.ayah-container {
+  display: block;
+  margin: 1.2rem 0;
+  line-height: 2.4;
+  text-align: justify;
+  direction: rtl;
+  font-family: "UthmanicHafs", "Amiri", serif;
+  font-size: clamp(1.35rem, 2.8vw, 1.65rem);
+  color: #ffd966;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.33);
+}
+
+.ayah-container button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1.05em;
+}
+
+.ayah-container button:focus-visible {
+  outline: 2px solid #ffd966;
+  outline-offset: 4px;
+}
+
+.ayah-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  border: 1px solid #79c08b;
+  margin: 0 0.6em;
+  font-size: 0.95em;
+  background: rgba(9, 21, 18, 0.3);
+}
+
+.ayah-text {
+  display: inline;
+  font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
+}
+
+.classic-ayah {
+  color: #0f3d2e;
+  background: transparent;
+  text-shadow: none;
+}
+
+.classic-ayah .ayah-number {
+  border-color: #0f3d2e;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.classic-ayah button {
+  color: #0f3d2e;
+}
+
+.ayah-container--interactive {
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  border: 1px solid transparent;
+  padding: 1.4rem 1.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  text-align: justify;
+}
+
+.ayah-container--interactive:hover,
+.ayah-container--interactive:focus-visible {
+  border-color: rgba(124, 200, 157, 0.55);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ayah-container--interactive:focus-visible {
+  outline: 2px solid rgba(124, 200, 157, 0.8);
+  outline-offset: 4px;
+}
+
+.ayah-container--interactive.ayah-container--active {
+  border-color: rgba(103, 180, 140, 0.9);
+  background: rgba(245, 249, 247, 0.85);
+  color: #0f3d2e;
+  text-shadow: none;
+  box-shadow: 0 18px 40px rgba(7, 36, 27, 0.18);
 }

@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import QuranCanvas from "../../components/QuranCanvas";
 import HiddenToolbar from "../../components/HiddenToolbar";
 import TopBar from "../../components/TopBar";
-import TafsirPopover from "../../components/TafsirPopover";
 import type { AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { findSurahBySlug } from "../../utils/quran";
+
+const TafsirPopover = lazy(() => import("../../components/TafsirPopover"));
 
 function QuranModernPage() {
   const location = useLocation();
@@ -205,7 +206,7 @@ function QuranModernPage() {
   };
 
   return (
-    <div className="relative flex min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100">
+    <div className="relative flex min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100" dir="rtl" lang="ar">
       <TopBar
         surah={surah}
         onToggleMode={() => {
@@ -275,7 +276,9 @@ function QuranModernPage() {
         shouldFocusSearch={pendingSearchFocus}
         onSearchFocusHandled={() => setPendingSearchFocus(false)}
       />
-      <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
+      <Suspense fallback={null}>
+        <TafsirPopover tafsir={tafsir} anchorRect={anchorRect} onClose={() => setActiveAyah(undefined)} />
+      </Suspense>
       {!loadingIndex && !surahs.length && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary-dark/80 text-sm text-red-200">
           تعذر تحميل فهرس السور، يرجى التحقق من الاتصال.

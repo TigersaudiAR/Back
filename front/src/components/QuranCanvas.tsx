@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { Ayah, Surah } from "../types/quran";
+import Ayah from "./Ayah";
 
 type Props = {
   surah?: Surah;
@@ -11,7 +12,6 @@ type Props = {
 };
 
 const BISMILLAH_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ";
-const FONT_STACK = '"UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif';
 
 function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -36,16 +36,10 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
   }, [surah, ayat]);
 
   const baseFontSize = fontSize ?? 32;
-  const verseLineStyle = useMemo(() => ({
-    fontSize: `${baseFontSize}px`,
-    lineHeight: baseFontSize >= 36 ? 2 : 2.2,
-    fontFamily: FONT_STACK
-  }), [baseFontSize]);
-
   const bismillahStyle = useMemo(() => ({
     fontSize: `${Math.min(baseFontSize + 4, baseFontSize * 1.15)}px`,
     lineHeight: 2.4,
-    fontFamily: FONT_STACK
+    fontFamily: '"UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif'
   }), [baseFontSize]);
 
   useEffect(() => {
@@ -115,32 +109,17 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
               </p>
             )}
             <div className="flex flex-col gap-6 text-right">
-              {ayat.map((ayah) => {
-                const isActive = activeAyah === ayah.ayah_number;
-                return (
-                  <button
-                    key={`${ayah.surah_id}-${ayah.ayah_number}`}
-                    type="button"
-                    data-ayah-id={ayah.ayah_number}
-                    className={`group flex w-full justify-end rounded-[30px] border border-transparent bg-transparent px-4 py-4 text-right transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                      isActive ? "border-emerald-300 bg-emerald-50 shadow-inner" : "hover:border-emerald-200 hover:bg-emerald-50/60"
-                    }`}
-                    onClick={(event) => {
-                      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-                      onSelectAyah?.(ayah, rect ?? null);
-                    }}
-                  >
-                    <span className="flex-1 text-center text-emerald-900" style={verseLineStyle}>
-                      <span className="font-mushaf inline-block whitespace-normal">
-                        {ayah.text_ar}
-                        <span className="ml-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 bg-white text-base font-semibold text-emerald-700">
-                          {ayah.ayah_number}
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
+              {ayat.map((ayah) => (
+                <Ayah
+                  key={`${ayah.surah_id}-${ayah.ayah_number}`}
+                  ayah={ayah}
+                  variant="interactive"
+                  active={activeAyah === ayah.ayah_number}
+                  fontSize={baseFontSize}
+                  onSelect={onSelectAyah}
+                  showAudioButton={false}
+                />
+              ))}
             </div>
           </div>
 

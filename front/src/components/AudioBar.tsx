@@ -126,7 +126,11 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
     <div className={containerClass}>
       <audio ref={audioRef} src={track.url} preload="metadata" />
       <div className="flex items-center gap-3">
-        <button className="btn btn-sm btn-accent" onClick={() => setIsPlaying((prev) => !prev)}>
+        <button
+          className="btn btn-sm btn-accent"
+          onClick={() => setIsPlaying((prev) => !prev)}
+          aria-label={isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}
+        >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </button>
         <div className="flex-1">
@@ -145,6 +149,7 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
               index === current ? "border-accent/60 bg-accent/20 text-accent" : "border-primary-light/20 bg-primary-dark/60"
             }`}
             onClick={() => setCurrent(index)}
+            aria-label={`اختيار تلاوة ${rec.reciter}`}
           >
             <Radio className="h-3 w-3" /> {rec.reciter}
           </button>
