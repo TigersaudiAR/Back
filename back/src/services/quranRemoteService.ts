@@ -114,7 +114,7 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
       console.error(`quran.com verses for surah ${surahId} failed`, quranComError);
     }
 
-    const response = await fetch(`${ALQURAN_API_BASE}/surah/${surahId}/ar`);
+    const response = await fetch(`${ALQURAN_API_BASE}/surah/${surahId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch surah ${surahId}: ${response.status}`);
     }
