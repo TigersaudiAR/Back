@@ -52,9 +52,11 @@ const getRemoteSurahIndexFallback = (surahId: number): Surah | null => {
   return cached.find((item) => item.id === surahId) ?? null;
 };
 
+const ALQURAN_EDITION = "quran-uthmani";
+
 const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
   async (surahId) => {
-    const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}/ar`);
+    const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}/${ALQURAN_EDITION}`);
     if (!response.ok) {
       throw new Error(`alquran.cloud failed with status ${response.status}`);
     }

@@ -3,6 +3,7 @@ import { ensureSurahListSlugs } from "../utils/surah.js";
 import { getAyat, getSurahIndex } from "./dataService.js";
 
 const ALQURAN_API_BASE = "https://api.alquran.cloud/v1";
+const ALQURAN_TEXT_EDITION = "quran-uthmani";
 const QURAN_COM_API_BASE = "https://api.quran.com/api/v4";
 
 let cachedSurahIndex: Surah[] | null = null;
@@ -114,7 +115,7 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
       console.error(`quran.com verses for surah ${surahId} failed`, quranComError);
     }
 
-    const response = await fetch(`${ALQURAN_API_BASE}/surah/${surahId}/ar`);
+    const response = await fetch(`${ALQURAN_API_BASE}/surah/${surahId}/${ALQURAN_TEXT_EDITION}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch surah ${surahId}: ${response.status}`);
     }
