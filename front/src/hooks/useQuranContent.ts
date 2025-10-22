@@ -54,7 +54,7 @@ const getRemoteSurahIndexFallback = (surahId: number): Surah | null => {
 
 const remoteLoaders: Array<(surahId: number) => Promise<RemoteSurahPayload>> = [
   async (surahId) => {
-    const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}/ar`);
+    const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}`);
     if (!response.ok) {
       throw new Error(`alquran.cloud failed with status ${response.status}`);
     }
