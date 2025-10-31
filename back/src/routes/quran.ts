@@ -1,12 +1,20 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
+import surahIndexSeed from "../../data/seed/surah_index.json" assert { type: "json" };
+
 import { getRecitationTimings, getTafsir } from "../services/dataService.js";
 import type { Recitation, Surah } from "../types/index.js";
 import { fetchSurahAyat, fetchSurahIndex } from "../services/quranRemoteService.js";
-import { findSurahBySlug } from "../utils/surah.js";
+import { ensureSurahListSlugs, findSurahBySlug } from "../utils/surah.js";
 
 const router = express.Router();
+
+const SURAH_LIST: ReadonlyArray<Surah> = Object.freeze(
+  ensureSurahListSlugs(
+    (surahIndexSeed as Surah[]).map((surah) => ({ ...surah }))
+  )
+);
 
 const RECITERS = [
   { id: "mahermuaiqly", name: "الشيخ ماهر المعيقلي", bitrate: 128 },
@@ -42,9 +50,12 @@ router.get("/", async (req, res) => {
   const rawSurah = Number(req.query.surah);
   const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
+  if (Number.isNaN(rawSurah) && !slugQuery) {
+    return res.json(SURAH_LIST);
+  }
+
   try {
-    const indexResult = await fetchSurahIndex();
-    const surahIndex = indexResult.surahs;
+    const surahIndex = SURAH_LIST;
 
     let surah: Surah | undefined;
     let surahId: number | undefined = Number.isNaN(rawSurah) ? undefined : rawSurah;
@@ -84,17 +95,16 @@ router.get("/", async (req, res) => {
       });
     }
 
-    const message =
-      ayatResult.fromCache || indexResult.fromCache
-        ? "يتم عرض السورة من النسخة المخزنة لحين توفر الاتصال الخارجي."
-        : undefined;
+    const message = ayatResult.fromCache
+      ? "يتم عرض السورة من النسخة المخزنة لحين توفر الاتصال الخارجي."
+      : undefined;
 
     res.json({
       surah,
       ayat: ayatResult.ayat,
       tafsir: tafsirList,
       recitations: formatRecitations(surahId),
-      cached: ayatResult.fromCache || indexResult.fromCache,
+      cached: ayatResult.fromCache,
       message
     });
   } catch (error) {
