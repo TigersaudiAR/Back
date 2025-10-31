@@ -3,9 +3,9 @@ import { Suspense, lazy } from "react";
 import MainLayout from "./layouts/MainLayout";
 import QuranLayout from "./layouts/QuranLayout";
 import LoadingScreen from "./components/LoadingScreen";
+import QuranList from "./pages/QuranList";
 
 const HomePage = lazy(() => import("./pages/index"));
-const QuranIndexPage = lazy(() => import("./pages/quran"));
 const QuranModernPage = lazy(() => import("./pages/quran/Modern"));
 const QuranClassicPage = lazy(() => import("./pages/quran/Classic"));
 const AdhkarPage = lazy(() => import("./pages/adhkar"));
@@ -38,7 +38,7 @@ function App() {
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
         <Route path="/quran" element={<QuranLayout />}>
-          <Route index element={<QuranIndexPage />} />
+          <Route index element={<QuranList />} />
           <Route path="modern" element={<QuranModernPage />} />
           <Route path="classic" element={<QuranClassicPage />} />
         </Route>
