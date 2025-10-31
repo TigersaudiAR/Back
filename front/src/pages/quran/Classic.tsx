@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type { Ayah } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { findSurahBySlug } from "../../utils/quran";
+import Ayah from "../../components/Ayah";
 
 function QuranClassicPage() {
   const location = useLocation();
@@ -97,14 +98,15 @@ function QuranClassicPage() {
           </div>
         )}
         {!loading && !error && ayat.length > 0 && (
-          <article className="prose prose-lg rtl:text-right">
+          <section
+            className="rounded-3xl border border-emerald-900/15 bg-white/95 p-8 shadow-[0_24px_70px_rgba(15,64,50,0.12)]"
+            dir="rtl"
+            lang="ar"
+          >
             {ayat.map((ayah) => (
-              <p key={ayah.ayah_number} className="text-2xl leading-loose">
-                <span className="align-top rounded-full border border-gray-400 px-2 py-1 text-sm">{ayah.ayah_number}</span>
-                {ayah.text_ar}
-              </p>
+              <Ayah key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
             ))}
-          </article>
+          </section>
         )}
         <div className="mt-10 flex flex-wrap justify-between gap-3">
           <button
