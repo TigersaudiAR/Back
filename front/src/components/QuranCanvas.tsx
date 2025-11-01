@@ -149,7 +149,7 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
                       >
                         {ayah.text_ar}
                       </span>
-                      <span id={`${ayahId}-number`} className="quran-ayah__number" aria-hidden="true">
+                      <span className="quran-ayah__number" aria-hidden="true">
                         ﴿{ayah.ayah_number}﴾
                       </span>
                       <span id={srId} className="sr-only">
