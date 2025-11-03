@@ -133,7 +133,6 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
           aria-label={isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          <span className="sr-only">{isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}</span>
         </button>
         <div className="flex-1">
           <p className="text-sm font-semibold text-accent">{track.reciter}</p>
