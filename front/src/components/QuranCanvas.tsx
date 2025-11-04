@@ -132,7 +132,7 @@ function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize 
                 const ayahId = `ayah-${ayah.surah_id}-${ayah.ayah_number}`;
                 const srId = `${ayahId}-sr`;
                 return (
-                  <div key={`${ayah.surah_id}-${ayah.ayah_number}`} className="quran-ayah" data-ayah-id={ayah.ayah_number}>
+                  <div key={`${ayah.surah_id}-${ayah.ayah_number}`} className="quran-ayah" data-ayah-id={`${ayah.surah_id}-${ayah.ayah_number}`}>
                     <button
                       type="button"
                       aria-labelledby={`${ayahId}-text ${srId}`}
