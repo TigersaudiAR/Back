@@ -14,6 +14,8 @@ const HalaqatPage = lazy(() => import("./pages/halaqat"));
 const HadithPage = lazy(() => import("./pages/hadith"));
 const DawahPage = lazy(() => import("./pages/dawah"));
 const AskScholarsPage = lazy(() => import("./pages/ask-scholars"));
+const IslamicLearningPage = lazy(() => import("./pages/islamic-learning"));
+const SeerahPage = lazy(() => import("./pages/seerah"));
 const SettingsPage = lazy(() => import("./pages/settings"));
 const DashboardIndex = lazy(() => import("./pages/dashboard"));
 const DashboardContent = lazy(() => import("./pages/dashboard/content"));
@@ -35,6 +37,8 @@ function App() {
           <Route path="/hadith" element={<HadithPage />} />
           <Route path="/dawah" element={<DawahPage />} />
           <Route path="/ask-scholars" element={<AskScholarsPage />} />
+          <Route path="/islamic-learning" element={<IslamicLearningPage />} />
+          <Route path="/seerah" element={<SeerahPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
         <Route path="/quran" element={<QuranLayout />}>

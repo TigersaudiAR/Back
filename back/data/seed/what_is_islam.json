@@ -1,0 +1,82 @@
+[
+  {
+    "id": "what-is-islam-1",
+    "question": "ما هو الإسلام؟",
+    "question_en": "What is Islam?",
+    "answer": "الإسلام هو دين الله الخالد الذي ارتضاه لعباده، وهو الاستسلام لله تعالى بالتوحيد والانقياد له بالطاعة والبراءة من الشرك وأهله. الإسلام هو آخر الأديان السماوية، أنزله الله على خاتم الأنبياء محمد صلى الله عليه وسلم. قال الله تعالى: {إِنَّ الدِّينَ عِندَ اللَّهِ الْإِسْلَامُ} [آل عمران: 19]",
+    "answer_en": "Islam is the eternal religion of Allah that He has chosen for His servants. It means submission to Allah through monotheism (Tawheed), obedience to Him, and disassociation from polytheism (Shirk) and its people. Islam is the final divine religion, revealed by Allah to the last Prophet Muhammad (peace be upon him). Allah says: 'Indeed, the religion in the sight of Allah is Islam.' [Quran 3:19]",
+    "category": "basics",
+    "references": ["القرآن الكريم: سورة آل عمران، الآية 19", "القرآن الكريم: سورة المائدة، الآية 3"],
+    "related_topics": ["pillars-of-islam", "pillars-of-faith", "who-is-muhammad"]
+  },
+  {
+    "id": "pillars-of-islam",
+    "question": "ما هي أركان الإسلام؟",
+    "question_en": "What are the Five Pillars of Islam?",
+    "answer": "أركان الإسلام خمسة: (1) الشهادتان: أشهد أن لا إله إلا الله وأشهد أن محمدًا رسول الله، (2) إقامة الصلاة الخمس في أوقاتها، (3) إيتاء الزكاة للمستحقين، (4) صوم رمضان، (5) حج البيت لمن استطاع إليه سبيلاً. قال رسول الله صلى الله عليه وسلم: «بُنِيَ الإسْلَامُ علَى خَمْسٍ: شَهَادَةِ أنْ لا إلَهَ إلَّا اللَّهُ وأنَّ مُحَمَّدًا رَسولُ اللَّهِ، وإقَامِ الصَّلَاةِ، وإيتَاءِ الزَّكَاةِ، والحَجِّ، وصَوْمِ رَمَضَانَ» [رواه البخاري ومسلم]",
+    "answer_en": "The Five Pillars of Islam are: (1) Testimony of Faith (Shahada): I testify that there is no god but Allah and Muhammad is the Messenger of Allah, (2) Performing the five daily prayers, (3) Giving Zakat (charity) to those entitled, (4) Fasting during Ramadan, (5) Pilgrimage to Mecca (Hajj) for those who are able. The Prophet Muhammad (peace be upon him) said: 'Islam is built upon five: testifying that there is no god but Allah and that Muhammad is the Messenger of Allah, establishing prayer, giving Zakat, Hajj, and fasting in Ramadan.' [Bukhari & Muslim]",
+    "category": "basics",
+    "references": ["صحيح البخاري، كتاب الإيمان، حديث رقم 8", "صحيح مسلم، كتاب الإيمان، حديث رقم 16"],
+    "related_topics": ["what-is-islam-1", "prayer-importance", "zakat-rules"]
+  },
+  {
+    "id": "pillars-of-faith",
+    "question": "ما هي أركان الإيمان؟",
+    "question_en": "What are the Six Pillars of Faith?",
+    "answer": "أركان الإيمان ستة: (1) الإيمان بالله، (2) الإيمان بالملائكة، (3) الإيمان بالكتب السماوية، (4) الإيمان بالرسل، (5) الإيمان باليوم الآخر، (6) الإيمان بالقدر خيره وشره. قال رسول الله صلى الله عليه وسلم: «أَنْ تُؤْمِنَ باللَّهِ، وَمَلَائِكَتِهِ، وَكُتُبِهِ، وَرُسُلِهِ، وَالْيَومِ الآخِرِ، وَتُؤْمِنَ بالقَدَرِ خَيْرِهِ وَشَرِّهِ» [رواه مسلم]",
+    "answer_en": "The Six Pillars of Faith are: (1) Belief in Allah, (2) Belief in Angels, (3) Belief in Divine Books, (4) Belief in Prophets, (5) Belief in the Day of Judgment, (6) Belief in Divine Decree (Qadar), both good and bad. The Prophet Muhammad (peace be upon him) said: 'To believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in divine decree, both good and bad.' [Muslim]",
+    "category": "faith",
+    "references": ["صحيح مسلم، كتاب الإيمان، حديث رقم 8"],
+    "related_topics": ["who-is-allah", "angels-in-islam", "prophets-in-islam"]
+  },
+  {
+    "id": "who-is-allah",
+    "question": "من هو الله؟",
+    "question_en": "Who is Allah?",
+    "answer": "الله هو الخالق العظيم، رب العالمين، الواحد الأحد، الفرد الصمد، الذي لم يلد ولم يولد ولم يكن له كفوًا أحد. هو الحي القيوم، الذي لا تأخذه سنة ولا نوم، له ما في السماوات وما في الأرض. هو الرحمن الرحيم، العزيز الحكيم، السميع البصير، العليم الخبير. قال الله تعالى: {قُلْ هُوَ اللَّهُ أَحَدٌ * اللَّهُ الصَّمَدُ * لَمْ يَلِدْ وَلَمْ يُولَدْ * وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ} [سورة الإخلاص]",
+    "answer_en": "Allah is the Supreme Creator, Lord of all the worlds, the One and Only, the Eternal Absolute. He begets not, nor was He begotten, and there is none comparable to Him. He is the Ever-Living, the Sustainer of existence, who neither slumbers nor sleeps. To Him belongs all that is in the heavens and the earth. He is the Most Merciful, the Compassionate, the All-Mighty, the All-Wise, the All-Hearing, the All-Seeing, the All-Knowing. Allah says: 'Say: He is Allah, [who is] One, Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent.' [Quran 112:1-4]",
+    "category": "faith",
+    "references": ["القرآن الكريم: سورة الإخلاص", "القرآن الكريم: سورة البقرة، آية الكرسي 255"],
+    "related_topics": ["names-of-allah", "attributes-of-allah", "tawheed"]
+  },
+  {
+    "id": "who-is-muhammad",
+    "question": "من هو النبي محمد صلى الله عليه وسلم؟",
+    "question_en": "Who is Prophet Muhammad (peace be upon him)?",
+    "answer": "محمد بن عبد الله بن عبد المطلب هو خاتم الأنبياء والمرسلين، أرسله الله رحمة للعالمين. وُلد في مكة المكرمة عام 570 ميلادية (عام الفيل)، وبُعث نبيًا وعمره أربعون سنة. كان صلى الله عليه وسلم يُعرف قبل البعثة بالصادق الأمين لشدة أمانته وصدقه. دعا إلى عبادة الله وحده وترك عبادة الأصنام، وتحمل الأذى الشديد في سبيل نشر الإسلام. قال الله تعالى: {وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ} [الأنبياء: 107]",
+    "answer_en": "Muhammad ibn Abdullah ibn Abdul-Muttalib is the final Prophet and Messenger, sent by Allah as a mercy to all the worlds. He was born in Mecca in 570 CE (the Year of the Elephant) and was appointed as a Prophet at the age of forty. Before his prophethood, he was known as Al-Sadiq (the Truthful) and Al-Amin (the Trustworthy) due to his honesty and integrity. He called people to worship Allah alone and abandon idol worship, enduring severe persecution in spreading Islam. Allah says: 'And We have not sent you, [O Muhammad], except as a mercy to the worlds.' [Quran 21:107]",
+    "category": "prophet",
+    "references": ["القرآن الكريم: سورة الأنبياء، الآية 107", "السيرة النبوية لابن هشام", "صحيح البخاري، كتاب بدء الوحي"],
+    "related_topics": ["prophets-in-islam", "seerah", "miracles-of-muhammad"]
+  },
+  {
+    "id": "why-islam",
+    "question": "لماذا يجب أن أتبع الإسلام؟",
+    "question_en": "Why should I follow Islam?",
+    "answer": "الإسلام هو الدين الحق الذي ارتضاه الله للبشرية، وهو الطريق الوحيد للنجاة في الدنيا والآخرة. الإسلام يحقق السعادة الحقيقية بتحقيق التوازن بين الروح والجسد، وبين الدنيا والآخرة. يوفر الإسلام إجابات شافية لجميع الأسئلة الوجودية الكبرى: من أين جئنا؟ لماذا نحن هنا؟ إلى أين نذهب بعد الموت؟ قال الله تعالى: {الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ وَأَتْمَمْتُ عَلَيْكُمْ نِعْمَتِي وَرَضِيتُ لَكُمُ الْإِسْلَامَ دِينًا} [المائدة: 3]",
+    "answer_en": "Islam is the true religion that Allah has chosen for humanity, and it is the only path to salvation in this life and the Hereafter. Islam achieves true happiness by balancing the spiritual and physical, worldly and eternal. Islam provides comprehensive answers to all major existential questions: Where do we come from? Why are we here? Where do we go after death? Allah says: 'This day I have perfected for you your religion and completed My favor upon you and have approved for you Islam as religion.' [Quran 5:3]",
+    "category": "basics",
+    "references": ["القرآن الكريم: سورة المائدة، الآية 3", "القرآن الكريم: سورة آل عمران، الآية 85"],
+    "related_topics": ["what-is-islam-1", "purpose-of-life", "afterlife"]
+  },
+  {
+    "id": "purpose-of-life",
+    "question": "ما هو الهدف من الحياة في الإسلام؟",
+    "question_en": "What is the purpose of life in Islam?",
+    "answer": "الهدف الأسمى من خلق الإنسان هو عبادة الله وحده لا شريك له. العبادة في الإسلام تشمل كل عمل صالح يقوم به المسلم ابتغاء مرضاة الله، من صلاة وصيام وذكر وصدقة وإحسان للناس. الحياة الدنيا هي دار اختبار وابتلاء، والهدف النهائي هو الفوز بالجنة والنجاة من النار. قال الله تعالى: {وَمَا خَلَقْتُ الْجِنَّ وَالْإِنسَ إِلَّا لِيَعْبُدُونِ} [الذاريات: 56]",
+    "answer_en": "The ultimate purpose of human creation is to worship Allah alone without partners. Worship in Islam encompasses all good deeds performed seeking Allah's pleasure, including prayer, fasting, remembrance, charity, and kindness to people. This worldly life is a place of trial and test, and the ultimate goal is to attain Paradise and be saved from Hellfire. Allah says: 'And I did not create the jinn and mankind except to worship Me.' [Quran 51:56]",
+    "category": "basics",
+    "references": ["القرآن الكريم: سورة الذاريات، الآية 56", "القرآن الكريم: سورة الملك، الآية 2"],
+    "related_topics": ["worship-in-islam", "what-is-islam-1", "afterlife"]
+  },
+  {
+    "id": "quran-miracle",
+    "question": "ما الدليل على أن القرآن من عند الله؟",
+    "question_en": "What is the proof that the Quran is from Allah?",
+    "answer": "القرآن الكريم معجزة خالدة تحدى الله بها الإنس والجن أن يأتوا بمثله أو بسورة من مثله فعجزوا. من أدلة إعجاز القرآن: (1) البلاغة واللغة التي لا يضاهيها كلام، (2) الحقائق العلمية التي لم تُكتشف إلا حديثًا، (3) الإخبار بالغيبيات التي تحققت، (4) عدم وجود أي تناقض رغم نزوله على مدى 23 سنة، (5) حفظه من التحريف حتى يومنا هذا. قال الله تعالى: {قُل لَّئِنِ اجْتَمَعَتِ الْإِنسُ وَالْجِنُّ عَلَىٰ أَن يَأْتُوا بِمِثْلِ هَٰذَا الْقُرْآنِ لَا يَأْتُونَ بِمِثْلِهِ وَلَوْ كَانَ بَعْضُهُمْ لِبَعْضٍ ظَهِيرًا} [الإسراء: 88]",
+    "answer_en": "The Noble Quran is an eternal miracle with which Allah challenged humans and jinn to produce something like it or even a single chapter, and they failed. Evidences of the Quran's miraculous nature include: (1) Unmatched eloquence and linguistic excellence, (2) Scientific facts only recently discovered, (3) Prophecies that came true, (4) No contradictions despite being revealed over 23 years, (5) Perfect preservation from any alteration. Allah says: 'Say, If mankind and the jinn gathered in order to produce the like of this Quran, they could not produce the like of it, even if they were to each other assistants.' [Quran 17:88]",
+    "category": "quran",
+    "references": ["القرآن الكريم: سورة الإسراء، الآية 88", "القرآن الكريم: سورة البقرة، الآية 23"],
+    "related_topics": ["what-is-islam-1", "scientific-miracles", "preservation-of-quran"]
+  }
+]
