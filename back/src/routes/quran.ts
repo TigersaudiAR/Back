@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
-import surahIndexSeed from "../../data/seed/surah_index.json" assert { type: "json" };
+import surahIndexSeed from "../../data/seed/surah_index.json" with { type: "json" };
 
 import { getRecitationTimings, getTafsir } from "../services/dataService.js";
 import type { Recitation, Surah } from "../types/index.js";
@@ -55,7 +55,7 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    const surahIndex = SURAH_LIST;
+    const surahIndex = [...SURAH_LIST];
 
     let surah: Surah | undefined;
     let surahId: number | undefined = Number.isNaN(rawSurah) ? undefined : rawSurah;
