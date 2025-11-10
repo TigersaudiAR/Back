@@ -45,8 +45,15 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip cross-origin requests
-  if (url.origin !== location.origin && !url.origin.includes('quran.com') && !url.origin.includes('islamic.network')) {
+  // Whitelist of allowed origins for security
+  const allowedOrigins = [
+    location.origin,
+    'https://api.quran.com',
+    'https://cdn.islamic.network'
+  ];
+  
+  // Skip requests from non-whitelisted origins
+  if (!allowedOrigins.some(origin => url.origin === origin)) {
     return;
   }
 
