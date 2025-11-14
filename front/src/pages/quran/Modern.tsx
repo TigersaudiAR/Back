@@ -7,6 +7,7 @@ import type { AudioProgressPayload } from "../../components/AudioBar";
 import type { Ayah, Surah, Tafsir } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { findSurahBySlug } from "../../utils/quran";
+import { getJuzNumber, getHizbNumber, getPageNumber } from "../../utils/quranDivisions";
 import { useAuthStore } from "../../store/auth";
 
 const TafsirPopover = lazy(() => import("../../components/TafsirPopover"));
@@ -221,6 +222,9 @@ function QuranModernPage() {
         }}
         role={role}
         onGoHome={() => navigate("/")}
+        juzNumber={surah ? getJuzNumber(surah.id) : undefined}
+        hizbNumber={surah ? getHizbNumber(surah.id) : undefined}
+        currentPage={surah ? getPageNumber(surah.id) : undefined}
       />
       <div className="flex-1 pt-16">
         {data?.message && (
