@@ -4,7 +4,7 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["Quran-app"]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,13 +31,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies and build
+        run: |
+          cd front
+          npm ci
+          npm run build
+      
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v3
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload the built site from front/dist
+          path: 'front/dist'
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          enablement: true
+      
+      - name: Print Pages status on failure
+        if: failure()
+        run: |
+          echo "Deployment failed. Checking Pages status..."
+          gh api repos/${{ github.repository }}/pages --jq '.' || echo "Could not fetch Pages status"
