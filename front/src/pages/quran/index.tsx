@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MonitorPlay, ScrollText } from "lucide-react";
+import { MonitorPlay, ScrollText, BookOpen } from "lucide-react";
 import SurahNavigator from "../../components/SurahNavigator";
 import { useSurahIndex } from "../../hooks/useQuranContent";
 
@@ -19,6 +19,9 @@ function QuranIndexPage() {
           </Link>
           <Link className="btn btn-outline gap-2" to="classic">
             <ScrollText className="h-4 w-4" /> وضع المصحف التقليدي
+          </Link>
+          <Link className="btn btn-outline gap-2" to="page-view">
+            <BookOpen className="h-4 w-4" /> عرض الصفحات التفاعلي
           </Link>
         </div>
         {fromCache && (

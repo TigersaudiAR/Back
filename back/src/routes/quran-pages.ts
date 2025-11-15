@@ -40,7 +40,7 @@ router.get("/:page", (req: Request, res: Response) => {
 });
 
 // Get page coordinates (bounding boxes for verses)
-router.get("/:page/coordinates", (req: Request, res: Response) => {
+router.get("/:page/coords", (req: Request, res: Response) => {
   const page = Number(req.params.page);
   
   if (isNaN(page) || page < 1 || page > 604) {
@@ -49,22 +49,11 @@ router.get("/:page/coordinates", (req: Request, res: Response) => {
   
   // Sample coordinates structure
   // In a real implementation, these would be loaded from JSON files
+  // For now, return empty verses array since we don't have coordinate data yet
   res.json({
     page,
-    verses: [
-      {
-        surah_id: 1,
-        ayah_number: 1,
-        bbox: {
-          x: 100,
-          y: 150,
-          width: 400,
-          height: 50
-        }
-      }
-      // More verses would be here in a real implementation
-    ],
-    message: "إحداثيات الآيات على الصفحة"
+    verses: [],
+    message: "نظام الإحداثيات قيد التطوير - سيتم إضافة البيانات قريبًا"
   });
 });
 
