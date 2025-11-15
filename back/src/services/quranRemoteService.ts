@@ -12,6 +12,7 @@ type CachedAyatEntry = {
 
 const cachedAyat = new Map<number, CachedAyatEntry>();
 const FALLBACK_TTL_MS = 5 * 60 * 1000;
+const API_BASE = "https://api.alquran.cloud/v1";
 
 export const FAILED_AYAT_RETRY_DELAY_MS = 60_000;
 
@@ -47,6 +48,18 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     }
   }
 
+  // Use local data primarily
+  try {
+    const localAyat = getSurahAyat(surahId);
+    if (localAyat && localAyat.length > 0) {
+      cachedAyat.set(surahId, { ayat: localAyat, expiresAt: null });
+      return { ayat: localAyat, fromCache: false };
+    }
+  } catch (localError) {
+    console.warn(`Local surah ${surahId} not available, trying remote`, localError);
+  }
+
+  // Fallback to remote API
   try {
     const response = await fetch(`${API_BASE}/surah/${surahId}/ar`);
     if (!response.ok) {
@@ -63,7 +76,7 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     return { ayat: verses, fromCache: false };
   } catch (error) {
     console.error(`Remote surah ${surahId} failed`, error);
-    const fallback = getAyat().filter((item) => item.surah_id === surahId);
+    const fallback = getAyat().filter((item: Ayah) => item.surah_id === surahId);
     if (!fallback.length) {
       console.warn(`No local fallback for surah ${surahId}`);
       cachedAyat.delete(surahId);

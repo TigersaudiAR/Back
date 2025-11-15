@@ -68,7 +68,15 @@ router.get("/", async (req, res) => {
       surahId = surah?.id ?? 1;
     }
 
-    if (!surah || typeof surahId !== "number") {
+    // Default to first surah if not found
+    if (!surahId) {
+      const firstSurah = surahIndex[0];
+      surahId = firstSurah?.id ?? 1;
+    }
+
+    // Fetch the surah data
+    const surah = surahIndex.find((item) => item.id === surahId);
+    if (!surah) {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
 
