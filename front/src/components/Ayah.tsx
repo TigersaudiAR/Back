@@ -83,7 +83,7 @@ const Ayah = memo(function Ayah({
           <span className="ayah-number" aria-hidden="true">
             {ayah.ayah_number}
           </span>
-          <span className="ayah-text flex-1" style={textStyle}>
+          <span className="ayah-text quran-text flex-1" style={textStyle}>
             {ayah.text_ar}
           </span>
         </div>
@@ -108,7 +108,7 @@ const Ayah = memo(function Ayah({
       <span className="ayah-number" aria-hidden="true">
         {ayah.ayah_number}
       </span>
-      <span className="ayah-text" style={textStyle}>
+      <span className="ayah-text quran-text" style={textStyle}>
         {ayah.text_ar}
       </span>
       {showAudioButton && (

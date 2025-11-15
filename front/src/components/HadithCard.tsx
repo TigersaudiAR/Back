@@ -24,7 +24,7 @@ function HadithCard({ hadith }: Props) {
           {hadith.grade && <span className="badge badge-outline">{hadith.grade}</span>}
         </div>
       </header>
-      <p className="text-sm leading-7 text-gray-100">{hadith.text_ar}</p>
+      <p className="text-sm leading-7 text-gray-100 hadith-text">{hadith.text_ar}</p>
       {topics.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {topics.map((topic) => (

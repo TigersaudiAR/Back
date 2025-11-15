@@ -100,7 +100,7 @@ function TasbihSmart({ item, onComplete }: TasbihSmartProps) {
           </div>
         )}
       </div>
-      <p className="text-sm leading-7 text-gray-200 whitespace-pre-line">{item.text}</p>
+      <p className="text-sm leading-7 text-gray-200 whitespace-pre-line with-tashkeel">{item.text}</p>
       {item.reference && (
         <p className="text-[11px] text-gray-400">المصدر: {item.reference}</p>
       )}
