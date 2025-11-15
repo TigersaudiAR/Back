@@ -37,6 +37,7 @@ const detectSet = (adhkarSets: DhikrSet[]): DhikrSet | null => {
 function AdhkarPage() {
   const [adhkarSets, setAdhkarSets] = useState<DhikrSet[]>([]);
   const [currentSetId, setCurrentSetId] = useState<string | null>(null);
+  const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -85,6 +86,22 @@ function AdhkarPage() {
     return match ?? detectSet(adhkarSets);
   }, [adhkarSets, currentSetId]);
 
+  const handleItemComplete = () => {
+    if (!currentSet) return;
+    const nextIndex = currentItemIndex + 1;
+    if (nextIndex < currentSet.items.length) {
+      setCurrentItemIndex(nextIndex);
+    } else {
+      // Reset to first item when all are complete
+      setCurrentItemIndex(0);
+    }
+  };
+
+  // Reset index when set changes
+  useEffect(() => {
+    setCurrentItemIndex(0);
+  }, [currentSetId]);
+
   return (
     <div className="space-y-6">
       <header className="rounded-3xl border border-primary-light/40 bg-primary-dark/60 p-6 shadow-lg">
@@ -111,11 +128,49 @@ function AdhkarPage() {
           {currentSet.description && (
             <p className="text-xs text-gray-300">{currentSet.description}</p>
           )}
-          <div className="grid gap-6 md:grid-cols-2">
-            {currentSet.items.map((item) => (
-              <TasbihSmart key={item.id} item={item} />
+          
+          {/* Progress indicator */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            {currentSet.items.map((_, idx) => (
+              <div
+                key={idx}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === currentItemIndex 
+                    ? 'w-8 bg-accent' 
+                    : idx < currentItemIndex 
+                      ? 'w-2 bg-green-500' 
+                      : 'w-2 bg-gray-600'
+                }`}
+              />
             ))}
           </div>
+
+          {/* Current dhikr card in focus */}
+          <div className="max-w-2xl mx-auto">
+            <TasbihSmart 
+              key={currentSet.items[currentItemIndex].id} 
+              item={currentSet.items[currentItemIndex]} 
+              onComplete={handleItemComplete}
+            />
+          </div>
+
+          {/* All items grid for reference */}
+          <details className="mt-8">
+            <summary className="text-center text-sm text-gray-400 cursor-pointer hover:text-accent">
+              عرض جميع الأذكار ({currentSet.items.length})
+            </summary>
+            <div className="grid gap-6 md:grid-cols-2 mt-4">
+              {currentSet.items.map((item, idx) => (
+                <div 
+                  key={item.id}
+                  onClick={() => setCurrentItemIndex(idx)}
+                  className="cursor-pointer"
+                >
+                  <TasbihSmart item={item} />
+                </div>
+              ))}
+            </div>
+          </details>
         </section>
       )}
     </div>
