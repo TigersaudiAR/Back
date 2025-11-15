@@ -1,5 +1,5 @@
 import type { Ayah, Surah } from "../types/index.js";
-import { getSurahAyat, getSurahIndex } from "./dataService.js";
+import { getAyat, getSurahAyat, getSurahIndex } from "./dataService.js";
 
 let cachedSurahIndex: Surah[] | null = null;
 type CachedAyatEntry = {
@@ -9,8 +9,21 @@ type CachedAyatEntry = {
 
 const cachedAyat = new Map<number, CachedAyatEntry>();
 const FALLBACK_TTL_MS = 5 * 60 * 1000;
+const API_BASE = "https://api.alquran.cloud/v1";
 
 export const FAILED_AYAT_RETRY_DELAY_MS = 60_000;
+
+// Helper function to map API response to Ayah type
+function mapAyah(surahId: number, item: any): Ayah {
+  return {
+    surah_id: surahId,
+    ayah_number: item.numberInSurah || item.number,
+    text_ar: item.text || "",
+    juz: item.juz,
+    page: item.page,
+    hizb: item.hizbQuarter
+  };
+}
 
 export async function fetchSurahIndex(): Promise<{ surahs: Surah[]; fromCache: boolean }> {
   if (cachedSurahIndex) {
@@ -32,6 +45,18 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     }
   }
 
+  // Use local data primarily
+  try {
+    const localAyat = getSurahAyat(surahId);
+    if (localAyat && localAyat.length > 0) {
+      cachedAyat.set(surahId, { ayat: localAyat, expiresAt: null });
+      return { ayat: localAyat, fromCache: false };
+    }
+  } catch (localError) {
+    console.warn(`Local surah ${surahId} not available, trying remote`, localError);
+  }
+
+  // Fallback to remote API
   try {
     const response = await fetch(`${API_BASE}/surah/${surahId}/ar`);
     if (!response.ok) {
@@ -48,7 +73,7 @@ export async function fetchSurahAyat(surahId: number): Promise<{ ayat: Ayah[]; f
     return { ayat: verses, fromCache: false };
   } catch (error) {
     console.error(`Remote surah ${surahId} failed`, error);
-    const fallback = getAyat().filter((item) => item.surah_id === surahId);
+    const fallback = getAyat().filter((item: Ayah) => item.surah_id === surahId);
     if (!fallback.length) {
       console.warn(`No local fallback for surah ${surahId}`);
       cachedAyat.delete(surahId);

@@ -1,0 +1,212 @@
+{
+  "tracks": [
+    {
+      "id": "track-juz-30",
+      "name": "حفظ الجزء الثلاثين",
+      "name_en": "Memorizing Juz 30",
+      "description": "برنامج حفظ الجزء الثلاثين من القرآن الكريم",
+      "level": "beginner",
+      "total_surahs": 37,
+      "estimated_days": 90,
+      "daily_commitment": "15-20 دقيقة يومياً",
+      "surahs": [114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78]
+    },
+    {
+      "id": "track-juz-29",
+      "name": "حفظ الجزء التاسع والعشرين",
+      "name_en": "Memorizing Juz 29",
+      "description": "برنامج حفظ الجزء التاسع والعشرين من القرآن الكريم",
+      "level": "intermediate",
+      "total_surahs": 11,
+      "estimated_days": 120,
+      "daily_commitment": "20-30 دقيقة يومياً",
+      "surahs": [78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67]
+    },
+    {
+      "id": "track-complete-quran",
+      "name": "حفظ القرآن الكريم كاملاً",
+      "name_en": "Memorizing Complete Quran",
+      "description": "برنامج شامل لحفظ القرآن الكريم كاملاً بطريقة منظمة ومتدرجة",
+      "level": "advanced",
+      "total_surahs": 114,
+      "estimated_days": 730,
+      "daily_commitment": "ساعة يومياً على الأقل",
+      "method": "البدء من الجزء الثلاثين ثم التدرج إلى الأجزاء الأولى"
+    }
+  ],
+  "review_schedules": [
+    {
+      "id": "schedule-basic",
+      "name": "جدول المراجعة الأساسي",
+      "name_en": "Basic Review Schedule",
+      "description": "جدول مراجعة بسيط للمبتدئين",
+      "intervals": [
+        { "day": 1, "description": "مراجعة الحفظ الجديد 3 مرات" },
+        { "day": 2, "description": "مراجعة حفظ الأمس مرة واحدة" },
+        { "day": 7, "description": "مراجعة حفظ الأسبوع" },
+        { "day": 30, "description": "مراجعة حفظ الشهر" },
+        { "day": 90, "description": "مراجعة شاملة" }
+      ]
+    },
+    {
+      "id": "schedule-advanced",
+      "name": "جدول المراجعة المتقدم",
+      "name_en": "Advanced Review Schedule",
+      "description": "جدول مراجعة مكثف للطلاب المتقدمين",
+      "intervals": [
+        { "day": 1, "description": "مراجعة الحفظ الجديد 5 مرات" },
+        { "day": 2, "description": "مراجعة حفظ الأمس 3 مرات" },
+        { "day": 3, "description": "مراجعة حفظ أول أمس مرة واحدة" },
+        { "day": 7, "description": "مراجعة حفظ الأسبوع مرتين" },
+        { "day": 14, "description": "مراجعة حفظ الأسبوعين" },
+        { "day": 30, "description": "مراجعة حفظ الشهر" },
+        { "day": 60, "description": "مراجعة حفظ الشهرين" },
+        { "day": 90, "description": "مراجعة شاملة ربع سنوية" }
+      ]
+    }
+  ],
+  "quiz_templates": [
+    {
+      "id": "quiz-completion",
+      "name": "إكمال الآية",
+      "name_en": "Complete the Verse",
+      "description": "اختبار إكمال الآية من بدايتها",
+      "type": "completion",
+      "difficulty": "easy"
+    },
+    {
+      "id": "quiz-order",
+      "name": "ترتيب الآيات",
+      "name_en": "Order the Verses",
+      "description": "اختبار ترتيب الآيات حسب تسلسلها في السورة",
+      "type": "ordering",
+      "difficulty": "medium"
+    },
+    {
+      "id": "quiz-identification",
+      "name": "تحديد السورة",
+      "name_en": "Identify the Surah",
+      "description": "تحديد السورة التي تنتمي إليها الآية",
+      "type": "identification",
+      "difficulty": "medium"
+    },
+    {
+      "id": "quiz-recall",
+      "name": "استذكار كامل",
+      "name_en": "Complete Recall",
+      "description": "تسميع السورة كاملة من الذاكرة",
+      "type": "recall",
+      "difficulty": "hard"
+    }
+  ],
+  "achievements": [
+    {
+      "id": "achievement-first-surah",
+      "name": "السورة الأولى",
+      "name_en": "First Surah",
+      "description": "حفظ أول سورة كاملة",
+      "icon": "🎯",
+      "points": 100,
+      "requirement": {
+        "type": "surahs_memorized",
+        "count": 1
+      }
+    },
+    {
+      "id": "achievement-juz-30",
+      "name": "الجزء الثلاثون",
+      "name_en": "Juz 30 Master",
+      "description": "إتمام حفظ الجزء الثلاثين كاملاً",
+      "icon": "⭐",
+      "points": 1000,
+      "requirement": {
+        "type": "juz_complete",
+        "juz": 30
+      }
+    },
+    {
+      "id": "achievement-consistent-week",
+      "name": "أسبوع متواصل",
+      "name_en": "Consistent Week",
+      "description": "المراجعة يومياً لمدة أسبوع",
+      "icon": "🔥",
+      "points": 200,
+      "requirement": {
+        "type": "streak_days",
+        "count": 7
+      }
+    },
+    {
+      "id": "achievement-consistent-month",
+      "name": "شهر متواصل",
+      "name_en": "Consistent Month",
+      "description": "المراجعة يومياً لمدة شهر",
+      "icon": "💪",
+      "points": 500,
+      "requirement": {
+        "type": "streak_days",
+        "count": 30
+      }
+    },
+    {
+      "id": "achievement-quiz-master",
+      "name": "خبير الاختبارات",
+      "name_en": "Quiz Master",
+      "description": "اجتياز 50 اختبار بنجاح",
+      "icon": "🏆",
+      "points": 300,
+      "requirement": {
+        "type": "quizzes_passed",
+        "count": 50
+      }
+    },
+    {
+      "id": "achievement-perfect-score",
+      "name": "النتيجة الكاملة",
+      "name_en": "Perfect Score",
+      "description": "الحصول على 100% في 10 اختبارات",
+      "icon": "💯",
+      "points": 400,
+      "requirement": {
+        "type": "perfect_quizzes",
+        "count": 10
+      }
+    },
+    {
+      "id": "achievement-half-quran",
+      "name": "نصف القرآن",
+      "name_en": "Half Quran",
+      "description": "إتمام حفظ 15 جزءاً",
+      "icon": "📖",
+      "points": 5000,
+      "requirement": {
+        "type": "ajza_memorized",
+        "count": 15
+      }
+    },
+    {
+      "id": "achievement-complete-quran",
+      "name": "حافظ القرآن الكريم",
+      "name_en": "Quran Hafidh",
+      "description": "إتمام حفظ القرآن الكريم كاملاً",
+      "icon": "👑",
+      "points": 10000,
+      "requirement": {
+        "type": "complete_quran",
+        "count": 1
+      }
+    }
+  ],
+  "tips": [
+    "ابدأ بالسور القصيرة من الجزء الثلاثين",
+    "راجع ما حفظته بشكل يومي",
+    "استخدم التكرار لتثبيت الحفظ",
+    "احفظ في أوقات الصفاء الذهني",
+    "اربط الآيات بمعانيها لتسهيل الحفظ",
+    "استمع لقراء مشهورين لتحسين التلاوة",
+    "احفظ مع مجموعة للتشجيع والمراجعة",
+    "حدد هدفاً يومياً واقعياً والتزم به",
+    "استخدم المصحف نفسه دائماً للحفظ",
+    "ادع الله أن يعينك على الحفظ والمراجعة"
+  ]
+}
