@@ -3,14 +3,14 @@ import { useEffect } from "react";
 
 function QuranLayout() {
   useEffect(() => {
-    document.body.classList.add("overflow-hidden");
+    document.body.classList.add("overflow-hidden", "quran-page");
     return () => {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove("overflow-hidden", "quran-page");
     };
   }, []);
 
   return (
-    <div className="relative min-h-[100dvh] w-full bg-[radial-gradient(circle_at_top,_rgba(18,70,54,0.65),_#020605_70%)] text-white">
+    <div className="relative flex min-h-[100dvh] w-full flex-col text-white">
       <Outlet />
     </div>
   );

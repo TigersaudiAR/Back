@@ -160,135 +160,54 @@ function QuranModernPage() {
 
   const recitations = data?.recitations ?? [];
 
-  useEffect(() => {
-    activeReciterRef.current = null;
-    setActiveAyah(undefined);
-  }, [currentSurahId]);
-
-  const handleAudioProgress = useCallback(
-    (progress: AudioProgressPayload) => {
-      if (!progress) return;
-      const reciterChanged = activeReciterRef.current && activeReciterRef.current !== progress.reciterId;
-      activeReciterRef.current = progress.reciterId;
-
-      if (typeof progress.ayahNumber === "number" && ayahNumbers.has(progress.ayahNumber)) {
-        setActiveAyah(progress.ayahNumber);
-        return;
-      }
-
-      if (reciterChanged) {
-        setActiveAyah(undefined);
-      }
-    },
-    [ayahNumbers]
-  );
-
-  const handleToggleControls = useCallback(() => setControlsOpen((prev) => !prev), []);
-
-  const handleShowTafsir = useCallback(() => {
-    const ensureAnchor = (ayahNumber: number) => {
-      const element = document.querySelector<HTMLElement>(`[data-ayah-id="${ayahNumber}"]`);
-      if (element) {
-        setAnchorRect(element.getBoundingClientRect());
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    };
-
-    if (!activeAyah && ayat[0]) {
-      const fallbackAyah = ayat[0];
-      setActiveAyah(fallbackAyah.ayah_number);
-      ensureAnchor(fallbackAyah.ayah_number);
-    }
-
-    if (activeAyah && !anchorRect) {
-      ensureAnchor(activeAyah);
-    }
-    setControlsOpen(false);
-  }, [activeAyah, anchorRect, ayat]);
-
-  const handleSelectAyah = useCallback((ayah: Ayah, rect: DOMRect | null) => {
-    setActiveAyah(ayah.ayah_number);
-    setAnchorRect(rect);
-  }, []);
-
-  const handleSwipe = useCallback(
-    (direction: "next" | "prev") => {
-      if (direction === "next") {
-        goNext();
-        return;
-      }
-      goPrev();
-    },
-    [goNext, goPrev]
-  );
-
-  const handleNavigateToClassic = useCallback(() => {
-    setControlsOpen(false);
-    navigate(`/quran/classic${buildQueryForSurah(currentSurahId)}`);
-  }, [buildQueryForSurah, currentSurahId, navigate]);
-
-  const handleOpenSearch = useCallback(() => {
-    setControlsOpen(true);
-    setPendingSearchFocus(true);
-  }, []);
-
-  const handleSelectSurah = useCallback(
-    (id: number) => {
-      setCurrentSurahId(id);
-      navigate(buildQueryForSurah(id));
-      setControlsOpen(false);
-    },
-    [buildQueryForSurah, navigate]
-  );
-
-  const handlePrevFromToolbar = useCallback(() => {
-    goPrev();
-    setControlsOpen(false);
-  }, [goPrev]);
-
-  const handleNextFromToolbar = useCallback(() => {
-    goNext();
-    setControlsOpen(false);
-  }, [goNext]);
-
-  const handleSearchFocusHandled = useCallback(() => setPendingSearchFocus(false), []);
-
-  const handleCloseTafsir = useCallback(() => setActiveAyah(undefined), []);
-
-  const handleRetry = useCallback(() => {
-    void refresh(currentSurahId).catch(() => undefined);
-  }, [currentSurahId, refresh]);
-
-  return (
-    <div className="relative flex min-h-[100dvh] w-full flex-col bg-primary-dark text-gray-100">
-      <TopBar surah={surah} onToggleMode={handleNavigateToClassic} onOpenSearch={handleOpenSearch} />
-      <div className="flex-1 pt-16">
-        {data?.message && (
-          <div className="mx-auto my-4 max-w-4xl rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-xs text-amber-200">
-            {data.message}
-          </div>
-        )}
-        {loading && (
-          <div className="flex h-full items-center justify-center text-sm text-gray-300">جاري تحميل الآيات...</div>
-        )}
-        {!loading && error && (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-sm text-red-300">
+  const placeholderContent = loading
+    ? <span className="quran-status-text">جاري تحميل الآيات...</span>
+    : error
+      ? (
+          <div className="quran-status-error">
             <p>{error}</p>
             <button className="btn btn-sm" onClick={handleRetry}>
               إعادة المحاولة
             </button>
           </div>
-        )}
-        {!loading && !error && ayat.length > 0 && (
-          <QuranCanvas
-            surah={surah}
-            ayat={ayat}
-            activeAyah={activeAyah}
-            onSelectAyah={handleSelectAyah}
-            onSwipe={handleSwipe}
-            fontSize={fontSize}
-          />
-        )}
+        )
+      : ayat.length === 0
+        ? <span className="quran-status-text">لا توجد آيات متاحة لهذه السورة حالياً.</span>
+        : null;
+
+  return (
+    <div className="relative flex min-h-[100dvh] w-full flex-col text-gray-100" onClick={() => show()}>
+      <TopBar
+        surah={surah}
+        onToggleMode={() => navigate(`/quran/classic?surah=${currentSurahId}`)}
+        onOpenSearch={() => show()}
+      />
+      <div className="relative flex flex-1 flex-col items-center gap-6 py-6">
+        {data?.message && <div className="quran-alert">{data.message}</div>}
+        <QuranCanvas
+          ayat={ayat}
+          activeAyah={activeAyah}
+          onSelectAyah={(ayah) => {
+            setActiveAyah(ayah.ayah_number);
+            try {
+              const selection = window.getSelection();
+              if (selection && selection.rangeCount > 0) {
+                const rect = selection.getRangeAt(0).getBoundingClientRect();
+                setAnchorRect(rect ?? null);
+              } else {
+                setAnchorRect(null);
+              }
+            } catch (err) {
+              console.warn("Failed to read selection", err);
+              setAnchorRect(null);
+            }
+            show();
+          }}
+          onSwipe={(direction) => (direction === "next" ? goNext() : goPrev())}
+          fontSize={fontSize}
+          surahName={surah?.name_arabic}
+          placeholder={placeholderContent}
+        />
       </div>
       <HiddenToolbar
         open={controlsOpen}
