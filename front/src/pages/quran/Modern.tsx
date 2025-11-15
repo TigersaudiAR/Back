@@ -304,7 +304,7 @@ function QuranModernPage() {
           recitations={recitations.map((recitation) => ({ ...recitation, surah_id: currentSurahId }))}
           onProgress={handleAudioProgress}
         />
-      </div>
+      )}
       <HiddenToolbar
         open={controlsOpen}
         onToggle={handleToggleControls}
