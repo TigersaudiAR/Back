@@ -44,24 +44,40 @@ router.get("/", async (req, res) => {
   const rawSurah = Number(req.query.surah);
   const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
-  if (Number.isNaN(rawSurah) && !slugQuery) {
-    return res.json(SURAH_LIST);
-  }
-
   try {
-    const surahIndex = [...SURAH_LIST];
+    // Fetch surah index
+    const indexResult = await fetchSurahIndex();
+    const surahIndex = ensureSurahListSlugs(indexResult.surahs);
 
-    const surah = indexResult.surahs.find((item) => item.id === surahId) ?? null;
-    const tafsir = getTafsirForSurah(surahId);
-
-    if (!surah) {
-      surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
-      surahId = surah?.id;
+    // If no surah specified, return the index
+    if (Number.isNaN(rawSurah) && !slugQuery) {
+      return res.json({ surahs: surahIndex });
     }
 
-    if (!surah || typeof surahId !== "number") {
+    // Determine which surah to fetch
+    let surahId: number | undefined;
+    if (slugQuery) {
+      const foundBySlug = findSurahBySlug(surahIndex, slugQuery);
+      surahId = foundBySlug?.id;
+    } else if (!Number.isNaN(rawSurah)) {
+      surahId = rawSurah;
+    }
+
+    // Default to first surah if not found
+    if (!surahId) {
+      const firstSurah = surahIndex[0];
+      surahId = firstSurah?.id ?? 1;
+    }
+
+    // Fetch the surah data
+    const surah = surahIndex.find((item) => item.id === surahId);
+    if (!surah) {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
+
+    // Fetch ayat and tafsir
+    const ayatResult = await fetchSurahAyat(surahId);
+    const tafsirList = getTafsirForSurah(surahId);
 
     res.json({
       surah,
