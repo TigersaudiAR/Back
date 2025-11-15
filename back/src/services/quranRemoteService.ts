@@ -1,5 +1,8 @@
 import type { Ayah, Surah } from "../types/index.js";
-import { getSurahAyat, getSurahIndex } from "./dataService.js";
+import { getAyat, getSurahAyat, getSurahIndex } from "./dataService.js";
+
+// API configuration - using a public Quran API
+const API_BASE = "https://api.alquran.cloud/v1";
 
 let cachedSurahIndex: Surah[] | null = null;
 type CachedAyatEntry = {
@@ -11,6 +14,18 @@ const cachedAyat = new Map<number, CachedAyatEntry>();
 const FALLBACK_TTL_MS = 5 * 60 * 1000;
 
 export const FAILED_AYAT_RETRY_DELAY_MS = 60_000;
+
+// Helper function to map API response to our Ayah type
+function mapAyah(surahId: number, apiAyah: any): Ayah {
+  return {
+    surah_id: surahId,
+    ayah_number: apiAyah.numberInSurah || apiAyah.number,
+    text_ar: apiAyah.text || "",
+    page: apiAyah.page,
+    juz: apiAyah.juz,
+    hizb: apiAyah.hizbQuarter
+  };
+}
 
 export async function fetchSurahIndex(): Promise<{ surahs: Surah[]; fromCache: boolean }> {
   if (cachedSurahIndex) {

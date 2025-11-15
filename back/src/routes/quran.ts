@@ -44,24 +44,37 @@ router.get("/", async (req, res) => {
   const rawSurah = Number(req.query.surah);
   const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
+  // Get surah index first
+  const indexResult = await fetchSurahIndex();
+  const surahIndex = ensureSurahListSlugs(indexResult.surahs);
+
   if (Number.isNaN(rawSurah) && !slugQuery) {
-    return res.json(SURAH_LIST);
+    return res.json({ surahs: surahIndex });
   }
 
   try {
-    const surahIndex = [...SURAH_LIST];
-
-    const surah = indexResult.surahs.find((item) => item.id === surahId) ?? null;
-    const tafsir = getTafsirForSurah(surahId);
-
-    if (!surah) {
+    // Determine which surah to fetch
+    let surahId: number;
+    let surah = slugQuery ? findSurahBySlug(surahIndex, slugQuery) : null;
+    
+    if (surah) {
+      surahId = surah.id;
+    } else if (!Number.isNaN(rawSurah)) {
+      surahId = rawSurah;
+      surah = surahIndex.find((item) => item.id === surahId) ?? null;
+    } else {
+      // Default to Al-Fatiha
       surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
-      surahId = surah?.id;
+      surahId = surah?.id ?? 1;
     }
 
     if (!surah || typeof surahId !== "number") {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
+
+    // Fetch ayat and tafsir
+    const ayatResult = await fetchSurahAyat(surahId);
+    const tafsirList = getTafsirForSurah(surahId);
 
     res.json({
       surah,
