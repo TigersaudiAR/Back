@@ -5,7 +5,6 @@ import path from "path";
 
 import { authRouter } from "./routes/auth.js";
 import { quranRouter } from "./routes/quran.js";
-import { quranPagesRouter } from "./routes/quran-pages.js";
 import { adhkarRouter } from "./routes/adhkar.js";
 import { halaqatRouter } from "./routes/halaqat.js";
 import { hadithRouter } from "./routes/hadith.js";
