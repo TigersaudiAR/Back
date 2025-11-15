@@ -12,6 +12,10 @@ import { scholarsRouter } from "./routes/scholars.js";
 import { prayersRouter } from "./routes/prayers.js";
 import { usersRouter } from "./routes/users.js";
 import islamicLearningRouter from "./routes/islamic-learning.js";
+import { nisukRouter } from "./routes/nisuk.js";
+import { lessonsRouter } from "./routes/lessons.js";
+import { memorizationRouter } from "./routes/memorization.js";
+import { quranPagesRouter } from "./routes/quran-pages.js";
 
 const app = express();
 
@@ -33,6 +37,10 @@ app.use("/api/scholars", scholarsRouter);
 app.use("/api/prayers", prayersRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/islamic-learning", islamicLearningRouter);
+app.use("/api/nisuk", nisukRouter);
+app.use("/api/lessons", lessonsRouter);
+app.use("/api/memorization", memorizationRouter);
+app.use("/api/quran-pages", quranPagesRouter);
 
 const port = Number(process.env.PORT) || 4000;
 

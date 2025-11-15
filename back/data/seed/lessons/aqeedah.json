@@ -1,0 +1,175 @@
+[
+  {
+    "id": "aqeedah-1",
+    "category": "aqeedah",
+    "level": "beginner",
+    "order": 1,
+    "title_ar": "أركان الإيمان الستة",
+    "title_en": "The Six Pillars of Faith",
+    "description_ar": "تعلم أركان الإيمان الستة التي يجب على كل مسلم الإيمان بها: الإيمان بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، والقدر خيره وشره",
+    "description_en": "Learn the six pillars of faith that every Muslim must believe in: belief in Allah, His angels, His books, His messengers, the Last Day, and divine decree both good and bad",
+    "content": {
+      "sections": [
+        {
+          "title_ar": "الإيمان بالله",
+          "title_en": "Belief in Allah",
+          "text_ar": "هو التصديق الجازم بوجود الله تعالى ربا وإلها ومعبودا، واحدا لا شريك له، والإيمان بأسمائه وصفاته",
+          "text_en": "It is the firm belief in the existence of Allah as Lord, God, and the One worthy of worship, with no partners, and belief in His names and attributes"
+        },
+        {
+          "title_ar": "الإيمان بالملائكة",
+          "title_en": "Belief in Angels",
+          "text_ar": "الملائكة مخلوقات نورانية، خلقهم الله لطاعته، لا يعصون الله ما أمرهم ويفعلون ما يؤمرون. منهم جبريل وميكائيل وإسرافيل",
+          "text_en": "Angels are beings of light created by Allah to worship Him. They do not disobey Allah and do what they are commanded. Among them are Jibreel, Mikaa'eel, and Israafeel"
+        },
+        {
+          "title_ar": "الإيمان بالكتب",
+          "title_en": "Belief in Divine Books",
+          "text_ar": "الإيمان بجميع الكتب التي أنزلها الله على رسله. منها التوراة والإنجيل والزبور والقرآن الكريم وهو خاتمها وأعظمها",
+          "text_en": "Belief in all books revealed by Allah to His messengers, including the Torah, Gospel, Psalms, and the Noble Quran which is the final and greatest of them"
+        },
+        {
+          "title_ar": "الإيمان بالرسل",
+          "title_en": "Belief in Messengers",
+          "text_ar": "الإيمان بجميع الرسل الذين أرسلهم الله. أولهم نوح وآخرهم محمد صلى الله عليه وسلم. وأولو العزم خمسة: نوح وإبراهيم وموسى وعيسى ومحمد",
+          "text_en": "Belief in all messengers sent by Allah. The first was Noah and the last was Muhammad ﷺ. The five greatest messengers are Noah, Abraham, Moses, Jesus, and Muhammad"
+        },
+        {
+          "title_ar": "الإيمان باليوم الآخر",
+          "title_en": "Belief in the Last Day",
+          "text_ar": "الإيمان بيوم القيامة وما فيه من بعث وحساب وميزان وصراط وجنة ونار. وهو اليوم الذي يجازي الله فيه الناس بأعمالهم",
+          "text_en": "Belief in the Day of Resurrection and what it contains: resurrection, judgment, scale, bridge, Paradise, and Hell. It is the day when Allah will recompense people for their deeds"
+        },
+        {
+          "title_ar": "الإيمان بالقدر",
+          "title_en": "Belief in Divine Decree",
+          "text_ar": "الإيمان بأن الله علم كل شيء وكتبه وشاءه وخلقه. ما شاء الله كان وما لم يشأ لم يكن. والإيمان بالقدر خيره وشره حلوه ومره",
+          "text_en": "Belief that Allah knows, wrote, willed, and created everything. What Allah wills happens, and what He does not will does not happen. Belief in divine decree, both good and bad, sweet and bitter"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "question_ar": "كم عدد أركان الإيمان؟",
+        "question_en": "How many pillars of faith are there?",
+        "options": ["أربعة", "خمسة", "ستة", "سبعة"],
+        "correct_answer": 2,
+        "explanation_ar": "أركان الإيمان ستة كما ذكرها النبي صلى الله عليه وسلم في حديث جبريل"
+      },
+      {
+        "question_ar": "من هو خاتم الأنبياء والمرسلين؟",
+        "question_en": "Who is the seal of the prophets and messengers?",
+        "options": ["موسى عليه السلام", "عيسى عليه السلام", "محمد صلى الله عليه وسلم", "إبراهيم عليه السلام"],
+        "correct_answer": 2,
+        "explanation_ar": "محمد صلى الله عليه وسلم هو خاتم الأنبياء والمرسلين، لا نبي بعده"
+      }
+    ],
+    "points": 10,
+    "duration_minutes": 15
+  },
+  {
+    "id": "aqeedah-2",
+    "category": "aqeedah",
+    "level": "beginner",
+    "order": 2,
+    "title_ar": "أركان الإسلام الخمسة",
+    "title_en": "The Five Pillars of Islam",
+    "description_ar": "تعلم أركان الإسلام الخمسة: الشهادتان، والصلاة، والزكاة، والصيام، والحج",
+    "description_en": "Learn the five pillars of Islam: testimony of faith, prayer, zakat, fasting, and pilgrimage",
+    "content": {
+      "sections": [
+        {
+          "title_ar": "الشهادتان",
+          "title_en": "The Two Testimonies",
+          "text_ar": "شهادة أن لا إله إلا الله وأن محمدا رسول الله. هما مفتاح الدخول في الإسلام",
+          "text_en": "Testifying that there is no god but Allah and that Muhammad is the Messenger of Allah. They are the key to entering Islam"
+        },
+        {
+          "title_ar": "الصلاة",
+          "title_en": "Prayer",
+          "text_ar": "إقام الصلاة خمس مرات في اليوم والليلة. الصلاة عماد الدين وهي الركن الثاني من أركان الإسلام",
+          "text_en": "Establishing prayer five times a day and night. Prayer is the pillar of religion and the second pillar of Islam"
+        },
+        {
+          "title_ar": "الزكاة",
+          "title_en": "Zakat",
+          "text_ar": "إخراج جزء من المال للفقراء والمساكين. تجب على من ملك النصاب وحال عليه الحول",
+          "text_en": "Giving a portion of wealth to the poor and needy. Obligatory for those who possess the minimum threshold after a lunar year"
+        },
+        {
+          "title_ar": "الصيام",
+          "title_en": "Fasting",
+          "text_ar": "صيام شهر رمضان، وهو الإمساك عن الطعام والشراب وسائر المفطرات من طلوع الفجر إلى غروب الشمس",
+          "text_en": "Fasting the month of Ramadan, abstaining from food, drink, and other invalidators from dawn to sunset"
+        },
+        {
+          "title_ar": "الحج",
+          "title_en": "Hajj",
+          "text_ar": "حج بيت الله الحرام لمن استطاع إليه سبيلا. يجب مرة واحدة في العمر",
+          "text_en": "Pilgrimage to the Sacred House of Allah for those who are able. Obligatory once in a lifetime"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "question_ar": "ما هو الركن الأول من أركان الإسلام؟",
+        "question_en": "What is the first pillar of Islam?",
+        "options": ["الصلاة", "الشهادتان", "الزكاة", "الصيام"],
+        "correct_answer": 1,
+        "explanation_ar": "الشهادتان هما الركن الأول من أركان الإسلام"
+      },
+      {
+        "question_ar": "كم عدد الصلوات المفروضة في اليوم والليلة؟",
+        "question_en": "How many obligatory prayers are there in a day and night?",
+        "options": ["ثلاث", "أربع", "خمس", "ست"],
+        "correct_answer": 2,
+        "explanation_ar": "الصلوات المفروضة خمس في اليوم والليلة: الفجر والظهر والعصر والمغرب والعشاء"
+      }
+    ],
+    "points": 10,
+    "duration_minutes": 15
+  },
+  {
+    "id": "aqeedah-3",
+    "category": "aqeedah",
+    "level": "intermediate",
+    "order": 3,
+    "title_ar": "التوحيد وأقسامه",
+    "title_en": "Tawheed and Its Categories",
+    "description_ar": "فهم التوحيد وأقسامه الثلاثة: توحيد الربوبية، وتوحيد الألوهية، وتوحيد الأسماء والصفات",
+    "description_en": "Understanding Tawheed and its three categories: Lordship, Worship, and Names and Attributes",
+    "content": {
+      "sections": [
+        {
+          "title_ar": "توحيد الربوبية",
+          "title_en": "Tawheed Ar-Rububiyyah",
+          "text_ar": "إفراد الله تعالى بأفعاله، كالخلق والرزق والإحياء والإماتة والتدبير",
+          "text_en": "Singling out Allah in His actions, such as creation, provision, giving life, causing death, and management"
+        },
+        {
+          "title_ar": "توحيد الألوهية",
+          "title_en": "Tawheed Al-Uluhiyyah",
+          "text_ar": "إفراد الله تعالى بأفعال العباد التعبدية، كالدعاء والنذر والذبح والاستغاثة",
+          "text_en": "Singling out Allah in acts of worship performed by servants, such as supplication, vows, sacrifice, and seeking help"
+        },
+        {
+          "title_ar": "توحيد الأسماء والصفات",
+          "title_en": "Tawheed Al-Asma Was-Sifat",
+          "text_ar": "إثبات ما أثبته الله لنفسه من الأسماء والصفات من غير تحريف ولا تعطيل ولا تكييف ولا تمثيل",
+          "text_en": "Affirming what Allah has affirmed for Himself of names and attributes without distortion, denial, asking how, or resemblance"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "question_ar": "كم عدد أقسام التوحيد؟",
+        "question_en": "How many categories of Tawheed are there?",
+        "options": ["قسمان", "ثلاثة أقسام", "أربعة أقسام", "خمسة أقسام"],
+        "correct_answer": 1,
+        "explanation_ar": "أقسام التوحيد ثلاثة: الربوبية والألوهية والأسماء والصفات"
+      }
+    ],
+    "points": 15,
+    "duration_minutes": 20
+  }
+]

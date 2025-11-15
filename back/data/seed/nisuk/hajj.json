@@ -1,0 +1,257 @@
+[
+  {
+    "id": "hajj-1",
+    "order": 1,
+    "name_ar": "الإحرام",
+    "name_en": "Ihram",
+    "description_ar": "النية والتلبية من الميقات. يستحب الاغتسال والتطيب والتنظف قبل الإحرام. ثم يلبي المحرم بقوله: لبيك اللهم بحج، لبيك لبيك لا شريك لك لبيك، إن الحمد والنعمة لك والملك، لا شريك لك",
+    "description_en": "The intention and Talbiyah from the Miqat. It is recommended to perform Ghusl, apply perfume, and clean oneself before entering Ihram. Then the pilgrim says: 'Labbayk Allahumma bi-Hajj' (Here I am, O Allah, for Hajj)",
+    "requirements": [
+      "الاغتسال",
+      "التطيب",
+      "لبس ثياب الإحرام",
+      "النية",
+      "التلبية"
+    ],
+    "dua": "لبيك اللهم لبيك، لبيك لا شريك لك لبيك، إن الحمد والنعمة لك والملك، لا شريك لك",
+    "location": "الميقات",
+    "time": "8 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/ihram"
+  },
+  {
+    "id": "hajj-2",
+    "order": 2,
+    "name_ar": "يوم التروية",
+    "name_en": "Day of Tarwiyah",
+    "description_ar": "اليوم الثامن من ذي الحجة. يتوجه الحجاج إلى منى ويبيتون فيها. يصلون بها الظهر والعصر والمغرب والعشاء وفجر يوم عرفة قصراً من غير جمع",
+    "description_en": "The 8th day of Dhul-Hijjah. Pilgrims head to Mina and spend the night there. They pray Dhuhr, Asr, Maghrib, Isha, and Fajr of the Day of Arafah, shortening prayers without combining",
+    "requirements": [
+      "التوجه إلى منى",
+      "الصلاة بمنى",
+      "المبيت بمنى"
+    ],
+    "dua": "اللهم اجعلها حجة مبرورة وذنبا مغفورا",
+    "location": "منى",
+    "time": "8 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/mina"
+  },
+  {
+    "id": "hajj-3",
+    "order": 3,
+    "name_ar": "الوقوف بعرفة",
+    "name_en": "Standing at Arafah",
+    "description_ar": "الركن الأعظم من أركان الحج. يتوجه الحجاج بعد طلوع شمس يوم التاسع من ذي الحجة إلى عرفة. الوقوف بعرفة من زوال الشمس إلى غروبها. يكثر من الدعاء والذكر والاستغفار. قال النبي ﷺ: الحج عرفة",
+    "description_en": "The greatest pillar of Hajj. Pilgrims head to Arafah after sunrise on the 9th of Dhul-Hijjah. Standing at Arafah is from noon until sunset. Increase supplication, remembrance, and seeking forgiveness. The Prophet ﷺ said: 'Hajj is Arafah'",
+    "requirements": [
+      "التواجد بعرفة",
+      "الوقوف من الزوال للغروب",
+      "كثرة الدعاء والذكر"
+    ],
+    "dua": "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير. اللهم اجعلني من عتقائك من النار",
+    "location": "عرفة",
+    "time": "9 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/arafah"
+  },
+  {
+    "id": "hajj-4",
+    "order": 4,
+    "name_ar": "المبيت بمزدلفة",
+    "name_en": "Overnight at Muzdalifah",
+    "description_ar": "بعد غروب شمس يوم عرفة ينصرف الحجاج إلى مزدلفة بسكينة ووقار. يصلي بها المغرب والعشاء جمعاً وقصراً. يبيت بمزدلفة ويصلي الفجر في أول وقتها. يلتقط الحصى لرمي الجمرات (70 حصاة)",
+    "description_en": "After sunset on the Day of Arafah, pilgrims proceed to Muzdalifah with tranquility. They pray Maghrib and Isha combined and shortened. Spend the night at Muzdalifah and pray Fajr at its earliest time. Collect pebbles for stoning the Jamarat (70 pebbles)",
+    "requirements": [
+      "الانصراف من عرفة بعد الغروب",
+      "الصلاة بمزدلفة جمعاً وقصراً",
+      "المبيت بمزدلفة",
+      "جمع الحصى"
+    ],
+    "dua": "اللهم كما وقفتنا فيه فوفقنا لذكرك كما هديتنا واغفر لنا وارحمنا",
+    "location": "مزدلفة",
+    "time": "ليلة 10 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/muzdalifah"
+  },
+  {
+    "id": "hajj-5",
+    "order": 5,
+    "name_ar": "رمي جمرة العقبة",
+    "name_en": "Stoning Jamarat Al-Aqabah",
+    "description_ar": "في يوم النحر (10 ذو الحجة) يرمي الحاج جمرة العقبة الكبرى بسبع حصيات متعاقبات، يكبر مع كل حصاة. يقطع التلبية عند أول حصاة. يستحب أن يكون الرمي قبل الزوال للقادرين",
+    "description_en": "On the Day of Sacrifice (10th Dhul-Hijjah), the pilgrim stones the largest Jamarat (Al-Aqabah) with seven consecutive pebbles, making Takbir with each throw. Stop saying Talbiyah with the first pebble. It is recommended to stone before noon for those able",
+    "requirements": [
+      "رمي سبع حصيات",
+      "التكبير مع كل حصاة",
+      "قطع التلبية"
+    ],
+    "dua": "الله أكبر (مع كل حصاة)",
+    "location": "منى - جمرة العقبة",
+    "time": "10 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/jamarat"
+  },
+  {
+    "id": "hajj-6",
+    "order": 6,
+    "name_ar": "النحر أو الذبح",
+    "name_en": "Sacrifice (Nahr or Dhabh)",
+    "description_ar": "ذبح الهدي (الأضحية) في يوم النحر. واجب على المتمتع والقارن، ومستحب للمفرد. يستحب أن يأكل منها ويهدي ويتصدق. قال تعالى: فَصَلِّ لِرَبِّكَ وَانْحَرْ",
+    "description_en": "Slaughtering the sacrificial animal on the Day of Sacrifice. Obligatory for Tamattu and Qiran pilgrims, recommended for Ifrad. It is recommended to eat from it, gift, and give in charity. Allah says: 'So pray to your Lord and sacrifice'",
+    "requirements": [
+      "ذبح الهدي",
+      "التأكد من الذبح الشرعي"
+    ],
+    "dua": "بسم الله، الله أكبر، اللهم هذا منك ولك، اللهم تقبل مني",
+    "location": "منى أو مكة",
+    "time": "10-13 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/sacrifice"
+  },
+  {
+    "id": "hajj-7",
+    "order": 7,
+    "name_ar": "الحلق أو التقصير",
+    "name_en": "Shaving or Trimming Hair",
+    "description_ar": "حلق شعر الرأس أو تقصيره. الحلق أفضل من التقصير. يحلق الرجل رأسه كله أو يقصر من جميع شعره. المرأة تقصر من شعرها قدر أنملة. بعد الحلق يحل التحلل الأول فيباح كل شيء إلا النساء",
+    "description_en": "Shaving or trimming the head hair. Shaving is better than trimming. Men shave all their head or trim all their hair. Women trim a fingertip's length. After shaving, the first Tahallul occurs, everything becomes permissible except intimate relations",
+    "requirements": [
+      "حلق أو تقصير الشعر",
+      "يكون بعد الرمي والنحر"
+    ],
+    "dua": "اللهم ارحم المحلقين (ثلاثاً) والمقصرين",
+    "location": "منى أو مكة",
+    "time": "10 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/hair"
+  },
+  {
+    "id": "hajj-8",
+    "order": 8,
+    "name_ar": "طواف الإفاضة",
+    "name_en": "Tawaf Al-Ifadah",
+    "description_ar": "ركن من أركان الحج. يطوف الحاج بالبيت سبعة أشواط. يسن الرمل في الأشواط الثلاثة الأولى للرجال والاضطباع في جميع الأشواط. يستلم الحجر الأسود ويقبله إن أمكن أو يشير إليه. بعده يحل التحلل الثاني",
+    "description_en": "A pillar of Hajj. The pilgrim circumambulates the Kaaba seven times. It is Sunnah for men to jog in the first three circuits and to uncover the right shoulder in all circuits. Touch and kiss the Black Stone if possible or point to it. After this, the second Tahallul occurs",
+    "requirements": [
+      "سبعة أشواط حول الكعبة",
+      "البدء من الحجر الأسود",
+      "الطهارة"
+    ],
+    "dua": "بسم الله، الله أكبر. ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقينا عذاب النار",
+    "location": "المسجد الحرام",
+    "time": "10 ذو الحجة وما بعده",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/tawaf-ifadah"
+  },
+  {
+    "id": "hajj-9",
+    "order": 9,
+    "name_ar": "السعي بين الصفا والمروة",
+    "name_en": "Sa'i between Safa and Marwah",
+    "description_ar": "ركن من أركان الحج. يسعى الحاج بين الصفا والمروة سبعة أشواط. يبدأ بالصفا وينتهي بالمروة. الذهاب شوط والعودة شوط آخر. يسن الإسراع بين العلمين الأخضرين للرجال",
+    "description_en": "A pillar of Hajj. The pilgrim walks between Safa and Marwah seven times. Start at Safa and end at Marwah. Going is one circuit, returning is another. It is Sunnah for men to jog between the green markers",
+    "requirements": [
+      "سبعة أشواط",
+      "البدء من الصفا",
+      "الانتهاء بالمروة"
+    ],
+    "dua": "إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ. نبدأ بما بدأ الله به",
+    "location": "المسجد الحرام - المسعى",
+    "time": "بعد طواف الإفاضة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/sai"
+  },
+  {
+    "id": "hajj-10",
+    "order": 10,
+    "name_ar": "المبيت بمنى - أيام التشريق",
+    "name_en": "Overnight at Mina - Days of Tashriq",
+    "description_ar": "المبيت بمنى ليالي أيام التشريق (11 و12 و13 من ذي الحجة). واجب من واجبات الحج. من أراد التعجل فينفر في اليوم الثاني عشر قبل غروب الشمس. من تأخر بات ليلة الثالث عشر ورمى في يومه",
+    "description_en": "Spending nights at Mina during the days of Tashriq (11th, 12th, and 13th of Dhul-Hijjah). An obligation of Hajj. Those who wish to hasten may leave on the 12th before sunset. Those who delay must spend the night of the 13th and stone on that day",
+    "requirements": [
+      "المبيت بمنى",
+      "رمي الجمرات الثلاث"
+    ],
+    "dua": "اللهم اجعله حجاً مبروراً وذنباً مغفوراً وسعياً مشكوراً",
+    "location": "منى",
+    "time": "11-13 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/mina-nights"
+  },
+  {
+    "id": "hajj-11",
+    "order": 11,
+    "name_ar": "رمي الجمرات الثلاث - اليوم الحادي عشر",
+    "name_en": "Stoning the Three Jamarat - 11th Day",
+    "description_ar": "رمي الجمرات الثلاث (الصغرى والوسطى والكبرى) بعد الزوال. كل جمرة بسبع حصيات. يبدأ بالجمرة الصغرى ثم الوسطى ثم العقبة. يدعو بعد الصغرى والوسطى ولا يدعو بعد العقبة",
+    "description_en": "Stoning the three Jamarat (small, middle, and large) after noon. Each Jamrah with seven pebbles. Start with the small Jamrah, then middle, then Aqabah. Supplicate after the small and middle, but not after Aqabah",
+    "requirements": [
+      "رمي الجمرات الثلاث",
+      "21 حصاة",
+      "بعد زوال الشمس"
+    ],
+    "dua": "الله أكبر (مع كل حصاة)",
+    "location": "منى - الجمرات",
+    "time": "11 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/jamarat-days"
+  },
+  {
+    "id": "hajj-12",
+    "order": 12,
+    "name_ar": "رمي الجمرات الثلاث - اليوم الثاني عشر",
+    "name_en": "Stoning the Three Jamarat - 12th Day",
+    "description_ar": "رمي الجمرات الثلاث بنفس الترتيب والكيفية. من أراد التعجل فينفر من منى قبل غروب الشمس. من غربت عليه الشمس وهو بمنى لزمه المبيت والرمي في اليوم الثالث عشر",
+    "description_en": "Stoning the three Jamarat in the same order and manner. Those who wish to hasten should leave Mina before sunset. If the sun sets while still in Mina, staying overnight and stoning on the 13th becomes obligatory",
+    "requirements": [
+      "رمي الجمرات الثلاث",
+      "21 حصاة",
+      "قرار التعجل أو التأخر"
+    ],
+    "dua": "الله أكبر (مع كل حصاة)",
+    "location": "منى - الجمرات",
+    "time": "12 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/jamarat-days"
+  },
+  {
+    "id": "hajj-13",
+    "order": 13,
+    "name_ar": "رمي الجمرات الثلاث - اليوم الثالث عشر (للمتأخرين)",
+    "name_en": "Stoning the Three Jamarat - 13th Day (for those who delayed)",
+    "description_ar": "لمن لم يتعجل وبات ليلة الثالث عشر. رمي الجمرات الثلاث بعد الزوال بنفس الترتيب والكيفية. هذا آخر أيام الرمي",
+    "description_en": "For those who did not hasten and spent the night of the 13th. Stone the three Jamarat after noon in the same order and manner. This is the last day of stoning",
+    "requirements": [
+      "رمي الجمرات الثلاث",
+      "21 حصاة",
+      "بعد زوال الشمس"
+    ],
+    "dua": "الله أكبر (مع كل حصاة)",
+    "location": "منى - الجمرات",
+    "time": "13 ذو الحجة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/jamarat-days"
+  },
+  {
+    "id": "hajj-14",
+    "order": 14,
+    "name_ar": "طواف الوداع",
+    "name_en": "Farewell Tawaf",
+    "description_ar": "آخر نسك في الحج. واجب على كل حاج إلا الحائض والنفساء. يطوف بالبيت سبعة أشواط. يستحب أن يكون آخر عهده بالبيت. يستحب أن يشرب من ماء زمزم ويدعو",
+    "description_en": "The last rite of Hajj. Obligatory for every pilgrim except menstruating and post-natal bleeding women. Circumambulate the Kaaba seven times. It is recommended to make it the last act at the House. It is recommended to drink Zamzam water and supplicate",
+    "requirements": [
+      "سبعة أشواط حول الكعبة",
+      "أن يكون آخر نسك",
+      "الطهارة"
+    ],
+    "dua": "اللهم البيت بيتك والحرم حرمك والأمن أمنك. اللهم إني أسألك من فضلك",
+    "location": "المسجد الحرام",
+    "time": "قبل المغادرة",
+    "nusuk_link": "https://www.nusuk.sa/ar/hajj/tawaf-wada"
+  },
+  {
+    "id": "hajj-15",
+    "order": 15,
+    "name_ar": "زيارة المدينة المنورة (مستحبة)",
+    "name_en": "Visiting Madinah (Recommended)",
+    "description_ar": "زيارة المسجد النبوي الشريف ليست من مناسك الحج لكنها مستحبة. الصلاة في المسجد النبوي بألف صلاة. زيارة قبر النبي ﷺ والسلام عليه. زيارة البقيع وشهداء أحد",
+    "description_en": "Visiting the Prophet's Mosque is not part of Hajj rites but is recommended. A prayer in the Prophet's Mosque equals a thousand prayers. Visiting the Prophet's grave ﷺ and sending greetings. Visiting Baqi and the martyrs of Uhud",
+    "requirements": [
+      "الصلاة في المسجد النبوي",
+      "السلام على النبي ﷺ",
+      "زيارة البقيع"
+    ],
+    "dua": "السلام عليك يا رسول الله، السلام عليك يا نبي الله، السلام عليك يا خير خلق الله",
+    "location": "المدينة المنورة",
+    "time": "قبل أو بعد الحج",
+    "nusuk_link": "https://www.nusuk.sa/ar/visit-madinah"
+  }
+]

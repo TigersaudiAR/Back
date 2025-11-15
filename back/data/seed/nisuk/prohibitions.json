@@ -1,0 +1,172 @@
+[
+  {
+    "id": "prohibition-1",
+    "category": "clothing",
+    "name_ar": "لبس المخيط للرجال",
+    "name_en": "Wearing Stitched Clothing (Men)",
+    "description_ar": "يحرم على الرجل المحرم لبس الثياب المخيطة والمفصلة على البدن كالقميص والسروال والعمامة والطاقية والخفين. يلبس إزاراً ورداء أبيضين غير مخيطين",
+    "description_en": "Men in Ihram are prohibited from wearing stitched and fitted clothing such as shirts, pants, turbans, caps, and socks. They wear unstitched white Izar and Rida",
+    "applies_to": "men",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-2",
+    "category": "clothing",
+    "name_ar": "تغطية الرأس للرجال",
+    "name_en": "Covering the Head (Men)",
+    "description_ar": "يحرم على الرجل المحرم تغطية رأسه بملاصق كالطاقية والعمامة. أما التظلل بالشمسية أو سقف السيارة فجائز",
+    "description_en": "Men in Ihram are prohibited from covering their heads with something attached like caps or turbans. However, shading with an umbrella or car roof is permissible",
+    "applies_to": "men",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-3",
+    "category": "clothing",
+    "name_ar": "تغطية الوجه للمرأة",
+    "name_en": "Covering the Face (Women)",
+    "description_ar": "يحرم على المرأة المحرمة تغطية وجهها بالنقاب أو البرقع. لكن يجوز لها أن تسدل خمارها على وجهها عند مرور الرجال الأجانب",
+    "description_en": "Women in Ihram are prohibited from covering their faces with Niqab or Burqa. However, they may lower their head covering over their face when non-mahram men pass by",
+    "applies_to": "women",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-4",
+    "category": "grooming",
+    "name_ar": "استعمال الطيب",
+    "name_en": "Using Perfume",
+    "description_ar": "يحرم على المحرم استعمال الطيب في البدن أو الثوب بعد الإحرام. أما ما كان قبل الإحرام فلا بأس ببقائه. يشمل ذلك العطور والبخور والصابون المعطر",
+    "description_en": "Those in Ihram are prohibited from using perfume on body or clothing after entering Ihram. What was applied before Ihram may remain. This includes perfumes, incense, and scented soap",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-5",
+    "category": "grooming",
+    "name_ar": "إزالة الشعر",
+    "name_en": "Removing Hair",
+    "description_ar": "يحرم على المحرم إزالة شعر الرأس أو البدن بالحلق أو القص أو النتف أو غيره. سواء كان قليلاً أو كثيراً. إلا لحاجة فيجوز مع الفدية",
+    "description_en": "Those in Ihram are prohibited from removing hair from the head or body by shaving, cutting, plucking, or otherwise. Whether little or much. Except for necessity, then it's permissible with a penalty",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-6",
+    "category": "grooming",
+    "name_ar": "تقليم الأظافر",
+    "name_en": "Trimming Nails",
+    "description_ar": "يحرم على المحرم تقليم أظافر اليدين أو الرجلين. سواء كان قليلاً أو كثيراً. أما ما انكسر من الظفر فلا بأس بإزالته",
+    "description_en": "Those in Ihram are prohibited from trimming fingernails or toenails, whether little or much. However, removing a broken nail is permissible",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-7",
+    "category": "marriage",
+    "name_ar": "عقد النكاح",
+    "name_en": "Marriage Contract",
+    "description_ar": "يحرم على المحرم أن يعقد النكاح لنفسه أو لغيره، أو أن يخطب. قال ﷺ: لا يَنكِحُ المُحرِمُ ولا يُنكَحُ ولا يَخطُبُ",
+    "description_en": "Those in Ihram are prohibited from contracting marriage for themselves or others, or proposing. The Prophet ﷺ said: 'The one in Ihram should not marry, nor arrange marriage, nor propose'",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-8",
+    "category": "intimacy",
+    "name_ar": "الجماع",
+    "name_en": "Sexual Intercourse",
+    "description_ar": "يحرم على المحرم الجماع تحريماً شديداً. وهو من أعظم محظورات الإحرام. من جامع قبل التحلل الأول فسد حجه ووجب عليه المضي فيه والقضاء والفدية",
+    "description_en": "Sexual intercourse is strictly prohibited for those in Ihram. It is one of the most serious Ihram violations. Intercourse before the first Tahallul invalidates Hajj and requires completion, making up, and penalty",
+    "applies_to": "both",
+    "severity": "critical"
+  },
+  {
+    "id": "prohibition-9",
+    "category": "intimacy",
+    "name_ar": "المباشرة بشهوة",
+    "name_en": "Intimate Contact with Desire",
+    "description_ar": "يحرم على المحرم المباشرة والتقبيل واللمس بشهوة. وما كان دون الجماع من دواعي الشهوة. أما اللمس بغير شهوة فلا بأس به",
+    "description_en": "Intimate contact, kissing, and touching with desire are prohibited for those in Ihram. This includes actions leading to desire short of intercourse. Touching without desire is permissible",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-10",
+    "category": "hunting",
+    "name_ar": "صيد البر",
+    "name_en": "Hunting Land Game",
+    "description_ar": "يحرم على المحرم صيد الحيوان البري المتوحش أو قتله أو الإعانة عليه أو الإشارة إليه. قال تعالى: لا تقتلوا الصيد وأنتم حرم. أما صيد البحر فحلال",
+    "description_en": "Hunting wild land animals, killing them, aiding in hunting, or pointing them out is prohibited. Allah says: 'Do not kill game while you are in Ihram.' Sea hunting is permissible",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-11",
+    "category": "hunting",
+    "name_ar": "قطع شجر الحرم وحشيشه",
+    "name_en": "Cutting Trees and Grass of the Haram",
+    "description_ar": "يحرم قطع شجر الحرم المكي أو حشائشه الذي نبت بنفسه. إلا الإذخر والشوك وما غرسه الآدمي. هذا حكم عام للمحرم وغيره في حدود الحرم",
+    "description_en": "Cutting trees or grass of the Makkan Haram that grew naturally is prohibited, except Idhkhir, thorns, and what humans planted. This applies to both those in and out of Ihram within Haram boundaries",
+    "applies_to": "both",
+    "severity": "moderate"
+  },
+  {
+    "id": "prohibition-12",
+    "category": "behavior",
+    "name_ar": "الفسوق",
+    "name_en": "Wickedness",
+    "description_ar": "يحرم على المحرم الفسوق بجميع أنواعه. قال تعالى: فمن فرض فيهن الحج فلا رفث ولا فسوق ولا جدال في الحج. والفسوق هو المعاصي كالكذب والغيبة والنميمة وغيرها",
+    "description_en": "All forms of wickedness are prohibited for those in Ihram. Allah says: 'So whoever has made Hajj obligatory upon himself therein, there is no sexual relations, no wickedness, and no disputing.' Wickedness includes sins like lying, backbiting, gossip, etc.",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-13",
+    "category": "behavior",
+    "name_ar": "الجدال",
+    "name_en": "Disputing",
+    "description_ar": "يحرم على المحرم الجدال والخصام بغير حق. والمراد الجدال المذموم الذي يؤدي إلى الغضب والفتنة. أما النقاش بالحسنى فلا بأس به",
+    "description_en": "Disputing and quarreling without right is prohibited for those in Ihram. This refers to blameworthy disputing that leads to anger and discord. Good-natured discussion is permissible",
+    "applies_to": "both",
+    "severity": "moderate"
+  },
+  {
+    "id": "prohibition-14",
+    "category": "clothing",
+    "name_ar": "لبس القفازين للمرأة",
+    "name_en": "Wearing Gloves (Women)",
+    "description_ar": "يحرم على المرأة المحرمة لبس القفازين المخصصين لتغطية اليدين. لكن يجوز لها تغطية يديها بثوبها أو بأي شيء آخر غير القفازين",
+    "description_en": "Women in Ihram are prohibited from wearing gloves designed to cover the hands. However, she may cover her hands with her garment or anything other than gloves",
+    "applies_to": "women",
+    "severity": "moderate"
+  },
+  {
+    "id": "prohibition-15",
+    "category": "clothing",
+    "name_ar": "لبس الخفين للرجال",
+    "name_en": "Wearing Leather Socks (Men)",
+    "description_ar": "يحرم على الرجل المحرم لبس الخفين والجوارب وما في معناهما. إلا إذا لم يجد نعلين فيجوز لبس الخفين بعد قطعهما أسفل من الكعبين",
+    "description_en": "Men in Ihram are prohibited from wearing leather socks, regular socks, and similar items. Unless he cannot find sandals, then he may wear leather socks after cutting them below the ankles",
+    "applies_to": "men",
+    "severity": "moderate"
+  },
+  {
+    "id": "prohibition-16",
+    "category": "hunting",
+    "name_ar": "الدلالة على الصيد",
+    "name_en": "Pointing Out Game",
+    "description_ar": "يحرم على المحرم الدلالة على الصيد أو الإشارة إليه أو الإعانة على صيده بأي وسيلة. حتى لو لم يصطده بنفسه",
+    "description_en": "Pointing out game, indicating it, or helping to hunt it by any means is prohibited for those in Ihram, even if not hunting personally",
+    "applies_to": "both",
+    "severity": "major"
+  },
+  {
+    "id": "prohibition-17",
+    "category": "behavior",
+    "name_ar": "الرفث",
+    "name_en": "Obscene Speech",
+    "description_ar": "يحرم على المحرم الرفث وهو الكلام الفاحش والألفاظ البذيئة والحديث عن الجماع. قال تعالى: فلا رفث ولا فسوق ولا جدال في الحج",
+    "description_en": "Obscene speech, vulgar language, and talk about intercourse are prohibited for those in Ihram. Allah says: 'There is no sexual relations, no wickedness, and no disputing during Hajj'",
+    "applies_to": "both",
+    "severity": "major"
+  }
+]

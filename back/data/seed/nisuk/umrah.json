@@ -1,0 +1,118 @@
+[
+  {
+    "id": "umrah-1",
+    "order": 1,
+    "name_ar": "الإحرام من الميقات",
+    "name_en": "Ihram from the Miqat",
+    "description_ar": "النية والدخول في النسك من الميقات المحدد. يستحب الاغتسال والتطيب والتنظف قبل الإحرام. يلبس الرجل إزاراً ورداء أبيضين. المرأة تلبس ما شاءت من الثياب الساترة. ثم يلبي بقوله: لبيك اللهم عمرة",
+    "description_en": "The intention and entering the rite from the designated Miqat. It is recommended to perform Ghusl, apply perfume, and clean oneself before Ihram. Men wear a white Izar and Rida. Women wear any modest clothing. Then say Talbiyah: 'Labbayk Allahumma Umrah'",
+    "requirements": [
+      "الاغتسال",
+      "التطيب",
+      "لبس ثياب الإحرام",
+      "النية",
+      "التلبية"
+    ],
+    "dua": "لبيك اللهم عمرة، لبيك لبيك لا شريك لك لبيك، إن الحمد والنعمة لك والملك، لا شريك لك",
+    "location": "الميقات",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/ihram"
+  },
+  {
+    "id": "umrah-2",
+    "order": 2,
+    "name_ar": "دخول الحرم والمسجد الحرام",
+    "name_en": "Entering the Haram and the Grand Mosque",
+    "description_ar": "الدخول بالقدم اليمنى مع الدعاء المأثور. يستمر في التلبية حتى يصل إلى الحجر الأسود. استحضار عظمة المكان والخشوع لله تعالى",
+    "description_en": "Enter with the right foot while saying the prescribed supplication. Continue with Talbiyah until reaching the Black Stone. Be mindful of the place's greatness and have humility before Allah",
+    "requirements": [
+      "الدخول بالقدم اليمنى",
+      "الدعاء عند الدخول",
+      "استمرار التلبية"
+    ],
+    "dua": "بسم الله، اللهم صل على محمد، اللهم افتح لي أبواب رحمتك",
+    "location": "المسجد الحرام",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/masjid-entry"
+  },
+  {
+    "id": "umrah-3",
+    "order": 3,
+    "name_ar": "طواف العمرة",
+    "name_en": "Tawaf of Umrah",
+    "description_ar": "ركن من أركان العمرة. يطوف المعتمر بالبيت سبعة أشواط. يبدأ من الحجر الأسود ويقبله أو يشير إليه. يسن الرمل في الأشواط الثلاثة الأولى للرجال والاضطباع في جميع الأشواط. يقطع التلبية عند استلام الحجر",
+    "description_en": "A pillar of Umrah. The performer circumambulates the Kaaba seven times. Start from the Black Stone and kiss it or point to it. It is Sunnah for men to jog in the first three circuits and uncover the right shoulder in all circuits. Stop Talbiyah when touching the Stone",
+    "requirements": [
+      "سبعة أشواط حول الكعبة",
+      "البدء من الحجر الأسود",
+      "الطهارة",
+      "قطع التلبية"
+    ],
+    "dua": "بسم الله، الله أكبر. ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقينا عذاب النار",
+    "location": "المسجد الحرام",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/tawaf"
+  },
+  {
+    "id": "umrah-4",
+    "order": 4,
+    "name_ar": "صلاة ركعتين خلف المقام",
+    "name_en": "Two Rak'ahs Prayer behind Maqam Ibrahim",
+    "description_ar": "بعد إتمام الطواف يصلي ركعتين خلف مقام إبراهيم إن تيسر، وإلا ففي أي مكان من المسجد. يقرأ في الأولى الفاتحة وسورة الكافرون، وفي الثانية الفاتحة وسورة الإخلاص",
+    "description_en": "After completing Tawaf, pray two Rak'ahs behind Maqam Ibrahim if possible, otherwise anywhere in the mosque. Recite Al-Fatihah and Al-Kafirun in the first, Al-Fatihah and Al-Ikhlas in the second",
+    "requirements": [
+      "صلاة ركعتين",
+      "خلف المقام إن أمكن",
+      "قراءة الفاتحة والسور المسنونة"
+    ],
+    "dua": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+    "location": "المسجد الحرام - خلف المقام",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/prayer"
+  },
+  {
+    "id": "umrah-5",
+    "order": 5,
+    "name_ar": "السعي بين الصفا والمروة",
+    "name_en": "Sa'i between Safa and Marwah",
+    "description_ar": "ركن من أركان العمرة. يسعى المعتمر بين الصفا والمروة سبعة أشواط. يبدأ بالصفا وينتهي بالمروة. الذهاب شوط والعودة شوط. يسن الإسراع بين العلمين الأخضرين للرجال. يكثر من الدعاء والذكر",
+    "description_en": "A pillar of Umrah. Walk between Safa and Marwah seven times. Start at Safa and end at Marwah. Going is one circuit, returning is another. It is Sunnah for men to jog between the green markers. Increase supplication and remembrance",
+    "requirements": [
+      "سبعة أشواط",
+      "البدء من الصفا",
+      "الانتهاء بالمروة",
+      "الدعاء والذكر"
+    ],
+    "dua": "إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ. نبدأ بما بدأ الله به. لا إله إلا الله وحده لا شريك له",
+    "location": "المسجد الحرام - المسعى",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/sai"
+  },
+  {
+    "id": "umrah-6",
+    "order": 6,
+    "name_ar": "الحلق أو التقصير",
+    "name_en": "Shaving or Trimming Hair",
+    "description_ar": "حلق شعر الرأس أو تقصيره. الحلق أفضل من التقصير. يحلق الرجل رأسه كله أو يقصر من جميع شعره. المرأة تقصر من شعرها قدر أنملة. بعد الحلق تتم العمرة ويحل المعتمر من إحرامه",
+    "description_en": "Shaving or trimming the head hair. Shaving is better than trimming. Men shave all their head or trim all their hair. Women trim a fingertip's length. After this, Umrah is complete and the person exits Ihram",
+    "requirements": [
+      "حلق أو تقصير الشعر",
+      "يكون بعد السعي"
+    ],
+    "dua": "اللهم اغفر لي وارحمني وتقبل مني إنك أنت السميع العليم",
+    "location": "مكة المكرمة",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/hair"
+  },
+  {
+    "id": "umrah-7",
+    "order": 7,
+    "name_ar": "أعمال مستحبة بعد العمرة",
+    "name_en": "Recommended Acts After Umrah",
+    "description_ar": "الإكثار من الطواف والصلاة في المسجد الحرام. شرب ماء زمزم مع الدعاء. زيارة المعالم والمشاعر المقدسة. الدعاء عند الملتزم. المكث في مكة للعبادة. التوبة والاستغفار",
+    "description_en": "Increase Tawaf and prayer in the Grand Mosque. Drink Zamzam water with supplication. Visit sacred landmarks and sites. Supplicate at Al-Multazam. Stay in Makkah for worship. Repent and seek forgiveness",
+    "requirements": [
+      "الإكثار من الطواف",
+      "الدعاء",
+      "شرب زمزم",
+      "الاستغفار"
+    ],
+    "dua": "اللهم إني أسألك علماً نافعاً ورزقاً طيباً وعملاً متقبلاً. اللهم زدني علماً وارزقني عملاً",
+    "location": "مكة المكرمة",
+    "nusuk_link": "https://www.nusuk.sa/ar/umrah/after"
+  }
+]
