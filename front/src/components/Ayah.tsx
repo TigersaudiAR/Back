@@ -3,6 +3,7 @@ import type { KeyboardEvent, MouseEvent } from "react";
 import clsx from "clsx";
 import type { Ayah } from "../types/quran";
 import { buildAyahAudioUrl } from "../utils/quran";
+import { formatVerseNumber } from "../utils/arabicNumbers";
 
 type AyahProps = {
   ayah: Ayah;
@@ -81,7 +82,7 @@ const Ayah = memo(function Ayah({
       >
         <div className="flex w-full items-start justify-between gap-4">
           <span className="ayah-number" aria-hidden="true">
-            {ayah.ayah_number}
+            {formatVerseNumber(ayah.ayah_number)}
           </span>
           <span className="ayah-text quran-text flex-1" style={textStyle}>
             {ayah.text_ar}
@@ -106,7 +107,7 @@ const Ayah = memo(function Ayah({
   return (
     <div className={clsx("ayah-container", className)} dir="rtl" lang="ar">
       <span className="ayah-number" aria-hidden="true">
-        {ayah.ayah_number}
+        {formatVerseNumber(ayah.ayah_number)}
       </span>
       <span className="ayah-text quran-text" style={textStyle}>
         {ayah.text_ar}
