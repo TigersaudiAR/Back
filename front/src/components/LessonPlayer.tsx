@@ -1,343 +1,373 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-interface Course {
-  course_id: string;
-  title: string;
-  title_en: string;
-  category: string;
-  level: string;
-  description: string;
-  total_lessons: number;
-  estimated_hours: number;
-}
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Lesson {
   id: string;
-  number: number;
+  category: string;
   title: string;
   title_en: string;
-  duration_minutes: number;
-  content: {
-    introduction: string;
-    main_points: string[];
-    references: string[];
-  };
-  quiz?: any;
+  level: string;
+  duration: number;
+  description: string;
+  objectives: string[];
+  content: Array<{
+    type: string;
+    title?: string;
+    body?: string;
+    items?: string[];
+    text?: string;
+    source?: string;
+  }>;
+  quiz: Array<{
+    question: string;
+    options: string[];
+    correct: number;
+    explanation: string;
+  }>;
+  points: number;
 }
 
-interface QuizQuestion {
-  id: string;
-  question: string;
-  type: string;
-  options: string[];
-  correct_answer: number;
-}
-
-const LessonPlayer: React.FC = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+export default function LessonPlayer() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [activeCategory, setActiveCategory] = useState<'all' | 'aqidah' | 'fiqh' | 'sirah'>('all');
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState<number[]>([]);
-  const [quizResult, setQuizResult] = useState<any>(null);
+  const [quizResult, setQuizResult] = useState<{
+    passed: boolean;
+    score: number;
+    maxScore: number;
+    percentage: number;
+    message: string;
+    certificate?: {
+      lessonId: string;
+      lessonTitle: string;
+      date: string;
+      score: number;
+    };
+    results: Array<{
+      question: string;
+      userAnswer: number;
+      correctAnswer: number;
+      isCorrect: boolean;
+      explanation: string;
+    }>;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-  const userId = 'demo-user';
 
   useEffect(() => {
-    loadCourses();
+    fetchLessons();
   }, []);
 
-  const loadCourses = async () => {
-    setLoading(true);
+  const fetchLessons = async () => {
     try {
-      const response = await axios.get(`${API_BASE}/api/lessons/courses`);
-      setCourses(response.data.courses || []);
+      setLoading(true);
+      const response = await fetch('/api/lessons');
+      const data = await response.json();
+      setLessons(data.lessons || []);
     } catch (error) {
-      console.error('Error loading courses:', error);
+      console.error('Error fetching lessons:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const selectCourse = async (course: Course) => {
-    setSelectedCourse(course);
-    setSelectedLesson(null);
-    setShowQuiz(false);
-    
+  const filteredLessons = activeCategory === 'all' 
+    ? lessons 
+    : lessons.filter(l => l.category === activeCategory);
+
+  const handleCompleteLesson = async () => {
+    if (!selectedLesson) return;
+
     try {
-      const response = await axios.get(`${API_BASE}/api/lessons/courses/${course.course_id}/lessons`);
-      setLessons(response.data.lessons || []);
+      const response = await fetch(`/api/lessons/${selectedLesson.id}/complete`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      alert(data.message);
+      setShowQuiz(true);
     } catch (error) {
-      console.error('Error loading lessons:', error);
+      console.error('Error completing lesson:', error);
     }
   };
 
-  const selectLesson = (lesson: Lesson) => {
-    setSelectedLesson(lesson);
-    setShowQuiz(false);
-    setQuizResult(null);
-    setQuizAnswers([]);
-  };
+  const handleSubmitQuiz = async () => {
+    if (!selectedLesson) return;
 
-  const startQuiz = () => {
-    setShowQuiz(true);
-    setQuizResult(null);
-    setQuizAnswers(new Array(selectedLesson?.quiz?.questions?.length || 0).fill(-1));
-  };
-
-  const submitQuiz = async () => {
-    if (!selectedLesson || !selectedCourse) return;
-    
     try {
-      const response = await axios.post(
-        `${API_BASE}/api/lessons/courses/${selectedCourse.course_id}/lessons/${selectedLesson.id}/quiz/submit`,
-        {
-          userId,
-          answers: quizAnswers
+      const response = await fetch(`/api/lessons/${selectedLesson.id}/quiz`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
         },
-        {
-          headers: {
-            Authorization: `Bearer demo-token`
-          }
-        }
-      );
-      
-      setQuizResult(response.data);
+        body: JSON.stringify({ answers: quizAnswers })
+      });
+      const data = await response.json();
+      setQuizResult(data);
     } catch (error) {
       console.error('Error submitting quiz:', error);
     }
   };
 
-  const renderCourseCard = (course: Course) => (
-    <div
-      key={course.course_id}
-      className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-      onClick={() => selectCourse(course)}
+  const renderCategoryBadge = (category: string) => {
+    const badges: Record<string, string> = {
+      aqidah: 'badge-primary',
+      fiqh: 'badge-secondary',
+      sirah: 'badge-accent'
+    };
+    const labels: Record<string, string> = {
+      aqidah: 'عقيدة',
+      fiqh: 'فقه',
+      sirah: 'سيرة'
+    };
+    return <div className={`badge ${badges[category] || 'badge-neutral'}`}>{labels[category] || category}</div>;
+  };
+
+  const renderLessonCard = (lesson: Lesson) => (
+    <motion.div
+      key={lesson.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+      onClick={() => {
+        setSelectedLesson(lesson);
+        setShowQuiz(false);
+        setQuizAnswers([]);
+        setQuizResult(null);
+      }}
     >
       <div className="card-body">
-        <div className={`badge ${
-          course.category === 'aqeedah' ? 'badge-primary' :
-          course.category === 'fiqh' ? 'badge-secondary' :
-          'badge-accent'
-        }`}>
-          {course.category === 'aqeedah' ? 'عقيدة' :
-           course.category === 'fiqh' ? 'فقه' : 'سيرة'}
+        <div className="flex justify-between items-start">
+          <h3 className="card-title text-lg">{lesson.title}</h3>
+          {renderCategoryBadge(lesson.category)}
         </div>
-        
-        <h3 className="card-title text-xl">{course.title}</h3>
-        <p className="text-sm text-gray-500">{course.title_en}</p>
-        <p className="text-sm mt-2">{course.description}</p>
-        
-        <div className="mt-4 flex flex-wrap gap-2">
-          <div className="badge badge-outline">{course.total_lessons} درس</div>
-          <div className="badge badge-outline">{course.estimated_hours} ساعة</div>
-          <div className="badge badge-outline">{course.level}</div>
+        <p className="text-sm text-base-content/70 line-clamp-2">{lesson.description}</p>
+        <div className="flex gap-2 mt-2">
+          <div className="badge badge-outline">{lesson.duration} دقيقة</div>
+          <div className="badge badge-outline">{lesson.level}</div>
+          <div className="badge badge-success">{lesson.points} نقطة</div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
-  const renderLessonList = () => (
-    <div className="space-y-2">
-      {lessons.map((lesson) => (
-        <div
-          key={lesson.id}
-          className={`card bg-base-100 shadow hover:shadow-md transition cursor-pointer ${
-            selectedLesson?.id === lesson.id ? 'ring-2 ring-primary' : ''
-          }`}
-          onClick={() => selectLesson(lesson)}
-        >
-          <div className="card-body p-4">
-            <div className="flex items-center gap-4">
-              <div className="badge badge-lg">{lesson.number}</div>
-              <div className="flex-1">
-                <h4 className="font-semibold">{lesson.title}</h4>
-                <p className="text-xs text-gray-500">{lesson.duration_minutes} دقيقة</p>
-              </div>
-            </div>
-          </div>
+  const renderContent = (content: {
+    type: string;
+    title?: string;
+    body?: string;
+    items?: string[];
+    text?: string;
+    source?: string;
+  }, idx: number) => {
+    if (content.type === 'text') {
+      return (
+        <div key={idx} className="mb-4">
+          {content.title && <h3 className="font-bold text-xl mb-2">{content.title}</h3>}
+          <p className="text-base-content/80">{content.body}</p>
         </div>
-      ))}
-    </div>
-  );
-
-  const renderLessonContent = () => {
-    if (!selectedLesson) return null;
-
-    return (
-      <div className="space-y-6">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title text-2xl mb-2">{selectedLesson.title}</h2>
-            <p className="text-gray-500 mb-4">{selectedLesson.title_en}</p>
-            
-            <div className="divider"></div>
-            
-            <div>
-              <h3 className="font-bold text-lg mb-2">المقدمة:</h3>
-              <p className="text-base leading-relaxed">{selectedLesson.content.introduction}</p>
-            </div>
-
-            <div className="mt-4">
-              <h3 className="font-bold text-lg mb-2">النقاط الرئيسية:</h3>
-              <ul className="list-disc list-inside space-y-2">
-                {selectedLesson.content.main_points.map((point, idx) => (
-                  <li key={idx} className="text-base leading-relaxed">{point}</li>
-                ))}
-              </ul>
-            </div>
-
-            {selectedLesson.content.references && selectedLesson.content.references.length > 0 && (
-              <div className="mt-4 bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">المراجع:</h3>
-                <div className="space-y-2">
-                  {selectedLesson.content.references.map((ref, idx) => (
-                    <p key={idx} className="text-base leading-loose text-right">{ref}</p>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="card-actions justify-end mt-6">
-              {selectedLesson.quiz && !showQuiz && !quizResult && (
-                <button onClick={startQuiz} className="btn btn-primary">
-                  بدء الاختبار
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderQuiz = () => {
-    if (!selectedLesson?.quiz || !showQuiz) return null;
-
-    const questions: QuizQuestion[] = selectedLesson.quiz.questions;
-
-    return (
-      <div className="card bg-base-100 shadow-xl mt-6">
-        <div className="card-body">
-          <h2 className="card-title text-2xl mb-4">اختبار الدرس</h2>
-          
-          <div className="space-y-6">
-            {questions.map((q, qIdx) => (
-              <div key={q.id} className="border-b pb-4">
-                <h3 className="font-semibold mb-3">
-                  {qIdx + 1}. {q.question}
-                </h3>
-                
-                <div className="space-y-2">
-                  {q.options.map((option, oIdx) => (
-                    <label key={oIdx} className="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
-                      <input
-                        type="radio"
-                        name={`question-${qIdx}`}
-                        value={oIdx}
-                        checked={quizAnswers[qIdx] === oIdx}
-                        onChange={() => {
-                          const newAnswers = [...quizAnswers];
-                          newAnswers[qIdx] = oIdx;
-                          setQuizAnswers(newAnswers);
-                        }}
-                        className="radio radio-primary"
-                      />
-                      <span>{option}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+      );
+    } else if (content.type === 'list') {
+      return (
+        <div key={idx} className="mb-4">
+          {content.title && <h3 className="font-bold text-xl mb-2">{content.title}</h3>}
+          <ul className="list-disc list-inside space-y-2">
+            {content.items.map((item: string, i: number) => (
+              <li key={i} className="text-base-content/80">{item}</li>
             ))}
-          </div>
-
-          <div className="card-actions justify-end mt-6">
-            <button
-              onClick={submitQuiz}
-              className="btn btn-primary"
-              disabled={quizAnswers.some(a => a === -1)}
-            >
-              إرسال الإجابات
-            </button>
+          </ul>
+        </div>
+      );
+    } else if (content.type === 'quote') {
+      return (
+        <div key={idx} className="alert alert-info mb-4">
+          <div>
+            <p className="font-arabic text-lg">{content.text}</p>
+            {content.source && <p className="text-sm mt-2 opacity-70">— {content.source}</p>}
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return null;
   };
-
-  const renderQuizResult = () => {
-    if (!quizResult) return null;
-
-    return (
-      <div className={`alert ${quizResult.passed ? 'alert-success' : 'alert-warning'} mt-6`}>
-        <div>
-          <h3 className="font-bold text-lg">{quizResult.message}</h3>
-          <p>النتيجة: {quizResult.score.toFixed(0)}%</p>
-          <p>النقاط المكتسبة: {quizResult.points_earned}</p>
-        </div>
-      </div>
-    );
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="loading loading-spinner loading-lg"></div>
-      </div>
-    );
-  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2">منصة التعليم الإسلامي</h1>
-        <p className="text-lg text-gray-600">تعلم العقيدة والفقه والسيرة النبوية</p>
-      </div>
-
-      {!selectedCourse && (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">الدورات المتاحة</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map(renderCourseCard)}
+    <div className="container mx-auto p-6 max-w-7xl">
+      {!selectedLesson ? (
+        <>
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-3">منصة التعليم الإسلامي</h1>
+            <p className="text-lg text-base-content/70">تعلم أساسيات الدين من العقيدة والفقه والسيرة</p>
           </div>
-        </div>
-      )}
 
-      {selectedCourse && (
-        <div>
-          <button
-            onClick={() => {
-              setSelectedCourse(null);
-              setSelectedLesson(null);
-              setShowQuiz(false);
-            }}
-            className="btn btn-ghost mb-4"
-          >
-            ← العودة للدورات
+          <div className="flex justify-center gap-2 mb-8 flex-wrap">
+            <button
+              className={`btn ${activeCategory === 'all' ? 'btn-primary' : 'btn-ghost'}`}
+              onClick={() => setActiveCategory('all')}
+            >
+              الكل
+            </button>
+            <button
+              className={`btn ${activeCategory === 'aqidah' ? 'btn-primary' : 'btn-ghost'}`}
+              onClick={() => setActiveCategory('aqidah')}
+            >
+              العقيدة
+            </button>
+            <button
+              className={`btn ${activeCategory === 'fiqh' ? 'btn-primary' : 'btn-ghost'}`}
+              onClick={() => setActiveCategory('fiqh')}
+            >
+              الفقه
+            </button>
+            <button
+              className={`btn ${activeCategory === 'sirah' ? 'btn-primary' : 'btn-ghost'}`}
+              onClick={() => setActiveCategory('sirah')}
+            >
+              السيرة
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredLessons.map(renderLessonCard)}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="max-w-4xl mx-auto">
+          <button className="btn btn-ghost mb-4" onClick={() => setSelectedLesson(null)}>
+            ← العودة للدروس
           </button>
 
-          <h2 className="text-3xl font-bold mb-6">{selectedCourse.title}</h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <h3 className="text-xl font-bold mb-4">الدروس</h3>
-              {renderLessonList()}
+          {!showQuiz ? (
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body">
+                <h2 className="card-title text-3xl mb-4">{selectedLesson.title}</h2>
+                
+                <div className="flex gap-2 mb-4">
+                  {renderCategoryBadge(selectedLesson.category)}
+                  <div className="badge badge-outline">{selectedLesson.duration} دقيقة</div>
+                  <div className="badge badge-success">{selectedLesson.points} نقطة</div>
+                </div>
+
+                <p className="text-lg text-base-content/80 mb-6">{selectedLesson.description}</p>
+
+                <div className="mb-6">
+                  <h3 className="font-bold text-xl mb-2">أهداف الدرس:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {selectedLesson.objectives.map((obj, idx) => (
+                      <li key={idx}>{obj}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="divider"></div>
+
+                <div className="space-y-6">
+                  {selectedLesson.content.map(renderContent)}
+                </div>
+
+                <div className="card-actions justify-end mt-6">
+                  <button className="btn btn-primary btn-lg" onClick={handleCompleteLesson}>
+                    إتمام الدرس والانتقال للاختبار
+                  </button>
+                </div>
+              </div>
             </div>
-            
-            <div className="lg:col-span-2">
-              {renderLessonContent()}
-              {renderQuiz()}
-              {renderQuizResult()}
+          ) : !quizResult ? (
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body">
+                <h2 className="card-title text-3xl mb-6">اختبار: {selectedLesson.title}</h2>
+
+                {selectedLesson.quiz.map((question, qIdx) => (
+                  <div key={qIdx} className="mb-6 p-4 bg-base-200 rounded-lg">
+                    <p className="font-bold text-lg mb-3">{qIdx + 1}. {question.question}</p>
+                    <div className="space-y-2">
+                      {question.options.map((option, oIdx) => (
+                        <label key={oIdx} className="flex items-center gap-2 cursor-pointer hover:bg-base-300 p-2 rounded">
+                          <input
+                            type="radio"
+                            name={`question-${qIdx}`}
+                            className="radio radio-primary"
+                            onChange={() => {
+                              const newAnswers = [...quizAnswers];
+                              newAnswers[qIdx] = oIdx;
+                              setQuizAnswers(newAnswers);
+                            }}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="card-actions justify-end">
+                  <button 
+                    className="btn btn-primary btn-lg"
+                    onClick={handleSubmitQuiz}
+                    disabled={quizAnswers.length !== selectedLesson.quiz.length}
+                  >
+                    تسليم الاختبار
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body">
+                <h2 className="card-title text-3xl mb-6">نتيجة الاختبار</h2>
+
+                <div className={`alert ${quizResult.passed ? 'alert-success' : 'alert-error'} mb-6`}>
+                  <div>
+                    <h3 className="font-bold text-xl">{quizResult.message}</h3>
+                    <p className="text-lg">النتيجة: {quizResult.score} من {quizResult.maxScore} ({quizResult.percentage.toFixed(0)}%)</p>
+                  </div>
+                </div>
+
+                {quizResult.certificate && (
+                  <div className="alert alert-info mb-6">
+                    <div>
+                      <h3 className="font-bold">🎉 تهانينا!</h3>
+                      <p>حصلت على شهادة إتمام الدرس بدرجة {quizResult.percentage}%</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  {quizResult.results.map((result, idx: number) => (
+                    <div key={idx} className={`p-4 rounded-lg ${result.isCorrect ? 'bg-success/20' : 'bg-error/20'}`}>
+                      <p className="font-bold">{idx + 1}. {result.question}</p>
+                      {!result.isCorrect && (
+                        <p className="text-sm mt-2">
+                          <span className="text-error">إجابتك: {selectedLesson.quiz[idx].options[result.userAnswer]}</span>
+                          <br />
+                          <span className="text-success">الإجابة الصحيحة: {selectedLesson.quiz[idx].options[result.correctAnswer]}</span>
+                        </p>
+                      )}
+                      <p className="text-sm mt-2 opacity-70">{result.explanation}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="card-actions justify-center mt-6">
+                  <button className="btn btn-primary" onClick={() => setSelectedLesson(null)}>
+                    العودة للدروس
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
-};
-
-export default LessonPlayer;
+}

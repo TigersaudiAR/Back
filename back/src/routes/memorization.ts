@@ -1,343 +1,240 @@
-import express from "express";
-import { v4 as uuid } from "uuid";
-import tracksData from "../../data/seed/memorization/tracks.json" with { type: "json" };
+import express, { Request, Response } from "express";
 import { authenticate } from "../middleware/auth.js";
+import settingsData from "../../data/seed/memorization/settings.json" with { type: "json" };
 
 const router = express.Router();
 
-// In-memory storage for user progress (in production, use a database)
-const userProgress = new Map<string, any>();
+// In-memory storage for user memorization progress
+// In production, this would be stored in a database
+interface MemorizationProgress {
+  userId: string;
+  verses: Array<{
+    surahId: number;
+    ayahNumber: number;
+    memorizedAt: string;
+    reviewCount: number;
+    lastReviewAt: string;
+  }>;
+  schedule: string;
+  statistics: {
+    totalVerses: number;
+    totalPages: number;
+    totalJuz: number;
+    currentStreak: number;
+    longestStreak: number;
+    perfectTests: number;
+  };
+  achievements: string[];
+  tests: Array<{
+    id: string;
+    type: string;
+    date: string;
+    score: number;
+    maxScore: number;
+  }>;
+}
 
-// Get all memorization tracks
-router.get("/tracks", (_req, res) => {
-  res.json({
-    tracks: tracksData.tracks,
-    total: tracksData.tracks.length
-  });
-});
+const userProgress = new Map<string, MemorizationProgress>();
 
-// Get specific track by ID
-router.get("/tracks/:id", (req, res) => {
-  const { id } = req.params;
-  const track = tracksData.tracks.find((t) => t.id === id);
-  
-  if (!track) {
-    return res.status(404).json({ message: "المسار غير موجود" });
-  }
-  
-  res.json(track);
-});
+function getDefaultMemorizationProgress(userId: string): MemorizationProgress {
+  return {
+    userId,
+    verses: [],
+    schedule: "schedule-1",
+    statistics: {
+      totalVerses: 0,
+      totalPages: 0,
+      totalJuz: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      perfectTests: 0
+    },
+    achievements: [],
+    tests: []
+  };
+}
 
-// Get review schedules
-router.get("/schedules", (_req, res) => {
-  res.json({
-    schedules: tracksData.review_schedules,
-    total: tracksData.review_schedules.length
-  });
-});
-
-// Get quiz templates
-router.get("/quiz-templates", (_req, res) => {
-  res.json({
-    templates: tracksData.quiz_templates,
-    total: tracksData.quiz_templates.length
-  });
-});
-
-// Get achievements
-router.get("/achievements", (_req, res) => {
-  res.json({
-    achievements: tracksData.achievements,
-    total: tracksData.achievements.length
-  });
-});
-
-// Get memorization tips
-router.get("/tips", (_req, res) => {
-  res.json({
-    tips: tracksData.tips,
-    total: tracksData.tips.length
-  });
+// Get memorization settings
+router.get("/settings", (_req: Request, res: Response) => {
+  res.json(settingsData);
 });
 
 // Get user's memorization progress
-router.get("/progress/:userId", (req, res) => {
-  const { userId } = req.params;
-  const progress = userProgress.get(userId);
-  
-  if (!progress) {
-    return res.json({
-      userId,
-      memorized_verses: [],
-      memorized_surahs: [],
-      current_track: null,
-      streak_days: 0,
-      total_points: 0,
-      achievements_unlocked: [],
-      last_review: null,
-      statistics: {
-        total_verses_memorized: 0,
-        total_surahs_memorized: 0,
-        total_quizzes_taken: 0,
-        total_quizzes_passed: 0,
-        average_quiz_score: 0,
-        perfect_quiz_count: 0
-      }
-    });
-  }
+router.get("/progress", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const progress = userProgress.get(userId) || getDefaultMemorizationProgress(userId);
   
   res.json(progress);
 });
 
-// Update user's memorization progress
-router.post("/progress/:userId", authenticate(), (req, res) => {
-  const { userId } = req.params;
-  const updates = req.body;
+// Mark verse as memorized
+router.post("/memorize", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { surahId, ayahNumber } = req.body;
   
-  const currentProgress = userProgress.get(userId) || {
-    userId,
-    memorized_verses: [],
-    memorized_surahs: [],
-    current_track: null,
-    streak_days: 0,
-    total_points: 0,
-    achievements_unlocked: [],
-    last_review: null,
-    statistics: {
-      total_verses_memorized: 0,
-      total_surahs_memorized: 0,
-      total_quizzes_taken: 0,
-      total_quizzes_passed: 0,
-      average_quiz_score: 0,
-      perfect_quiz_count: 0
-    }
-  };
+  if (!surahId || !ayahNumber) {
+    return res.status(400).json({ message: "معرف السورة ورقم الآية مطلوبان" });
+  }
   
-  // Update progress
-  const updatedProgress = {
-    ...currentProgress,
-    ...updates,
-    updated_at: new Date().toISOString()
-  };
+  let progress = userProgress.get(userId) || getDefaultMemorizationProgress(userId);
   
-  userProgress.set(userId, updatedProgress);
+  // Check if already memorized
+  const existing = progress.verses.find(
+    v => v.surahId === surahId && v.ayahNumber === ayahNumber
+  );
+  
+  if (existing) {
+    return res.status(400).json({ message: "هذه الآية محفوظة بالفعل" });
+  }
+  
+  // Add new verse
+  progress.verses.push({
+    surahId,
+    ayahNumber,
+    memorizedAt: new Date().toISOString(),
+    reviewCount: 0,
+    lastReviewAt: new Date().toISOString()
+  });
+  
+  progress.statistics.totalVerses = progress.verses.length;
+  
+  userProgress.set(userId, progress);
   
   res.json({
-    message: "تم تحديث التقدم بنجاح",
-    progress: updatedProgress
+    message: "تم حفظ الآية بنجاح",
+    progress: progress.statistics
   });
 });
 
-// Add memorized verse
-router.post("/progress/:userId/verse", authenticate(), (req, res) => {
-  const { userId } = req.params;
-  const { surah_id, ayah_number, confidence_level } = req.body;
+// Mark verse as reviewed
+router.post("/review", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { surahId, ayahNumber } = req.body;
   
-  if (!surah_id || !ayah_number) {
-    return res.status(400).json({ message: "يجب تحديد رقم السورة والآية" });
+  const progress = userProgress.get(userId);
+  if (!progress) {
+    return res.status(404).json({ message: "لا يوجد تقدم محفوظ" });
   }
   
-  const currentProgress = userProgress.get(userId) || {
-    userId,
-    memorized_verses: [],
-    memorized_surahs: [],
-    current_track: null,
-    streak_days: 0,
-    total_points: 0,
-    achievements_unlocked: [],
-    statistics: {
-      total_verses_memorized: 0,
-      total_surahs_memorized: 0,
-      total_quizzes_taken: 0,
-      total_quizzes_passed: 0,
-      average_quiz_score: 0,
-      perfect_quiz_count: 0
-    }
-  };
+  const verse = progress.verses.find(
+    v => v.surahId === surahId && v.ayahNumber === ayahNumber
+  );
   
-  const verseEntry = {
-    id: uuid(),
-    surah_id,
-    ayah_number,
-    confidence_level: confidence_level || "medium",
-    memorized_at: new Date().toISOString(),
-    last_reviewed: new Date().toISOString(),
-    review_count: 0
-  };
+  if (!verse) {
+    return res.status(404).json({ message: "الآية غير محفوظة" });
+  }
   
-  currentProgress.memorized_verses.push(verseEntry);
-  currentProgress.statistics.total_verses_memorized = currentProgress.memorized_verses.length;
-  currentProgress.total_points += 10; // Award points for memorizing a verse
+  verse.reviewCount += 1;
+  verse.lastReviewAt = new Date().toISOString();
   
-  userProgress.set(userId, currentProgress);
+  userProgress.set(userId, progress);
   
   res.json({
-    message: "تم إضافة الآية للحفظ بنجاح",
-    verse: verseEntry,
-    total_verses: currentProgress.memorized_verses.length,
-    points_earned: 10
+    message: "تم تسجيل المراجعة",
+    reviewCount: verse.reviewCount
   });
 });
 
-// Submit quiz result
-router.post("/progress/:userId/quiz", authenticate(), (req, res) => {
-  const { userId } = req.params;
-  const { quiz_type, score, total_questions, time_taken, verses_tested } = req.body;
+// Submit test result
+router.post("/test", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { type, score, maxScore } = req.body;
   
-  if (typeof score === "undefined" || !total_questions) {
-    return res.status(400).json({ message: "يجب تحديد النتيجة والأسئلة" });
+  if (!type || score === undefined || !maxScore) {
+    return res.status(400).json({ message: "بيانات الاختبار غير كاملة" });
   }
   
-  const currentProgress = userProgress.get(userId) || {
-    userId,
-    memorized_verses: [],
-    memorized_surahs: [],
-    current_track: null,
-    streak_days: 0,
-    total_points: 0,
-    achievements_unlocked: [],
-    quiz_history: [],
-    statistics: {
-      total_verses_memorized: 0,
-      total_surahs_memorized: 0,
-      total_quizzes_taken: 0,
-      total_quizzes_passed: 0,
-      average_quiz_score: 0,
-      perfect_quiz_count: 0
-    }
-  };
+  let progress = userProgress.get(userId) || getDefaultMemorizationProgress(userId);
   
-  const quizResult = {
-    id: uuid(),
-    quiz_type,
+  const test = {
+    id: `test-${Date.now()}`,
+    type,
+    date: new Date().toISOString(),
     score,
-    total_questions,
-    percentage: (score / total_questions) * 100,
-    time_taken,
-    verses_tested: verses_tested || [],
-    completed_at: new Date().toISOString()
+    maxScore
   };
   
-  if (!currentProgress.quiz_history) {
-    currentProgress.quiz_history = [];
+  progress.tests.push(test);
+  
+  // Check for perfect score
+  if (score === maxScore) {
+    progress.statistics.perfectTests += 1;
+    
+    // Check for achievement
+    if (!progress.achievements.includes("achievement-perfect-test")) {
+      progress.achievements.push("achievement-perfect-test");
+    }
   }
   
-  currentProgress.quiz_history.push(quizResult);
-  currentProgress.statistics.total_quizzes_taken += 1;
+  userProgress.set(userId, progress);
   
-  // Update statistics
-  const passed = quizResult.percentage >= 70;
-  if (passed) {
-    currentProgress.statistics.total_quizzes_passed += 1;
-    currentProgress.total_points += 50; // Award points for passing quiz
-  }
-  
-  if (quizResult.percentage === 100) {
-    currentProgress.statistics.perfect_quiz_count += 1;
-    currentProgress.total_points += 50; // Bonus for perfect score
-  }
-  
-  // Calculate average score
-  const totalScores = currentProgress.quiz_history.reduce((sum: number, q: any) => sum + q.percentage, 0);
-  currentProgress.statistics.average_quiz_score = totalScores / currentProgress.quiz_history.length;
-  
-  userProgress.set(userId, currentProgress);
+  const newAchievements = score === maxScore && !progress.achievements.includes("achievement-perfect-test") 
+    ? ["achievement-perfect-test"] 
+    : [];
   
   res.json({
-    message: passed ? "مبارك! اجتزت الاختبار بنجاح" : "حاول مرة أخرى",
-    quiz: quizResult,
-    passed,
-    points_earned: passed ? (quizResult.percentage === 100 ? 100 : 50) : 0,
-    total_points: currentProgress.total_points
+    message: "تم حفظ نتيجة الاختبار",
+    test,
+    newAchievements
   });
 });
 
-// Get user's statistics
-router.get("/statistics/:userId", (req, res) => {
-  const { userId } = req.params;
+// Get review schedule
+router.get("/schedule", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
   const progress = userProgress.get(userId);
   
-  if (!progress) {
+  if (!progress || progress.verses.length === 0) {
     return res.json({
-      statistics: {
-        total_verses_memorized: 0,
-        total_surahs_memorized: 0,
-        total_quizzes_taken: 0,
-        total_quizzes_passed: 0,
-        average_quiz_score: 0,
-        perfect_quiz_count: 0,
-        streak_days: 0,
-        total_points: 0
-      }
+      message: "لم تبدأ بالحفظ بعد",
+      schedule: []
     });
   }
   
+  // Simple review algorithm - review verses that haven't been reviewed in the last 24 hours
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const needsReview = progress.verses.filter(v => v.lastReviewAt < oneDayAgo);
+  
   res.json({
-    statistics: {
-      ...progress.statistics,
-      streak_days: progress.streak_days,
-      total_points: progress.total_points,
-      achievements_count: progress.achievements_unlocked?.length || 0
-    }
+    schedule: needsReview,
+    total: needsReview.length,
+    message: needsReview.length > 0 
+      ? `لديك ${needsReview.length} آية تحتاج للمراجعة اليوم`
+      : "لا توجد آيات تحتاج للمراجعة اليوم"
   });
 });
 
-// Check and unlock achievements
-router.post("/achievements/:userId/check", authenticate(), (req, res) => {
-  const { userId } = req.params;
+// Get achievements
+router.get("/achievements", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
   const progress = userProgress.get(userId);
   
-  if (!progress) {
-    return res.json({ unlocked: [] });
-  }
+  const allAchievements = settingsData.achievements;
+  const unlockedIds = progress?.achievements || [];
   
-  const newlyUnlocked: any[] = [];
-  const alreadyUnlocked = progress.achievements_unlocked || [];
-  
-  tracksData.achievements.forEach((achievement) => {
-    // Check if already unlocked
-    if (alreadyUnlocked.some((a: any) => a.id === achievement.id)) {
-      return;
-    }
-    
-    // Check requirements
-    let requirementMet = false;
-    const req = achievement.requirement as any;
-    
-    switch (req.type) {
-      case "surahs_memorized":
-        requirementMet = (progress.memorized_surahs?.length || 0) >= (req.count || 0);
-        break;
-      case "streak_days":
-        requirementMet = progress.streak_days >= (req.count || 0);
-        break;
-      case "quizzes_passed":
-        requirementMet = progress.statistics.total_quizzes_passed >= (req.count || 0);
-        break;
-      case "perfect_quizzes":
-        requirementMet = progress.statistics.perfect_quiz_count >= (req.count || 0);
-        break;
-    }
-    
-    if (requirementMet) {
-      newlyUnlocked.push(achievement);
-      progress.achievements_unlocked.push({
-        ...achievement,
-        unlocked_at: new Date().toISOString()
-      });
-      progress.total_points += achievement.points;
-    }
-  });
-  
-  if (newlyUnlocked.length > 0) {
-    userProgress.set(userId, progress);
-  }
+  const unlocked = allAchievements.filter(a => unlockedIds.includes(a.id));
+  const locked = allAchievements.filter(a => !unlockedIds.includes(a.id));
   
   res.json({
-    unlocked: newlyUnlocked,
-    total_unlocked: progress.achievements_unlocked.length,
-    points_earned: newlyUnlocked.reduce((sum, a) => sum + a.points, 0)
+    unlocked,
+    locked,
+    totalPoints: unlocked.reduce((sum, a) => sum + a.points, 0)
   });
 });
 
-export const memorizationRouter = router;
+// Get leaderboard
+router.get("/leaderboard", (_req: Request, res: Response) => {
+  const leaderboard = Array.from(userProgress.values())
+    .map(p => ({
+      userId: p.userId,
+      totalVerses: p.statistics.totalVerses,
+      achievements: p.achievements.length,
+      perfectTests: p.statistics.perfectTests
+    }))
+    .sort((a, b) => b.totalVerses - a.totalVerses)
+    .slice(0, 10);
+  
+  res.json({ leaderboard });
+});
+
+export default router;

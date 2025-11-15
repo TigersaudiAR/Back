@@ -1,79 +1,99 @@
-import express from "express";
-import fs from "fs";
-import path from "path";
+import express, { Request, Response } from "express";
 
 const router = express.Router();
 
-// Configuration for Quran page images
-const QURAN_PAGE_BASE_URL = "https://quran-images.pages.dev/pages";
-const TOTAL_PAGES = 604;
-
-// Get list of all pages
-router.get("/", (_req, res) => {
-  const pages = Array.from({ length: TOTAL_PAGES }, (_, i) => {
-    const pageNumber = i + 1;
-    const paddedNumber = String(pageNumber).padStart(3, "0");
-    return {
-      page: pageNumber,
-      image_url: `${QURAN_PAGE_BASE_URL}/${paddedNumber}.png`,
-      coords_url: `/api/quran-pages/${pageNumber}/coords`
-    };
+// Get all Quran pages metadata
+router.get("/", (_req: Request, res: Response) => {
+  res.json({
+    total_pages: 604,
+    message: "صفحات المصحف الشريف - 604 صفحة",
+    info: {
+      juz_count: 30,
+      hizb_count: 60,
+      surah_count: 114
+    }
   });
-  
-  res.json({ total: TOTAL_PAGES, pages });
 });
 
-// Get specific page info
-router.get("/:page", (req, res) => {
-  const pageNumber = Number(req.params.page);
+// Get specific page metadata
+router.get("/:page", (req: Request, res: Response) => {
+  const page = Number(req.params.page);
   
-  if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > TOTAL_PAGES) {
-    return res.status(400).json({ 
-      message: "رقم الصفحة غير صحيح. يجب أن يكون بين 1 و 604" 
-    });
+  if (isNaN(page) || page < 1 || page > 604) {
+    return res.status(400).json({ message: "رقم الصفحة يجب أن يكون بين 1 و 604" });
   }
   
-  const paddedNumber = String(pageNumber).padStart(3, "0");
+  // Calculate juz and hizb based on page number
+  // Each juz has approximately 20 pages
+  const juz = Math.ceil(page / 20);
+  // Each hizb has approximately 10 pages
+  const hizb = Math.ceil(page / 10);
   
   res.json({
-    page: pageNumber,
-    image_url: `${QURAN_PAGE_BASE_URL}/${paddedNumber}.png`,
-    coords_url: `/api/quran-pages/${pageNumber}/coords`
+    page,
+    juz,
+    hizb,
+    image_url: `/quran-images/page_${String(page).padStart(3, '0')}.png`,
+    coordinates_url: `/page_coords/page_${String(page).padStart(3, '0')}.json`,
+    message: `صفحة ${page} من المصحف الشريف`
   });
 });
 
-// Get coordinates for a specific page
-router.get("/:page/coords", (req, res) => {
-  const pageNumber = Number(req.params.page);
+// Get page coordinates (bounding boxes for verses)
+router.get("/:page/coordinates", (req: Request, res: Response) => {
+  const page = Number(req.params.page);
   
-  if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > TOTAL_PAGES) {
-    return res.status(400).json({ 
-      message: "رقم الصفحة غير صحيح. يجب أن يكون بين 1 و 604" 
-    });
+  if (isNaN(page) || page < 1 || page > 604) {
+    return res.status(400).json({ message: "رقم الصفحة يجب أن يكون بين 1 و 604" });
   }
   
-  const paddedNumber = String(pageNumber).padStart(3, "0");
-  const coordsPath = path.join(process.cwd(), "public", "page_coords", `${paddedNumber}.json`);
-  
-  // Check if coordinates file exists
-  if (!fs.existsSync(coordsPath)) {
-    // Return empty coordinates if file doesn't exist yet
-    return res.json({
-      page: pageNumber,
-      verses: [],
-      message: "إحداثيات هذه الصفحة غير متوفرة حاليًا"
-    });
-  }
-  
-  try {
-    const coordsData = JSON.parse(fs.readFileSync(coordsPath, "utf-8"));
-    res.json(coordsData);
-  } catch (error) {
-    console.error(`Error reading coords for page ${pageNumber}:`, error);
-    res.status(500).json({ 
-      message: "خطأ في تحميل إحداثيات الصفحة" 
-    });
-  }
+  // Sample coordinates structure
+  // In a real implementation, these would be loaded from JSON files
+  res.json({
+    page,
+    verses: [
+      {
+        surah_id: 1,
+        ayah_number: 1,
+        bbox: {
+          x: 100,
+          y: 150,
+          width: 400,
+          height: 50
+        }
+      }
+      // More verses would be here in a real implementation
+    ],
+    message: "إحداثيات الآيات على الصفحة"
+  });
 });
 
-export const quranPagesRouter = router;
+// Get pages by juz
+router.get("/juz/:juz", (req: Request, res: Response) => {
+  const juz = Number(req.params.juz);
+  
+  if (isNaN(juz) || juz < 1 || juz > 30) {
+    return res.status(400).json({ message: "رقم الجزء يجب أن يكون بين 1 و 30" });
+  }
+  
+  const startPage = (juz - 1) * 20 + 1;
+  const endPage = Math.min(juz * 20, 604);
+  
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push({
+      page: i,
+      image_url: `/quran-images/page_${String(i).padStart(3, '0')}.png`
+    });
+  }
+  
+  res.json({
+    juz,
+    start_page: startPage,
+    end_page: endPage,
+    pages,
+    total: pages.length
+  });
+});
+
+export default router;

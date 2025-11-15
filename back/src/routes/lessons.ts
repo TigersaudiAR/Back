@@ -1,75 +1,64 @@
-import express from "express";
-import { v4 as uuid } from "uuid";
-import aqeedahData from "../../data/seed/lessons/aqeedah.json" with { type: "json" };
-import fiqhData from "../../data/seed/lessons/fiqh.json" with { type: "json" };
+import express, { Request, Response } from "express";
 import { authenticate } from "../middleware/auth.js";
+import lessonsData from "../../data/seed/lessons/lessons.json" with { type: "json" };
 
 const router = express.Router();
 
-// All courses
-const courses = [aqeedahData, fiqhData];
+// In-memory storage for user lesson progress
+interface UserLessonProgress {
+  userId: string;
+  completedLessons: string[];
+  quizResults: Array<{
+    lessonId: string;
+    score: number;
+    maxScore: number;
+    date: string;
+  }>;
+  totalPoints: number;
+  certificates: string[];
+}
 
-// In-memory storage for user progress (in production, use a database)
-const userLessonProgress = new Map<string, any>();
-const userCertificates = new Map<string, any[]>();
+const userLessonProgress = new Map<string, UserLessonProgress>();
 
-// Get all courses
-router.get("/courses", (_req, res) => {
-  const courseList = courses.map((course) => ({
-    course_id: course.course_id,
-    title: course.title,
-    title_en: course.title_en,
-    category: course.category,
-    level: course.level,
-    description: course.description,
-    total_lessons: course.total_lessons,
-    estimated_hours: course.estimated_hours
-  }));
-  
+function getDefaultProgress(userId: string): UserLessonProgress {
+  return {
+    userId,
+    completedLessons: [],
+    quizResults: [],
+    totalPoints: 0,
+    certificates: []
+  };
+}
+
+// Get all lessons
+router.get("/", (_req: Request, res: Response) => {
   res.json({
-    courses: courseList,
-    total: courseList.length
+    lessons: lessonsData,
+    total: lessonsData.length,
+    categories: {
+      aqidah: lessonsData.filter(l => l.category === "aqidah").length,
+      fiqh: lessonsData.filter(l => l.category === "fiqh").length,
+      sirah: lessonsData.filter(l => l.category === "sirah").length
+    }
   });
 });
 
-// Get specific course
-router.get("/courses/:courseId", (req, res) => {
-  const { courseId } = req.params;
-  const course = courses.find((c) => c.course_id === courseId);
+// Get lessons by category
+router.get("/category/:category", (req: Request, res: Response) => {
+  const { category } = req.params;
+  const lessons = lessonsData.filter(l => l.category === category);
   
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
+  if (lessons.length === 0) {
+    return res.status(404).json({ message: "لا توجد دروس في هذا التصنيف" });
   }
   
-  res.json(course);
+  res.json({ lessons, total: lessons.length });
 });
 
-// Get course lessons
-router.get("/courses/:courseId/lessons", (req, res) => {
-  const { courseId } = req.params;
-  const course = courses.find((c) => c.course_id === courseId);
-  
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
-  }
-  
-  res.json({
-    course_id: course.course_id,
-    lessons: course.lessons,
-    total: course.lessons.length
-  });
-});
-
-// Get specific lesson
-router.get("/courses/:courseId/lessons/:lessonId", (req, res) => {
-  const { courseId, lessonId } = req.params;
-  const course = courses.find((c) => c.course_id === courseId);
-  
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
-  }
-  
-  const lesson = course.lessons.find((l: any) => l.id === lessonId);
+// Get specific lesson by ID
+router.get("/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const lesson = lessonsData.find(l => l.id === id);
   
   if (!lesson) {
     return res.status(404).json({ message: "الدرس غير موجود" });
@@ -78,200 +67,163 @@ router.get("/courses/:courseId/lessons/:lessonId", (req, res) => {
   res.json(lesson);
 });
 
-// Get lesson quiz
-router.get("/courses/:courseId/lessons/:lessonId/quiz", (req, res) => {
-  const { courseId, lessonId } = req.params;
-  const course = courses.find((c) => c.course_id === courseId);
-  
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
-  }
-  
-  const lesson = course.lessons.find((l: any) => l.id === lessonId);
-  
-  if (!lesson || !lesson.quiz) {
-    return res.status(404).json({ message: "الاختبار غير موجود" });
-  }
+// Get user's lesson progress
+router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const progress = userLessonProgress.get(userId) || getDefaultProgress(userId);
   
   res.json({
-    lesson_id: lesson.id,
-    quiz: lesson.quiz
+    progress,
+    completionRate: (progress.completedLessons.length / lessonsData.length) * 100,
+    totalLessons: lessonsData.length
   });
 });
 
-// Submit quiz answers
-router.post("/courses/:courseId/lessons/:lessonId/quiz/submit", authenticate(), (req, res) => {
-  const { courseId, lessonId } = req.params;
-  const { userId, answers } = req.body;
+// Mark lesson as completed
+router.post("/:id/complete", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { id } = req.params;
   
-  const course = courses.find((c) => c.course_id === courseId);
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
+  const lesson = lessonsData.find(l => l.id === id);
+  if (!lesson) {
+    return res.status(404).json({ message: "الدرس غير موجود" });
   }
   
-  const lesson = course.lessons.find((l: any) => l.id === lessonId);
+  let progress = userLessonProgress.get(userId) || getDefaultProgress(userId);
+  
+  if (progress.completedLessons.includes(id)) {
+    return res.status(400).json({ message: "الدرس مكتمل بالفعل" });
+  }
+  
+  progress.completedLessons.push(id);
+  progress.totalPoints += lesson.points;
+  
+  userLessonProgress.set(userId, progress);
+  
+  res.json({
+    message: "تم إتمام الدرس بنجاح",
+    points: lesson.points,
+    totalPoints: progress.totalPoints
+  });
+});
+
+// Submit quiz result
+router.post("/:id/quiz", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { id } = req.params;
+  const { answers } = req.body;
+  
+  const lesson = lessonsData.find(l => l.id === id);
   if (!lesson || !lesson.quiz) {
     return res.status(404).json({ message: "الاختبار غير موجود" });
+  }
+  
+  if (!Array.isArray(answers)) {
+    return res.status(400).json({ message: "الإجابات يجب أن تكون مصفوفة" });
   }
   
   // Calculate score
-  const questions = lesson.quiz.questions;
   let correctCount = 0;
-  const results = questions.map((q: any, index: number) => {
+  const results = lesson.quiz.map((question, index) => {
     const userAnswer = answers[index];
-    const isCorrect = userAnswer === q.correct_answer;
+    const isCorrect = userAnswer === question.correct;
     if (isCorrect) correctCount++;
     
     return {
-      question_id: q.id,
-      user_answer: userAnswer,
-      correct_answer: q.correct_answer,
-      is_correct: isCorrect
+      question: question.question,
+      userAnswer,
+      correctAnswer: question.correct,
+      isCorrect,
+      explanation: question.explanation
     };
   });
   
-  const score = (correctCount / questions.length) * 100;
-  const passed = score >= 70;
+  const score = correctCount;
+  const maxScore = lesson.quiz.length;
+  const percentage = (score / maxScore) * 100;
   
-  // Update user progress
-  const progressKey = `${userId}-${courseId}`;
-  const progress = userLessonProgress.get(progressKey) || {
-    userId,
-    courseId,
-    completed_lessons: [],
-    quiz_results: [],
-    points: 0
-  };
+  let progress = userLessonProgress.get(userId) || getDefaultProgress(userId);
   
-  const quizResult = {
-    id: uuid(),
-    lesson_id: lessonId,
+  progress.quizResults.push({
+    lessonId: id,
     score,
-    passed,
+    maxScore,
+    date: new Date().toISOString()
+  });
+  
+  // Award points for passing (70% or higher)
+  let bonusPoints = 0;
+  if (percentage >= 70 && !progress.completedLessons.includes(id)) {
+    bonusPoints = Math.floor(lesson.points * 0.5);
+    progress.totalPoints += bonusPoints;
+  }
+  
+  // Award certificate for perfect score
+  let certificate = null;
+  if (percentage === 100 && !progress.certificates.includes(id)) {
+    progress.certificates.push(id);
+    certificate = {
+      lessonId: id,
+      lessonTitle: lesson.title,
+      date: new Date().toISOString(),
+      score: percentage
+    };
+  }
+  
+  userLessonProgress.set(userId, progress);
+  
+  res.json({
+    score,
+    maxScore,
+    percentage,
+    passed: percentage >= 70,
     results,
-    submitted_at: new Date().toISOString()
-  };
-  
-  progress.quiz_results.push(quizResult);
-  
-  if (passed && !progress.completed_lessons.includes(lessonId)) {
-    progress.completed_lessons.push(lessonId);
-    progress.points += 100; // Award points for completing lesson
-  }
-  
-  userLessonProgress.set(progressKey, progress);
-  
-  res.json({
-    message: passed ? "مبارك! اجتزت الاختبار بنجاح" : "للأسف، لم تجتز الاختبار. حاول مرة أخرى",
-    quiz_result: quizResult,
-    passed,
-    score,
-    points_earned: passed ? 100 : 0,
-    total_points: progress.points
-  });
-});
-
-// Get user progress for a course
-router.get("/progress/:userId/:courseId", (req, res) => {
-  const { userId, courseId } = req.params;
-  const progressKey = `${userId}-${courseId}`;
-  const progress = userLessonProgress.get(progressKey);
-  
-  if (!progress) {
-    return res.json({
-      userId,
-      courseId,
-      completed_lessons: [],
-      quiz_results: [],
-      points: 0,
-      completion_percentage: 0
-    });
-  }
-  
-  const course = courses.find((c) => c.course_id === courseId);
-  const completionPercentage = course 
-    ? (progress.completed_lessons.length / course.total_lessons) * 100 
-    : 0;
-  
-  res.json({
-    ...progress,
-    completion_percentage: completionPercentage
-  });
-});
-
-// Get all user progress
-router.get("/progress/:userId", (req, res) => {
-  const { userId } = req.params;
-  const allProgress: any[] = [];
-  
-  userLessonProgress.forEach((progress, key) => {
-    if (key.startsWith(`${userId}-`)) {
-      const course = courses.find((c) => c.course_id === progress.courseId);
-      const completionPercentage = course 
-        ? (progress.completed_lessons.length / course.total_lessons) * 100 
-        : 0;
-      
-      allProgress.push({
-        ...progress,
-        course_title: course?.title,
-        completion_percentage: completionPercentage
-      });
-    }
-  });
-  
-  res.json({
-    userId,
-    courses: allProgress,
-    total_points: allProgress.reduce((sum, p) => sum + p.points, 0)
-  });
-});
-
-// Issue certificate
-router.post("/certificates/:userId/:courseId", authenticate(), (req, res) => {
-  const { userId, courseId } = req.params;
-  const progressKey = `${userId}-${courseId}`;
-  const progress = userLessonProgress.get(progressKey);
-  
-  const course = courses.find((c) => c.course_id === courseId);
-  if (!course) {
-    return res.status(404).json({ message: "الدورة غير موجودة" });
-  }
-  
-  if (!progress || progress.completed_lessons.length < course.total_lessons) {
-    return res.status(400).json({ 
-      message: "يجب إكمال جميع الدروس للحصول على الشهادة" 
-    });
-  }
-  
-  const certificate = {
-    id: uuid(),
-    userId,
-    courseId,
-    course_title: course.title,
-    issued_at: new Date().toISOString(),
-    certificate_number: `CERT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
-  };
-  
-  const userCerts = userCertificates.get(userId) || [];
-  userCerts.push(certificate);
-  userCertificates.set(userId, userCerts);
-  
-  res.json({
-    message: "مبارك! تم إصدار الشهادة بنجاح",
-    certificate
+    bonusPoints,
+    certificate,
+    message: percentage >= 70 
+      ? "أحسنت! لقد نجحت في الاختبار" 
+      : "يجب الحصول على 70% على الأقل للنجاح"
   });
 });
 
 // Get user certificates
-router.get("/certificates/:userId", (req, res) => {
-  const { userId } = req.params;
-  const certificates = userCertificates.get(userId) || [];
+router.get("/certificates/me", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const progress = userLessonProgress.get(userId);
   
-  res.json({
-    userId,
-    certificates,
-    total: certificates.length
+  if (!progress || progress.certificates.length === 0) {
+    return res.json({ certificates: [], total: 0 });
+  }
+  
+  const certificates = progress.certificates.map(lessonId => {
+    const lesson = lessonsData.find(l => l.id === lessonId);
+    const quizResult = progress.quizResults.find(r => r.lessonId === lessonId);
+    
+    return {
+      lessonId,
+      lessonTitle: lesson?.title,
+      category: lesson?.category,
+      date: quizResult?.date,
+      score: quizResult ? (quizResult.score / quizResult.maxScore) * 100 : 100
+    };
   });
+  
+  res.json({ certificates, total: certificates.length });
 });
 
-export const lessonsRouter = router;
+// Get leaderboard
+router.get("/leaderboard/top", (_req: Request, res: Response) => {
+  const leaderboard = Array.from(userLessonProgress.values())
+    .map(p => ({
+      userId: p.userId,
+      totalPoints: p.totalPoints,
+      completedLessons: p.completedLessons.length,
+      certificates: p.certificates.length
+    }))
+    .sort((a, b) => b.totalPoints - a.totalPoints)
+    .slice(0, 10);
+  
+  res.json({ leaderboard });
+});
+
+export default router;

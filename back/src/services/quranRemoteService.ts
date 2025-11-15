@@ -1,6 +1,9 @@
 import type { Ayah, Surah } from "../types/index.js";
 import { getAyat, getSurahAyat, getSurahIndex } from "./dataService.js";
 
+// API configuration - using a public Quran API
+const API_BASE = "https://api.alquran.cloud/v1";
+
 let cachedSurahIndex: Surah[] | null = null;
 type CachedAyatEntry = {
   ayat: Ayah[];
@@ -13,15 +16,15 @@ const API_BASE = "https://api.alquran.cloud/v1";
 
 export const FAILED_AYAT_RETRY_DELAY_MS = 60_000;
 
-// Helper function to map API response to Ayah type
-function mapAyah(surahId: number, item: any): Ayah {
+// Helper function to map API response to our Ayah type
+function mapAyah(surahId: number, apiAyah: any): Ayah {
   return {
     surah_id: surahId,
-    ayah_number: item.numberInSurah || item.number,
-    text_ar: item.text || "",
-    juz: item.juz,
-    page: item.page,
-    hizb: item.hizbQuarter
+    ayah_number: apiAyah.numberInSurah || apiAyah.number,
+    text_ar: apiAyah.text || "",
+    page: apiAyah.page,
+    juz: apiAyah.juz,
+    hizb: apiAyah.hizbQuarter
   };
 }
 

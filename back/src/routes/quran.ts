@@ -44,23 +44,28 @@ router.get("/", async (req, res) => {
   const rawSurah = Number(req.query.surah);
   const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
+  // Get surah index first
+  const indexResult = await fetchSurahIndex();
+  const surahIndex = ensureSurahListSlugs(indexResult.surahs);
+
+  if (Number.isNaN(rawSurah) && !slugQuery) {
+    return res.json({ surahs: surahIndex });
+  }
+
   try {
-    // Fetch surah index
-    const indexResult = await fetchSurahIndex();
-    const surahIndex = ensureSurahListSlugs(indexResult.surahs);
-
-    // If no surah specified, return the index
-    if (Number.isNaN(rawSurah) && !slugQuery) {
-      return res.json({ surahs: surahIndex });
-    }
-
     // Determine which surah to fetch
-    let surahId: number | undefined;
-    if (slugQuery) {
-      const foundBySlug = findSurahBySlug(surahIndex, slugQuery);
-      surahId = foundBySlug?.id;
+    let surahId: number;
+    let surah = slugQuery ? findSurahBySlug(surahIndex, slugQuery) : null;
+    
+    if (surah) {
+      surahId = surah.id;
     } else if (!Number.isNaN(rawSurah)) {
       surahId = rawSurah;
+      surah = surahIndex.find((item) => item.id === surahId) ?? null;
+    } else {
+      // Default to Al-Fatiha
+      surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
+      surahId = surah?.id ?? 1;
     }
 
     // Default to first surah if not found
