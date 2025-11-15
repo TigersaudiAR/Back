@@ -17,7 +17,7 @@ export function getSurahIndex(): Surah[] {
 }
 
 export function getAyat(): Ayah[] {
-  return loadJson<Ayah[]>("sample_ayahs.json");
+  return loadJson<Ayah[]>("ayahs.json");
 }
 
 export function getTafsir(): Tafsir[] {
