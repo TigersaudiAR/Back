@@ -12,6 +12,7 @@ import { scholarsRouter } from "./routes/scholars.js";
 import { prayersRouter } from "./routes/prayers.js";
 import { usersRouter } from "./routes/users.js";
 import islamicLearningRouter from "./routes/islamic-learning.js";
+import nisukRouter from "./routes/nisuk.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/scholars", scholarsRouter);
 app.use("/api/prayers", prayersRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/islamic-learning", islamicLearningRouter);
+app.use("/api/nisuk", nisukRouter);
 
 const port = Number(process.env.PORT) || 4000;
 
