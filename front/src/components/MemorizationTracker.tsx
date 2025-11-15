@@ -8,18 +8,6 @@ interface MemorizationStats {
   currentStreak: number;
   longestStreak: number;
   perfectTests: number;
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-interface Track {
-  id: string;
-  name: string;
-  name_en: string;
-  description: string;
-  level: string;
-  total_surahs?: number;
-  estimated_days: number;
-  daily_commitment: string;
 }
 
 interface Achievement {

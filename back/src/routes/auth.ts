@@ -3,9 +3,13 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 
 import { signToken } from "../middleware/auth.js";
+import { authRateLimit, apiRateLimit } from "../middleware/rateLimit.js";
 import type { Role, User } from "../types/index.js";
 
 const router = express.Router();
+
+// Apply strict rate limiting to all auth routes
+router.use(authRateLimit);
 
 // In-memory storage (in production, use a database)
 const users: User[] = [
