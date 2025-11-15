@@ -55,17 +55,17 @@ router.get("/", async (req, res) => {
   try {
     // Determine which surah to fetch
     let surahId: number;
-    let surah = slugQuery ? findSurahBySlug(surahIndex, slugQuery) : null;
+    let selectedSurah = slugQuery ? findSurahBySlug(surahIndex, slugQuery) : null;
     
-    if (surah) {
-      surahId = surah.id;
+    if (selectedSurah) {
+      surahId = selectedSurah.id;
     } else if (!Number.isNaN(rawSurah)) {
       surahId = rawSurah;
-      surah = surahIndex.find((item) => item.id === surahId) ?? null;
+      selectedSurah = surahIndex.find((item) => item.id === surahId) ?? null;
     } else {
       // Default to Al-Fatiha
-      surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
-      surahId = surah?.id ?? 1;
+      selectedSurah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
+      surahId = selectedSurah?.id ?? 1;
     }
 
     // Default to first surah if not found

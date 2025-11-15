@@ -12,7 +12,6 @@ type CachedAyatEntry = {
 
 const cachedAyat = new Map<number, CachedAyatEntry>();
 const FALLBACK_TTL_MS = 5 * 60 * 1000;
-const API_BASE = "https://api.alquran.cloud/v1";
 
 export const FAILED_AYAT_RETRY_DELAY_MS = 60_000;
 

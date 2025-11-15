@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type { Ayah } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { BISMILLAH_TEXT } from "../../components/QuranCanvas";
+import { findSurahBySlug } from "../../utils/quran";
+import AyahComponent from "../../components/Ayah";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -111,7 +113,7 @@ function QuranClassicPage() {
               <p className="text-2xl leading-loose text-center">{BISMILLAH_TEXT}</p>
             )}
             {ayat.map((ayah) => (
-              <Ayah key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
+              <AyahComponent key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
             ))}
           </article>
         )}

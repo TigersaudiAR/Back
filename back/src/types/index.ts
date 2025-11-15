@@ -6,6 +6,9 @@ export interface User {
   email: string;
   role: Role;
   password?: string;
+  verified?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Surah {
