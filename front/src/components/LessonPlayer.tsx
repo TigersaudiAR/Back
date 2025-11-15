@@ -33,7 +33,26 @@ export default function LessonPlayer() {
   const [activeCategory, setActiveCategory] = useState<'all' | 'aqidah' | 'fiqh' | 'sirah'>('all');
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState<number[]>([]);
-  const [quizResult, setQuizResult] = useState<any>(null);
+  const [quizResult, setQuizResult] = useState<{
+    passed: boolean;
+    score: number;
+    maxScore: number;
+    percentage: number;
+    message: string;
+    certificate?: {
+      lessonId: string;
+      lessonTitle: string;
+      date: string;
+      score: number;
+    };
+    results: Array<{
+      question: string;
+      userAnswer: number;
+      correctAnswer: number;
+      isCorrect: boolean;
+      explanation: string;
+    }>;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -137,7 +156,14 @@ export default function LessonPlayer() {
     </motion.div>
   );
 
-  const renderContent = (content: any, idx: number) => {
+  const renderContent = (content: {
+    type: string;
+    title?: string;
+    body?: string;
+    items?: string[];
+    text?: string;
+    source?: string;
+  }, idx: number) => {
     if (content.type === 'text') {
       return (
         <div key={idx} className="mb-4">
@@ -317,7 +343,7 @@ export default function LessonPlayer() {
                 )}
 
                 <div className="space-y-4">
-                  {quizResult.results.map((result: any, idx: number) => (
+                  {quizResult.results.map((result, idx: number) => (
                     <div key={idx} className={`p-4 rounded-lg ${result.isCorrect ? 'bg-success/20' : 'bg-error/20'}`}>
                       <p className="font-bold">{idx + 1}. {result.question}</p>
                       {!result.isCorrect && (
