@@ -11,7 +11,23 @@ type Props = {
   fontSize?: number;
 };
 
-const BISMILLAH_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ";
+export const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+
+const chunkAyat = (items: Ayah[], size: number) => {
+  const result: Ayah[][] = [];
+  let buffer: Ayah[] = [];
+  items.forEach((item) => {
+    buffer.push(item);
+    if (buffer.length === size) {
+      result.push(buffer);
+      buffer = [];
+    }
+  });
+  if (buffer.length) {
+    result.push(buffer);
+  }
+  return result;
+};
 
 function QuranCanvas({ surah, ayat, activeAyah, onSelectAyah, onSwipe, fontSize }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);

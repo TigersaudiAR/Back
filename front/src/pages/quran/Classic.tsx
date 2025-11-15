@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Ayah } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
-import { findSurahBySlug } from "../../utils/quran";
-import Ayah from "../../components/Ayah";
+import { BISMILLAH_TEXT } from "../../components/QuranCanvas";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function QuranClassicPage() {
   const location = useLocation();
@@ -69,6 +72,11 @@ function QuranClassicPage() {
   const ayat: Ayah[] = data?.ayat ?? [];
   const surah = data?.surah;
 
+  const shouldRenderBismillah =
+    Boolean(surah?.bismillah_pre) &&
+    ayat.length > 0 &&
+    ayat[0]?.text_ar?.replace(/\s+/g, "") !== BISMILLAH_TEXT.replace(/\s+/g, "");
+
   return (
     <div className="min-h-screen bg-white text-black p-10" dir="rtl">
       <div className="mx-auto max-w-4xl">
@@ -98,11 +106,10 @@ function QuranClassicPage() {
           </div>
         )}
         {!loading && !error && ayat.length > 0 && (
-          <section
-            className="rounded-3xl border border-emerald-900/15 bg-white/95 p-8 shadow-[0_24px_70px_rgba(15,64,50,0.12)]"
-            dir="rtl"
-            lang="ar"
-          >
+          <article className="prose prose-lg rtl:text-right">
+            {shouldRenderBismillah && (
+              <p className="text-2xl leading-loose text-center">{BISMILLAH_TEXT}</p>
+            )}
             {ayat.map((ayah) => (
               <Ayah key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
             ))}
