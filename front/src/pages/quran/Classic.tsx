@@ -113,7 +113,7 @@ function QuranClassicPage() {
             {ayat.map((ayah) => (
               <Ayah key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
             ))}
-          </section>
+          </article>
         )}
         <div className="mt-10 flex flex-wrap justify-between gap-3">
           <button
