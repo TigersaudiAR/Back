@@ -44,24 +44,38 @@ router.get("/", async (req, res) => {
   const rawSurah = Number(req.query.surah);
   const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
 
+  // Fetch the surah index
+  const indexResult = await fetchSurahIndex();
+  const surahIndex = ensureSurahListSlugs(indexResult.surahs);
+
   if (Number.isNaN(rawSurah) && !slugQuery) {
-    return res.json(SURAH_LIST);
+    return res.json({ surahs: surahIndex });
   }
 
   try {
-    const surahIndex = [...SURAH_LIST];
-
-    const surah = indexResult.surahs.find((item) => item.id === surahId) ?? null;
-    const tafsir = getTafsirForSurah(surahId);
-
-    if (!surah) {
-      surah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
-      surahId = surah?.id;
+    // Determine surah ID from query or slug
+    let surahId: number | undefined;
+    if (!Number.isNaN(rawSurah) && rawSurah >= 1 && rawSurah <= 114) {
+      surahId = rawSurah;
+    } else if (slugQuery) {
+      const foundBySlug = findSurahBySlug(surahIndex, slugQuery);
+      surahId = foundBySlug?.id;
     }
 
-    if (!surah || typeof surahId !== "number") {
+    // Default to Surah 1 (Al-Fatihah) if no valid ID found
+    if (!surahId) {
+      surahId = 1;
+    }
+
+    const surah = surahIndex.find((item) => item.id === surahId);
+    
+    if (!surah) {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
+
+    // Fetch ayat and tafsir
+    const ayatResult = await fetchSurahAyat(surahId);
+    const tafsirList = getTafsirForSurah(surahId);
 
     res.json({
       surah,
