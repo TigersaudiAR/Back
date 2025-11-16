@@ -92,12 +92,31 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    // update source when track changes
+    if (audio.src !== track.url) {
+      audio.src = track.url;
+      // reset timing info
+      setCurrentTime(0);
+      setDuration(0);
+    }
+
     if (isPlaying) {
       audio.play().catch(() => setIsPlaying(false));
     } else {
       audio.pause();
     }
-  }, [isPlaying, track?.url]);
+
+    // advance to next track when current ends
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrent((c: number) => (c + 1 < recitations.length ? c + 1 : 0));
+    };
+    audio.addEventListener("ended", handleEnded);
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [isPlaying, track?.url, recitations.length]);
 
   useEffect(() => {
     setIsPlaying(false);
@@ -127,10 +146,16 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
       <audio ref={audioRef} src={track.url} preload="metadata" />
       <div className="flex items-center gap-3">
         <button
+<<<<<<< Updated upstream
           type="button"
           className="btn btn-sm btn-accent"
           onClick={() => setIsPlaying((prev) => !prev)}
           aria-label={isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}
+=======
+          aria-label={isPlaying ? "إيقاف" : "تشغيل"}
+          className="btn btn-sm btn-accent"
+          onClick={() => setIsPlaying((prev: boolean) => !prev)}
+>>>>>>> Stashed changes
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </button>
@@ -162,3 +187,8 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
 }
 
 export default AudioBar;
+{
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
