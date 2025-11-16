@@ -2,16 +2,62 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تطبيق القرآن الكريم التعليمي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>مصحف الهدى - منصة تعليمية شاملة للقرآن الكريم والتعليم الإسلامي</title>
+    <meta name="title" content="مصحف الهدى - منصة تعليمية شاملة للقرآن الكريم والتعليم الإسلامي" />
+    <meta name="description" content="منصة إسلامية تعليمية متكاملة: قراءة القرآن الكريم، تعلم التجويد، السيرة النبوية، الأحاديث، الأذكار، حلقات التحفيظ، والتعليم الذاتي للغة العربية" />
+    <meta name="keywords" content="القرآن الكريم, تعليم القرآن, التجويد, السيرة النبوية, الأحاديث النبوية, الأذكار, حلقات التحفيظ, تعلم العربية, الإسلام" />
+    <meta name="author" content="مصحف الهدى التعليمية" />
+    <meta name="theme-color" content="#0f3d2e" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="مصحف الهدى" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="مصحف الهدى - منصة تعليمية شاملة للقرآن الكريم" />
+    <meta property="og:description" content="منصة إسلامية تعليمية متكاملة للقرآن الكريم والتعليم الإسلامي" />
+    <meta property="og:locale" content="ar_SA" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="مصحف الهدى - منصة تعليمية شاملة" />
+    <meta name="twitter:description" content="منصة إسلامية تعليمية متكاملة للقرآن الكريم والتعليم الإسلامي" />
+    
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://api.quran.com" />
+    <link rel="preconnect" href="https://cdn.islamic.network" crossorigin />
+    <link rel="dns-prefetch" href="https://api.quran.com" />
+    <link rel="dns-prefetch" href="https://cdn.islamic.network" />
+    
+    <!-- Font Preloading -->
+    <link
+      rel="preload"
+      href="https://cdn.islamic.network/fonts/UthmanicHafs-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body class="bg-base-100 text-base-content">
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: Tajawal, Arial;">
+        <h1>يرجى تفعيل JavaScript</h1>
+        <p>هذا التطبيق يحتاج إلى JavaScript ليعمل بشكل صحيح</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

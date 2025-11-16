@@ -12,6 +12,8 @@ export interface AudioProgressPayload {
 interface AudioBarProps {
   recitations: Recitation[];
   onProgress?: (payload: AudioProgressPayload) => void;
+  variant?: "floating" | "embedded";
+  className?: string;
 }
 
 const findAyahAtTime = (timings: AyahTiming[] | undefined, time: number): number | undefined => {
@@ -33,7 +35,7 @@ const findAyahAtTime = (timings: AyahTiming[] | undefined, time: number): number
   return timings[0]?.ayah_number;
 };
 
-function AudioBar({ recitations, onProgress }: AudioBarProps) {
+function AudioBar({ recitations, onProgress, variant = "floating", className }: AudioBarProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [current, setCurrent] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -110,11 +112,26 @@ function AudioBar({ recitations, onProgress }: AudioBarProps) {
 
   if (!track) return null;
 
+  const containerBase =
+    variant === "floating"
+      ? "rounded-3xl border border-primary-light/40 bg-primary-dark/85 p-4 text-xs shadow-[0_18px_45px_rgba(4,20,16,0.45)]"
+      : "rounded-2xl border border-primary-light/15 bg-primary-dark/60 p-4 text-xs";
+  const floatingLayout =
+    "fixed bottom-6 left-1/2 z-40 w-[min(90%,420px)] -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0";
+  const embeddedLayout = "w-full";
+  const layoutClass = variant === "floating" ? floatingLayout : embeddedLayout;
+  const containerClass = [containerBase, layoutClass, className].filter(Boolean).join(" ");
+
   return (
-    <div className="fixed bottom-6 left-1/2 z-40 w-[min(90%,420px)] -translate-x-1/2 rounded-3xl border border-primary-light/40 bg-primary-dark/85 p-4 text-xs shadow-[0_18px_45px_rgba(4,20,16,0.45)] sm:left-auto sm:right-8 sm:translate-x-0">
+    <div className={containerClass}>
       <audio ref={audioRef} src={track.url} preload="metadata" />
       <div className="flex items-center gap-3">
-        <button className="btn btn-sm btn-accent" onClick={() => setIsPlaying((prev) => !prev)}>
+        <button
+          type="button"
+          className="btn btn-sm btn-accent"
+          onClick={() => setIsPlaying((prev) => !prev)}
+          aria-label={isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}
+        >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </button>
         <div className="flex-1">
@@ -129,10 +146,12 @@ function AudioBar({ recitations, onProgress }: AudioBarProps) {
         {recitations.map((rec, index) => (
           <button
             key={rec.url}
+            type="button"
             className={`flex items-center gap-1 rounded-full border px-3 py-1 transition ${
               index === current ? "border-accent/60 bg-accent/20 text-accent" : "border-primary-light/20 bg-primary-dark/60"
             }`}
             onClick={() => setCurrent(index)}
+            aria-label={`اختيار تلاوة ${rec.reciter}`}
           >
             <Radio className="h-3 w-3" /> {rec.reciter}
           </button>

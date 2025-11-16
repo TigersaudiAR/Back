@@ -1,0 +1,882 @@
+[
+  {
+    "surah_id": 4,
+    "ayah_number": 1,
+    "text_ar": "سورة النساء - آية 1"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 2,
+    "text_ar": "سورة النساء - آية 2"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 3,
+    "text_ar": "سورة النساء - آية 3"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 4,
+    "text_ar": "سورة النساء - آية 4"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 5,
+    "text_ar": "سورة النساء - آية 5"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 6,
+    "text_ar": "سورة النساء - آية 6"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 7,
+    "text_ar": "سورة النساء - آية 7"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 8,
+    "text_ar": "سورة النساء - آية 8"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 9,
+    "text_ar": "سورة النساء - آية 9"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 10,
+    "text_ar": "سورة النساء - آية 10"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 11,
+    "text_ar": "سورة النساء - آية 11"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 12,
+    "text_ar": "سورة النساء - آية 12"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 13,
+    "text_ar": "سورة النساء - آية 13"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 14,
+    "text_ar": "سورة النساء - آية 14"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 15,
+    "text_ar": "سورة النساء - آية 15"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 16,
+    "text_ar": "سورة النساء - آية 16"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 17,
+    "text_ar": "سورة النساء - آية 17"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 18,
+    "text_ar": "سورة النساء - آية 18"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 19,
+    "text_ar": "سورة النساء - آية 19"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 20,
+    "text_ar": "سورة النساء - آية 20"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 21,
+    "text_ar": "سورة النساء - آية 21"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 22,
+    "text_ar": "سورة النساء - آية 22"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 23,
+    "text_ar": "سورة النساء - آية 23"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 24,
+    "text_ar": "سورة النساء - آية 24"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 25,
+    "text_ar": "سورة النساء - آية 25"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 26,
+    "text_ar": "سورة النساء - آية 26"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 27,
+    "text_ar": "سورة النساء - آية 27"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 28,
+    "text_ar": "سورة النساء - آية 28"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 29,
+    "text_ar": "سورة النساء - آية 29"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 30,
+    "text_ar": "سورة النساء - آية 30"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 31,
+    "text_ar": "سورة النساء - آية 31"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 32,
+    "text_ar": "سورة النساء - آية 32"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 33,
+    "text_ar": "سورة النساء - آية 33"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 34,
+    "text_ar": "سورة النساء - آية 34"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 35,
+    "text_ar": "سورة النساء - آية 35"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 36,
+    "text_ar": "سورة النساء - آية 36"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 37,
+    "text_ar": "سورة النساء - آية 37"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 38,
+    "text_ar": "سورة النساء - آية 38"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 39,
+    "text_ar": "سورة النساء - آية 39"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 40,
+    "text_ar": "سورة النساء - آية 40"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 41,
+    "text_ar": "سورة النساء - آية 41"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 42,
+    "text_ar": "سورة النساء - آية 42"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 43,
+    "text_ar": "سورة النساء - آية 43"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 44,
+    "text_ar": "سورة النساء - آية 44"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 45,
+    "text_ar": "سورة النساء - آية 45"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 46,
+    "text_ar": "سورة النساء - آية 46"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 47,
+    "text_ar": "سورة النساء - آية 47"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 48,
+    "text_ar": "سورة النساء - آية 48"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 49,
+    "text_ar": "سورة النساء - آية 49"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 50,
+    "text_ar": "سورة النساء - آية 50"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 51,
+    "text_ar": "سورة النساء - آية 51"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 52,
+    "text_ar": "سورة النساء - آية 52"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 53,
+    "text_ar": "سورة النساء - آية 53"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 54,
+    "text_ar": "سورة النساء - آية 54"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 55,
+    "text_ar": "سورة النساء - آية 55"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 56,
+    "text_ar": "سورة النساء - آية 56"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 57,
+    "text_ar": "سورة النساء - آية 57"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 58,
+    "text_ar": "سورة النساء - آية 58"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 59,
+    "text_ar": "سورة النساء - آية 59"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 60,
+    "text_ar": "سورة النساء - آية 60"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 61,
+    "text_ar": "سورة النساء - آية 61"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 62,
+    "text_ar": "سورة النساء - آية 62"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 63,
+    "text_ar": "سورة النساء - آية 63"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 64,
+    "text_ar": "سورة النساء - آية 64"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 65,
+    "text_ar": "سورة النساء - آية 65"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 66,
+    "text_ar": "سورة النساء - آية 66"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 67,
+    "text_ar": "سورة النساء - آية 67"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 68,
+    "text_ar": "سورة النساء - آية 68"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 69,
+    "text_ar": "سورة النساء - آية 69"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 70,
+    "text_ar": "سورة النساء - آية 70"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 71,
+    "text_ar": "سورة النساء - آية 71"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 72,
+    "text_ar": "سورة النساء - آية 72"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 73,
+    "text_ar": "سورة النساء - آية 73"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 74,
+    "text_ar": "سورة النساء - آية 74"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 75,
+    "text_ar": "سورة النساء - آية 75"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 76,
+    "text_ar": "سورة النساء - آية 76"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 77,
+    "text_ar": "سورة النساء - آية 77"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 78,
+    "text_ar": "سورة النساء - آية 78"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 79,
+    "text_ar": "سورة النساء - آية 79"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 80,
+    "text_ar": "سورة النساء - آية 80"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 81,
+    "text_ar": "سورة النساء - آية 81"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 82,
+    "text_ar": "سورة النساء - آية 82"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 83,
+    "text_ar": "سورة النساء - آية 83"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 84,
+    "text_ar": "سورة النساء - آية 84"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 85,
+    "text_ar": "سورة النساء - آية 85"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 86,
+    "text_ar": "سورة النساء - آية 86"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 87,
+    "text_ar": "سورة النساء - آية 87"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 88,
+    "text_ar": "سورة النساء - آية 88"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 89,
+    "text_ar": "سورة النساء - آية 89"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 90,
+    "text_ar": "سورة النساء - آية 90"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 91,
+    "text_ar": "سورة النساء - آية 91"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 92,
+    "text_ar": "سورة النساء - آية 92"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 93,
+    "text_ar": "سورة النساء - آية 93"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 94,
+    "text_ar": "سورة النساء - آية 94"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 95,
+    "text_ar": "سورة النساء - آية 95"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 96,
+    "text_ar": "سورة النساء - آية 96"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 97,
+    "text_ar": "سورة النساء - آية 97"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 98,
+    "text_ar": "سورة النساء - آية 98"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 99,
+    "text_ar": "سورة النساء - آية 99"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 100,
+    "text_ar": "سورة النساء - آية 100"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 101,
+    "text_ar": "سورة النساء - آية 101"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 102,
+    "text_ar": "سورة النساء - آية 102"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 103,
+    "text_ar": "سورة النساء - آية 103"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 104,
+    "text_ar": "سورة النساء - آية 104"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 105,
+    "text_ar": "سورة النساء - آية 105"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 106,
+    "text_ar": "سورة النساء - آية 106"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 107,
+    "text_ar": "سورة النساء - آية 107"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 108,
+    "text_ar": "سورة النساء - آية 108"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 109,
+    "text_ar": "سورة النساء - آية 109"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 110,
+    "text_ar": "سورة النساء - آية 110"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 111,
+    "text_ar": "سورة النساء - آية 111"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 112,
+    "text_ar": "سورة النساء - آية 112"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 113,
+    "text_ar": "سورة النساء - آية 113"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 114,
+    "text_ar": "سورة النساء - آية 114"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 115,
+    "text_ar": "سورة النساء - آية 115"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 116,
+    "text_ar": "سورة النساء - آية 116"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 117,
+    "text_ar": "سورة النساء - آية 117"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 118,
+    "text_ar": "سورة النساء - آية 118"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 119,
+    "text_ar": "سورة النساء - آية 119"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 120,
+    "text_ar": "سورة النساء - آية 120"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 121,
+    "text_ar": "سورة النساء - آية 121"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 122,
+    "text_ar": "سورة النساء - آية 122"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 123,
+    "text_ar": "سورة النساء - آية 123"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 124,
+    "text_ar": "سورة النساء - آية 124"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 125,
+    "text_ar": "سورة النساء - آية 125"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 126,
+    "text_ar": "سورة النساء - آية 126"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 127,
+    "text_ar": "سورة النساء - آية 127"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 128,
+    "text_ar": "سورة النساء - آية 128"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 129,
+    "text_ar": "سورة النساء - آية 129"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 130,
+    "text_ar": "سورة النساء - آية 130"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 131,
+    "text_ar": "سورة النساء - آية 131"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 132,
+    "text_ar": "سورة النساء - آية 132"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 133,
+    "text_ar": "سورة النساء - آية 133"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 134,
+    "text_ar": "سورة النساء - آية 134"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 135,
+    "text_ar": "سورة النساء - آية 135"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 136,
+    "text_ar": "سورة النساء - آية 136"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 137,
+    "text_ar": "سورة النساء - آية 137"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 138,
+    "text_ar": "سورة النساء - آية 138"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 139,
+    "text_ar": "سورة النساء - آية 139"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 140,
+    "text_ar": "سورة النساء - آية 140"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 141,
+    "text_ar": "سورة النساء - آية 141"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 142,
+    "text_ar": "سورة النساء - آية 142"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 143,
+    "text_ar": "سورة النساء - آية 143"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 144,
+    "text_ar": "سورة النساء - آية 144"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 145,
+    "text_ar": "سورة النساء - آية 145"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 146,
+    "text_ar": "سورة النساء - آية 146"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 147,
+    "text_ar": "سورة النساء - آية 147"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 148,
+    "text_ar": "سورة النساء - آية 148"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 149,
+    "text_ar": "سورة النساء - آية 149"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 150,
+    "text_ar": "سورة النساء - آية 150"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 151,
+    "text_ar": "سورة النساء - آية 151"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 152,
+    "text_ar": "سورة النساء - آية 152"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 153,
+    "text_ar": "سورة النساء - آية 153"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 154,
+    "text_ar": "سورة النساء - آية 154"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 155,
+    "text_ar": "سورة النساء - آية 155"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 156,
+    "text_ar": "سورة النساء - آية 156"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 157,
+    "text_ar": "سورة النساء - آية 157"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 158,
+    "text_ar": "سورة النساء - آية 158"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 159,
+    "text_ar": "سورة النساء - آية 159"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 160,
+    "text_ar": "سورة النساء - آية 160"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 161,
+    "text_ar": "سورة النساء - آية 161"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 162,
+    "text_ar": "سورة النساء - آية 162"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 163,
+    "text_ar": "سورة النساء - آية 163"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 164,
+    "text_ar": "سورة النساء - آية 164"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 165,
+    "text_ar": "سورة النساء - آية 165"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 166,
+    "text_ar": "سورة النساء - آية 166"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 167,
+    "text_ar": "سورة النساء - آية 167"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 168,
+    "text_ar": "سورة النساء - آية 168"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 169,
+    "text_ar": "سورة النساء - آية 169"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 170,
+    "text_ar": "سورة النساء - آية 170"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 171,
+    "text_ar": "سورة النساء - آية 171"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 172,
+    "text_ar": "سورة النساء - آية 172"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 173,
+    "text_ar": "سورة النساء - آية 173"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 174,
+    "text_ar": "سورة النساء - آية 174"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 175,
+    "text_ar": "سورة النساء - آية 175"
+  },
+  {
+    "surah_id": 4,
+    "ayah_number": 176,
+    "text_ar": "سورة النساء - آية 176"
+  }
+]

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BookOpenCheck, Compass, GraduationCap, MessageCircle, ScrollText, Users2 } from "lucide-react";
+import { BookOpenCheck, Compass, GraduationCap, MessageCircle, ScrollText, Users2, BookOpen, History } from "lucide-react";
 
 const cards = [
   {
@@ -8,6 +8,18 @@ const cards = [
     description: "عرض ثابت يحاكي المصحف العثماني مع تلاوات عالية الدقة وخيارات بث خارجي.",
     to: "/quran/modern",
     icon: <BookOpenCheck aria-hidden="true" className="h-6 w-6" />
+  },
+  {
+    title: "تعلم الإسلام",
+    description: "تعرف على الإسلام من خلال مصادره الأصلية: القرآن والسنة - أسئلة وأجوبة شاملة.",
+    to: "/islamic-learning",
+    icon: <BookOpen aria-hidden="true" className="h-6 w-6" />
+  },
+  {
+    title: "السيرة النبوية",
+    description: "تعلم سيرة النبي محمد صلى الله عليه وسلم من خلال الأحداث المهمة والدروس المستفادة.",
+    to: "/seerah",
+    icon: <History aria-hidden="true" className="h-6 w-6" />
   },
   {
     title: "الأذكار والأدعية",

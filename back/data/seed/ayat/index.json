@@ -1,0 +1,574 @@
+{
+  "surahs": [
+    {
+      "surah_id": 1,
+      "file": "surah_001.json",
+      "ayah_count": 7
+    },
+    {
+      "surah_id": 2,
+      "file": "surah_002.json",
+      "ayah_count": 286
+    },
+    {
+      "surah_id": 3,
+      "file": "surah_003.json",
+      "ayah_count": 200
+    },
+    {
+      "surah_id": 4,
+      "file": "surah_004.json",
+      "ayah_count": 176
+    },
+    {
+      "surah_id": 5,
+      "file": "surah_005.json",
+      "ayah_count": 120
+    },
+    {
+      "surah_id": 6,
+      "file": "surah_006.json",
+      "ayah_count": 165
+    },
+    {
+      "surah_id": 7,
+      "file": "surah_007.json",
+      "ayah_count": 206
+    },
+    {
+      "surah_id": 8,
+      "file": "surah_008.json",
+      "ayah_count": 75
+    },
+    {
+      "surah_id": 9,
+      "file": "surah_009.json",
+      "ayah_count": 129
+    },
+    {
+      "surah_id": 10,
+      "file": "surah_010.json",
+      "ayah_count": 109
+    },
+    {
+      "surah_id": 11,
+      "file": "surah_011.json",
+      "ayah_count": 123
+    },
+    {
+      "surah_id": 12,
+      "file": "surah_012.json",
+      "ayah_count": 111
+    },
+    {
+      "surah_id": 13,
+      "file": "surah_013.json",
+      "ayah_count": 43
+    },
+    {
+      "surah_id": 14,
+      "file": "surah_014.json",
+      "ayah_count": 52
+    },
+    {
+      "surah_id": 15,
+      "file": "surah_015.json",
+      "ayah_count": 99
+    },
+    {
+      "surah_id": 16,
+      "file": "surah_016.json",
+      "ayah_count": 128
+    },
+    {
+      "surah_id": 17,
+      "file": "surah_017.json",
+      "ayah_count": 111
+    },
+    {
+      "surah_id": 18,
+      "file": "surah_018.json",
+      "ayah_count": 110
+    },
+    {
+      "surah_id": 19,
+      "file": "surah_019.json",
+      "ayah_count": 98
+    },
+    {
+      "surah_id": 20,
+      "file": "surah_020.json",
+      "ayah_count": 135
+    },
+    {
+      "surah_id": 21,
+      "file": "surah_021.json",
+      "ayah_count": 112
+    },
+    {
+      "surah_id": 22,
+      "file": "surah_022.json",
+      "ayah_count": 78
+    },
+    {
+      "surah_id": 23,
+      "file": "surah_023.json",
+      "ayah_count": 118
+    },
+    {
+      "surah_id": 24,
+      "file": "surah_024.json",
+      "ayah_count": 64
+    },
+    {
+      "surah_id": 25,
+      "file": "surah_025.json",
+      "ayah_count": 77
+    },
+    {
+      "surah_id": 26,
+      "file": "surah_026.json",
+      "ayah_count": 227
+    },
+    {
+      "surah_id": 27,
+      "file": "surah_027.json",
+      "ayah_count": 93
+    },
+    {
+      "surah_id": 28,
+      "file": "surah_028.json",
+      "ayah_count": 88
+    },
+    {
+      "surah_id": 29,
+      "file": "surah_029.json",
+      "ayah_count": 69
+    },
+    {
+      "surah_id": 30,
+      "file": "surah_030.json",
+      "ayah_count": 60
+    },
+    {
+      "surah_id": 31,
+      "file": "surah_031.json",
+      "ayah_count": 34
+    },
+    {
+      "surah_id": 32,
+      "file": "surah_032.json",
+      "ayah_count": 30
+    },
+    {
+      "surah_id": 33,
+      "file": "surah_033.json",
+      "ayah_count": 73
+    },
+    {
+      "surah_id": 34,
+      "file": "surah_034.json",
+      "ayah_count": 54
+    },
+    {
+      "surah_id": 35,
+      "file": "surah_035.json",
+      "ayah_count": 45
+    },
+    {
+      "surah_id": 36,
+      "file": "surah_036.json",
+      "ayah_count": 83
+    },
+    {
+      "surah_id": 37,
+      "file": "surah_037.json",
+      "ayah_count": 182
+    },
+    {
+      "surah_id": 38,
+      "file": "surah_038.json",
+      "ayah_count": 88
+    },
+    {
+      "surah_id": 39,
+      "file": "surah_039.json",
+      "ayah_count": 75
+    },
+    {
+      "surah_id": 40,
+      "file": "surah_040.json",
+      "ayah_count": 85
+    },
+    {
+      "surah_id": 41,
+      "file": "surah_041.json",
+      "ayah_count": 54
+    },
+    {
+      "surah_id": 42,
+      "file": "surah_042.json",
+      "ayah_count": 53
+    },
+    {
+      "surah_id": 43,
+      "file": "surah_043.json",
+      "ayah_count": 89
+    },
+    {
+      "surah_id": 44,
+      "file": "surah_044.json",
+      "ayah_count": 59
+    },
+    {
+      "surah_id": 45,
+      "file": "surah_045.json",
+      "ayah_count": 37
+    },
+    {
+      "surah_id": 46,
+      "file": "surah_046.json",
+      "ayah_count": 35
+    },
+    {
+      "surah_id": 47,
+      "file": "surah_047.json",
+      "ayah_count": 38
+    },
+    {
+      "surah_id": 48,
+      "file": "surah_048.json",
+      "ayah_count": 29
+    },
+    {
+      "surah_id": 49,
+      "file": "surah_049.json",
+      "ayah_count": 18
+    },
+    {
+      "surah_id": 50,
+      "file": "surah_050.json",
+      "ayah_count": 45
+    },
+    {
+      "surah_id": 51,
+      "file": "surah_051.json",
+      "ayah_count": 60
+    },
+    {
+      "surah_id": 52,
+      "file": "surah_052.json",
+      "ayah_count": 49
+    },
+    {
+      "surah_id": 53,
+      "file": "surah_053.json",
+      "ayah_count": 62
+    },
+    {
+      "surah_id": 54,
+      "file": "surah_054.json",
+      "ayah_count": 55
+    },
+    {
+      "surah_id": 55,
+      "file": "surah_055.json",
+      "ayah_count": 78
+    },
+    {
+      "surah_id": 56,
+      "file": "surah_056.json",
+      "ayah_count": 96
+    },
+    {
+      "surah_id": 57,
+      "file": "surah_057.json",
+      "ayah_count": 29
+    },
+    {
+      "surah_id": 58,
+      "file": "surah_058.json",
+      "ayah_count": 22
+    },
+    {
+      "surah_id": 59,
+      "file": "surah_059.json",
+      "ayah_count": 24
+    },
+    {
+      "surah_id": 60,
+      "file": "surah_060.json",
+      "ayah_count": 13
+    },
+    {
+      "surah_id": 61,
+      "file": "surah_061.json",
+      "ayah_count": 14
+    },
+    {
+      "surah_id": 62,
+      "file": "surah_062.json",
+      "ayah_count": 11
+    },
+    {
+      "surah_id": 63,
+      "file": "surah_063.json",
+      "ayah_count": 11
+    },
+    {
+      "surah_id": 64,
+      "file": "surah_064.json",
+      "ayah_count": 18
+    },
+    {
+      "surah_id": 65,
+      "file": "surah_065.json",
+      "ayah_count": 12
+    },
+    {
+      "surah_id": 66,
+      "file": "surah_066.json",
+      "ayah_count": 12
+    },
+    {
+      "surah_id": 67,
+      "file": "surah_067.json",
+      "ayah_count": 30
+    },
+    {
+      "surah_id": 68,
+      "file": "surah_068.json",
+      "ayah_count": 52
+    },
+    {
+      "surah_id": 69,
+      "file": "surah_069.json",
+      "ayah_count": 52
+    },
+    {
+      "surah_id": 70,
+      "file": "surah_070.json",
+      "ayah_count": 44
+    },
+    {
+      "surah_id": 71,
+      "file": "surah_071.json",
+      "ayah_count": 28
+    },
+    {
+      "surah_id": 72,
+      "file": "surah_072.json",
+      "ayah_count": 28
+    },
+    {
+      "surah_id": 73,
+      "file": "surah_073.json",
+      "ayah_count": 20
+    },
+    {
+      "surah_id": 74,
+      "file": "surah_074.json",
+      "ayah_count": 56
+    },
+    {
+      "surah_id": 75,
+      "file": "surah_075.json",
+      "ayah_count": 40
+    },
+    {
+      "surah_id": 76,
+      "file": "surah_076.json",
+      "ayah_count": 31
+    },
+    {
+      "surah_id": 77,
+      "file": "surah_077.json",
+      "ayah_count": 50
+    },
+    {
+      "surah_id": 78,
+      "file": "surah_078.json",
+      "ayah_count": 40
+    },
+    {
+      "surah_id": 79,
+      "file": "surah_079.json",
+      "ayah_count": 46
+    },
+    {
+      "surah_id": 80,
+      "file": "surah_080.json",
+      "ayah_count": 42
+    },
+    {
+      "surah_id": 81,
+      "file": "surah_081.json",
+      "ayah_count": 29
+    },
+    {
+      "surah_id": 82,
+      "file": "surah_082.json",
+      "ayah_count": 19
+    },
+    {
+      "surah_id": 83,
+      "file": "surah_083.json",
+      "ayah_count": 36
+    },
+    {
+      "surah_id": 84,
+      "file": "surah_084.json",
+      "ayah_count": 25
+    },
+    {
+      "surah_id": 85,
+      "file": "surah_085.json",
+      "ayah_count": 22
+    },
+    {
+      "surah_id": 86,
+      "file": "surah_086.json",
+      "ayah_count": 17
+    },
+    {
+      "surah_id": 87,
+      "file": "surah_087.json",
+      "ayah_count": 19
+    },
+    {
+      "surah_id": 88,
+      "file": "surah_088.json",
+      "ayah_count": 26
+    },
+    {
+      "surah_id": 89,
+      "file": "surah_089.json",
+      "ayah_count": 30
+    },
+    {
+      "surah_id": 90,
+      "file": "surah_090.json",
+      "ayah_count": 20
+    },
+    {
+      "surah_id": 91,
+      "file": "surah_091.json",
+      "ayah_count": 15
+    },
+    {
+      "surah_id": 92,
+      "file": "surah_092.json",
+      "ayah_count": 21
+    },
+    {
+      "surah_id": 93,
+      "file": "surah_093.json",
+      "ayah_count": 11
+    },
+    {
+      "surah_id": 94,
+      "file": "surah_094.json",
+      "ayah_count": 8
+    },
+    {
+      "surah_id": 95,
+      "file": "surah_095.json",
+      "ayah_count": 8
+    },
+    {
+      "surah_id": 96,
+      "file": "surah_096.json",
+      "ayah_count": 19
+    },
+    {
+      "surah_id": 97,
+      "file": "surah_097.json",
+      "ayah_count": 5
+    },
+    {
+      "surah_id": 98,
+      "file": "surah_098.json",
+      "ayah_count": 8
+    },
+    {
+      "surah_id": 99,
+      "file": "surah_099.json",
+      "ayah_count": 8
+    },
+    {
+      "surah_id": 100,
+      "file": "surah_100.json",
+      "ayah_count": 11
+    },
+    {
+      "surah_id": 101,
+      "file": "surah_101.json",
+      "ayah_count": 11
+    },
+    {
+      "surah_id": 102,
+      "file": "surah_102.json",
+      "ayah_count": 8
+    },
+    {
+      "surah_id": 103,
+      "file": "surah_103.json",
+      "ayah_count": 3
+    },
+    {
+      "surah_id": 104,
+      "file": "surah_104.json",
+      "ayah_count": 9
+    },
+    {
+      "surah_id": 105,
+      "file": "surah_105.json",
+      "ayah_count": 5
+    },
+    {
+      "surah_id": 106,
+      "file": "surah_106.json",
+      "ayah_count": 4
+    },
+    {
+      "surah_id": 107,
+      "file": "surah_107.json",
+      "ayah_count": 7
+    },
+    {
+      "surah_id": 108,
+      "file": "surah_108.json",
+      "ayah_count": 3
+    },
+    {
+      "surah_id": 109,
+      "file": "surah_109.json",
+      "ayah_count": 6
+    },
+    {
+      "surah_id": 110,
+      "file": "surah_110.json",
+      "ayah_count": 3
+    },
+    {
+      "surah_id": 111,
+      "file": "surah_111.json",
+      "ayah_count": 5
+    },
+    {
+      "surah_id": 112,
+      "file": "surah_112.json",
+      "ayah_count": 4
+    },
+    {
+      "surah_id": 113,
+      "file": "surah_113.json",
+      "ayah_count": 5
+    },
+    {
+      "surah_id": 114,
+      "file": "surah_114.json",
+      "ayah_count": 6
+    }
+  ]
+}

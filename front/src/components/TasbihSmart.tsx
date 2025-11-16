@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import type { Dhikr } from "../types/adhkar";
 
 interface TasbihSmartProps {
   item: Dhikr;
+  onComplete?: () => void;
 }
 
 type Mode = "tap" | "audio" | "rhythm";
 
-function TasbihSmart({ item }: TasbihSmartProps) {
+function TasbihSmart({ item, onComplete }: TasbihSmartProps) {
   const [mode, setMode] = useState<Mode>("tap");
   const [count, setCount] = useState(0);
   const [listening, setListening] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
@@ -69,28 +72,68 @@ function TasbihSmart({ item }: TasbihSmartProps) {
 
   useEffect(() => {
     localStorage.setItem(`tasbih-${item.id}`, count.toString());
-  }, [item.id, count]);
+    
+    // Check if target count is reached
+    if (count >= targetCount && !completed) {
+      setCompleted(true);
+      // Auto-transition after 2 seconds
+      if (onComplete) {
+        setTimeout(() => {
+          onComplete();
+        }, 2000);
+      }
+    }
+  }, [item.id, count, targetCount, completed, onComplete]);
 
-  const reset = () => setCount(0);
+  const reset = () => {
+    setCount(0);
+    setCompleted(false);
+  };
 
   return (
-    <div className="bg-primary-dark/60 rounded-3xl border border-primary-light/40 p-6 space-y-4 shadow-lg text-center">
-      <h3 className="text-accent text-lg font-semibold">{item.title}</h3>
-      <p className="text-sm leading-7 text-gray-200 whitespace-pre-line">{item.text}</p>
+    <div className={`bg-primary-dark/60 rounded-3xl border border-primary-light/40 p-6 space-y-4 shadow-lg text-center transition-all duration-500 ${completed ? 'border-green-500 bg-green-900/20' : ''}`}>
+      <div className="flex items-center justify-between">
+        <h3 className="text-accent text-lg font-semibold flex-1">{item.title}</h3>
+        {completed && (
+          <div className="bg-green-500 rounded-full p-2 animate-bounce">
+            <Check className="w-5 h-5 text-white" />
+          </div>
+        )}
+      </div>
+      <p className="text-sm leading-7 text-gray-200 whitespace-pre-line with-tashkeel">{item.text}</p>
       {item.reference && (
         <p className="text-[11px] text-gray-400">المصدر: {item.reference}</p>
       )}
       <div className="flex justify-center gap-2 text-xs">
         <span className="badge badge-accent">العدد المستهدف: {targetCount}</span>
-        <span className="badge">الحالي: {count}</span>
+        <span className={`badge ${completed ? 'badge-success' : ''}`}>الحالي: {count}</span>
       </div>
       <div className="flex justify-center gap-3">
-        <button className="btn btn-sm" onClick={() => setMode("tap")}>النقر</button>
-        <button className="btn btn-sm" onClick={() => setMode("audio")}>الصوت</button>
-        <button className="btn btn-sm" onClick={() => setMode("rhythm")}>الإيقاع</button>
+        <button 
+          className={`btn btn-sm ${mode === 'tap' ? 'btn-accent' : 'btn-outline'}`} 
+          onClick={() => setMode("tap")}
+        >
+          النقر
+        </button>
+        <button 
+          className={`btn btn-sm ${mode === 'audio' ? 'btn-accent' : 'btn-outline'}`} 
+          onClick={() => setMode("audio")}
+        >
+          الصوت
+        </button>
+        <button 
+          className={`btn btn-sm ${mode === 'rhythm' ? 'btn-accent' : 'btn-outline'}`} 
+          onClick={() => setMode("rhythm")}
+        >
+          الإيقاع
+        </button>
       </div>
       <div
-        className="rounded-full border-4 border-accent/50 h-40 w-40 mx-auto flex items-center justify-center cursor-pointer select-none"
+        className={`rounded-full border-4 h-40 w-40 mx-auto flex items-center justify-center cursor-pointer select-none transition-all duration-300 ${
+          completed 
+            ? 'border-green-500 bg-green-500/10' 
+            : 'border-accent/50 hover:border-accent hover:scale-105'
+        }`}
         onClick={() => {
           if (mode === "tap") {
             setCount((prev) => prev + 1);
@@ -100,9 +143,18 @@ function TasbihSmart({ item }: TasbihSmartProps) {
         }}
       >
         <div>
-          <p className="text-3xl font-bold text-accent">{count}</p>
+          <p className={`text-3xl font-bold ${completed ? 'text-green-500' : 'text-accent'}`}>
+            {count}
+          </p>
           <p className="text-xs text-gray-300">
-            {mode === "tap" ? "انقر في أي مكان" : listening ? "جار الاستماع" : "ابدأ الاستماع"}
+            {completed 
+              ? "مكتمل ✓" 
+              : mode === "tap" 
+                ? "انقر في أي مكان" 
+                : listening 
+                  ? "جار الاستماع" 
+                  : "ابدأ الاستماع"
+            }
           </p>
         </div>
       </div>

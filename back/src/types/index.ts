@@ -6,6 +6,9 @@ export interface User {
   email: string;
   role: Role;
   password?: string;
+  verified?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Surah {
@@ -15,12 +18,16 @@ export interface Surah {
   revelation_place?: "Mecca" | "Medina";
   ayah_count: number;
   bismillah_pre?: boolean;
+  slug?: string;
 }
 
 export interface Ayah {
   surah_id: number;
   ayah_number: number;
   text_ar: string;
+  page?: number;
+  juz?: number;
+  hizb?: number;
 }
 
 export interface Tafsir {
@@ -30,21 +37,18 @@ export interface Tafsir {
   text_ar: string;
 }
 
-export interface RecitationTimingSegment {
-  ayah_number: number;
-  start: number;
-  end: number;
+export interface ReciterConfig {
+  id: string;
+  name: string;
+  base_url: string;
+  bitrate?: number;
+  style?: string;
 }
 
-export type RecitationTimingMap = Record<string, Record<string, RecitationTimingSegment[]>>;
-
-export interface Recitation {
-  surah_id: number;
-  url: string;
-  reciter: string;
-  bitrate?: number;
-  reciter_id: string;
-  timings?: RecitationTimingSegment[];
+export interface RecitationConfig {
+  version?: number;
+  url_template: string;
+  reciters: ReciterConfig[];
 }
 
 export interface Dhikr {

@@ -1,32 +1,35 @@
 import express from "express";
 
 import { authenticate } from "../middleware/auth.js";
-import { getRecitationTimings, getTafsir } from "../services/dataService.js";
-import type { Recitation } from "../types/index.js";
+import {
+  getRecitationConfig,
+  getTafsir,
+  getTafsirForSurah
+} from "../services/dataService.js";
 import { fetchSurahAyat, fetchSurahIndex } from "../services/quranRemoteService.js";
+import { ensureSurahListSlugs, findSurahBySlug } from "../utils/surah.js";
 
 const router = express.Router();
 
-const RECITERS = [
-  { id: "mahermuaiqly", name: "الشيخ ماهر المعيقلي", bitrate: 128 },
-  { id: "alafasy", name: "الشيخ مشاري العفاسي", bitrate: 128 },
-  { id: "husary", name: "الشيخ محمود الحصري", bitrate: 64 }
-];
+const buildRecitationUrl = (template: string, baseUrl: string, surahId: number) => {
+  const surah = String(surahId);
+  const padded = surah.padStart(3, "0");
+  return template
+    .replace(/{{\s*base_url\s*}}/g, baseUrl)
+    .replace(/{{\s*surah_padded\s*}}/g, padded)
+    .replace(/{{\s*surah\s*}}/g, surah);
+};
 
-const recitationTimings = getRecitationTimings();
-
-const formatRecitations = (surahId: number): Recitation[] =>
-  RECITERS.map((reciter) => {
-    const timings = recitationTimings[reciter.id]?.[String(surahId)];
-    return {
-      surah_id: surahId,
-      url: `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.id}/${String(surahId).padStart(3, "0")}.mp3`,
-      reciter: reciter.name,
-      bitrate: reciter.bitrate,
-      reciter_id: reciter.id,
-      timings: timings ? [...timings] : undefined
-    };
-  });
+const formatRecitations = (surahId: number) => {
+  const config = getRecitationConfig();
+  const template = config.url_template ?? "{{base_url}}{{surah_padded}}.mp3";
+  return config.reciters.map((reciter) => ({
+    surah_id: surahId,
+    url: buildRecitationUrl(template, reciter.base_url, surahId),
+    reciter: reciter.name,
+    bitrate: reciter.bitrate
+  }));
+};
 
 router.get("/index", async (_req, res) => {
   const result = await fetchSurahIndex();
@@ -38,47 +41,63 @@ router.get("/tafsir", (_req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const surahId = Number(req.query.surah) || 1;
+  const rawSurah = Number(req.query.surah);
+  const slugQuery = typeof req.query.slug === "string" ? req.query.slug.trim() : undefined;
+
+  // Get surah index first
+  const indexResult = await fetchSurahIndex();
+  const surahIndex = ensureSurahListSlugs(indexResult.surahs);
+
+  if (Number.isNaN(rawSurah) && !slugQuery) {
+    return res.json({ surahs: surahIndex });
+  }
 
   try {
-    const [indexResult, ayatResult] = await Promise.all([
-      fetchSurahIndex(),
-      fetchSurahAyat(surahId)
-    ]);
+    // Determine which surah to fetch
+    let surahId: number;
+    let selectedSurah = slugQuery ? findSurahBySlug(surahIndex, slugQuery) : null;
+    
+    if (selectedSurah) {
+      surahId = selectedSurah.id;
+    } else if (!Number.isNaN(rawSurah)) {
+      surahId = rawSurah;
+      selectedSurah = surahIndex.find((item) => item.id === surahId) ?? null;
+    } else {
+      // Default to Al-Fatiha
+      selectedSurah = surahIndex.find((item) => item.id === 1) ?? surahIndex[0];
+      surahId = selectedSurah?.id ?? 1;
+    }
 
-    const surah = indexResult.surahs.find((item) => item.id === surahId) ?? null;
-    const tafsir = getTafsir().filter((entry) => entry.surah_id === surahId);
+    // Default to first surah if not found
+    if (!surahId) {
+      const firstSurah = surahIndex[0];
+      surahId = firstSurah?.id ?? 1;
+    }
 
+    // Fetch the surah data
+    const surah = surahIndex.find((item) => item.id === surahId);
     if (!surah) {
       return res.status(404).json({ message: "السورة غير موجودة في الفهرس" });
     }
 
-    if (!ayatResult.ayat.length) {
-      return res.status(503).json({
-        message: "تعذر تحميل الآيات من المصدر الخارجي ولم تتوافر نسخة محلية لهذه السورة",
-        surah,
-        tafsir,
-        recitations: formatRecitations(surahId),
-        cached: true
-      });
-    }
-
-    const message =
-      ayatResult.fromCache || indexResult.fromCache
-        ? "يتم عرض السورة من النسخة المخزنة لحين توفر الاتصال الخارجي."
-        : undefined;
+    // Fetch ayat and tafsir
+    const ayatResult = await fetchSurahAyat(surahId);
+    const tafsirList = getTafsirForSurah(surahId);
 
     res.json({
       surah,
       ayat: ayatResult.ayat,
-      tafsir,
+      tafsir: tafsirList,
       recitations: formatRecitations(surahId),
       cached: ayatResult.fromCache || indexResult.fromCache,
-      message
+      message:
+        ayatResult.fromCache || indexResult.fromCache
+          ? "تم تحميل السورة من الذاكرة المؤقتة المحلية."
+          : undefined
     });
   } catch (error) {
     console.error("Failed to load surah", error);
-    res.status(502).json({ message: "تعذر تحميل بيانات السورة من الخدمة الخارجية" });
+    res.status(500).json({ message: "تعذر تحميل بيانات السورة من المصدر المحلي" });
   }
 });
 

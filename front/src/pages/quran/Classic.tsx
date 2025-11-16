@@ -1,25 +1,42 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Ayah } from "../../types/quran";
 import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
+import { BISMILLAH_TEXT } from "../../components/QuranCanvas";
+import { findSurahBySlug } from "../../utils/quran";
+import AyahComponent from "../../components/Ayah";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 function QuranClassicPage() {
-  const query = useQuery();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const navigate = useNavigate();
-  const initialId = Number(query.get("surah")) || 1;
+  const surahParam = query.get("surah");
+  const slugParam = query.get("slug") ?? undefined;
+  const parsedSurahId = surahParam ? Number(surahParam) : NaN;
+  const hasValidSurahParam = !Number.isNaN(parsedSurahId) && parsedSurahId > 0;
+  const initialId = hasValidSurahParam ? parsedSurahId : 1;
   const [currentSurahId, setCurrentSurahId] = useState(initialId);
   const { surahs } = useSurahIndex();
-  const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
 
   useEffect(() => {
-    if (initialId !== currentSurahId) {
-      setCurrentSurahId(initialId);
+    if (hasValidSurahParam && !Number.isNaN(parsedSurahId) && parsedSurahId !== currentSurahId) {
+      setCurrentSurahId(parsedSurahId);
     }
-  }, [initialId, currentSurahId]);
+  }, [hasValidSurahParam, parsedSurahId, currentSurahId]);
+
+  useEffect(() => {
+    if (hasValidSurahParam || !slugParam || !surahs.length) {
+      return;
+    }
+    const match = findSurahBySlug(surahs, slugParam);
+    if (match && match.id !== currentSurahId) {
+      setCurrentSurahId(match.id);
+    }
+  }, [hasValidSurahParam, slugParam, surahs, currentSurahId]);
 
   const surahExists = surahs.some((item) => item.id === currentSurahId);
 
@@ -29,8 +46,38 @@ function QuranClassicPage() {
     }
   }, [surahs, surahExists]);
 
+  const buildQueryForSurah = useCallback(
+    (id: number) => {
+      const params = new URLSearchParams();
+      params.set("surah", String(id));
+      const info = surahs.find((item) => item.id === id);
+      if (info?.slug) {
+        params.set("slug", info.slug);
+      }
+      return `?${params.toString()}`;
+    },
+    [surahs]
+  );
+
+  useEffect(() => {
+    if (!surahs.length) {
+      return;
+    }
+    const expected = buildQueryForSurah(currentSurahId);
+    if (expected !== location.search) {
+      navigate(expected, { replace: true });
+    }
+  }, [surahs, currentSurahId, buildQueryForSurah, location.search, navigate]);
+
+  const { data, loading, error, refresh } = useQuranSurah(currentSurahId);
+
   const ayat: Ayah[] = data?.ayat ?? [];
   const surah = data?.surah;
+
+  const shouldRenderBismillah =
+    Boolean(surah?.bismillah_pre) &&
+    ayat.length > 0 &&
+    ayat[0]?.text_ar?.replace(/\s+/g, "") !== BISMILLAH_TEXT.replace(/\s+/g, "");
 
   return (
     <div className="min-h-screen bg-white text-black p-10" dir="rtl">
@@ -62,18 +109,18 @@ function QuranClassicPage() {
         )}
         {!loading && !error && ayat.length > 0 && (
           <article className="prose prose-lg rtl:text-right">
+            {shouldRenderBismillah && (
+              <p className="text-2xl leading-loose text-center">{BISMILLAH_TEXT}</p>
+            )}
             {ayat.map((ayah) => (
-              <p key={ayah.ayah_number} className="text-2xl leading-loose">
-                <span className="align-top rounded-full border border-gray-400 px-2 py-1 text-sm">{ayah.ayah_number}</span>
-                {ayah.text_ar}
-              </p>
+              <AyahComponent key={ayah.ayah_number} ayah={ayah} variant="classic" className="classic-ayah" />
             ))}
           </article>
         )}
         <div className="mt-10 flex flex-wrap justify-between gap-3">
           <button
             className="rounded border border-gray-400 px-4 py-2"
-            onClick={() => navigate(`/quran/modern?surah=${currentSurahId}`)}
+            onClick={() => navigate(`/quran/modern${buildQueryForSurah(currentSurahId)}`)}
           >
             العودة للوضع الحديث
           </button>

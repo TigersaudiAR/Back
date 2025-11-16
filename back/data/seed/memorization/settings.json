@@ -1,0 +1,185 @@
+{
+  "schedules": [
+    {
+      "id": "schedule-1",
+      "name": "جدول المبتدئين",
+      "name_en": "Beginner Schedule",
+      "description": "جدول مناسب للمبتدئين في حفظ القرآن - صفحة واحدة يومياً",
+      "daily_target": {
+        "type": "page",
+        "amount": 1
+      },
+      "review_frequency": "weekly",
+      "difficulty": "easy"
+    },
+    {
+      "id": "schedule-2",
+      "name": "جدول المتوسط",
+      "name_en": "Intermediate Schedule",
+      "description": "جدول للمتقدمين - صفحتان يومياً",
+      "daily_target": {
+        "type": "page",
+        "amount": 2
+      },
+      "review_frequency": "daily",
+      "difficulty": "medium"
+    },
+    {
+      "id": "schedule-3",
+      "name": "جدول المتقدم",
+      "name_en": "Advanced Schedule",
+      "description": "جدول للمتقنين - حزب يومياً",
+      "daily_target": {
+        "type": "hizb",
+        "amount": 1
+      },
+      "review_frequency": "daily",
+      "difficulty": "hard"
+    },
+    {
+      "id": "schedule-4",
+      "name": "جدول التثبيت",
+      "name_en": "Revision Schedule",
+      "description": "جدول خاص بتثبيت الحفظ - مراجعة جزء يومياً",
+      "daily_target": {
+        "type": "juz",
+        "amount": 1
+      },
+      "review_frequency": "daily",
+      "difficulty": "medium"
+    }
+  ],
+  "review_systems": [
+    {
+      "id": "system-1",
+      "name": "نظام المراجعة الأسبوعي",
+      "description": "مراجعة المحفوظ الجديد يومياً، والمحفوظ القديم أسبوعياً",
+      "rules": [
+        "مراجعة حفظ اليوم الحالي مرة",
+        "مراجعة حفظ الأمس مرتين",
+        "مراجعة حفظ الأسبوع الماضي مرة",
+        "مراجعة حفظ الشهر الماضي مرة"
+      ]
+    },
+    {
+      "id": "system-2",
+      "name": "نظام المراجعة المكثف",
+      "description": "مراجعة يومية مكثفة لتثبيت الحفظ",
+      "rules": [
+        "مراجعة حفظ اليوم ثلاث مرات",
+        "مراجعة حفظ الأمس مرتين",
+        "مراجعة حفظ آخر ثلاثة أيام مرة",
+        "مراجعة عشوائية من المحفوظ القديم"
+      ]
+    }
+  ],
+  "test_types": [
+    {
+      "id": "test-recitation",
+      "name": "اختبار التلاوة",
+      "description": "تلاوة الآيات من الذاكرة",
+      "difficulty": "easy",
+      "points": 10
+    },
+    {
+      "id": "test-writing",
+      "name": "اختبار الكتابة",
+      "description": "كتابة الآيات من الذاكرة",
+      "difficulty": "medium",
+      "points": 20
+    },
+    {
+      "id": "test-completion",
+      "name": "اختبار الإكمال",
+      "description": "إكمال الآيات الناقصة",
+      "difficulty": "medium",
+      "points": 15
+    },
+    {
+      "id": "test-random",
+      "name": "اختبار عشوائي",
+      "description": "أسئلة عشوائية من المحفوظ",
+      "difficulty": "hard",
+      "points": 25
+    }
+  ],
+  "achievements": [
+    {
+      "id": "achievement-juz-1",
+      "name": "حافظ الجزء الأول",
+      "description": "أتممت حفظ الجزء الأول من القرآن",
+      "requirement": {
+        "type": "juz_count",
+        "value": 1
+      },
+      "badge": "🌟",
+      "points": 100
+    },
+    {
+      "id": "achievement-juz-5",
+      "name": "حافظ خمسة أجزاء",
+      "description": "أتممت حفظ خمسة أجزاء من القرآن",
+      "requirement": {
+        "type": "juz_count",
+        "value": 5
+      },
+      "badge": "⭐",
+      "points": 500
+    },
+    {
+      "id": "achievement-juz-10",
+      "name": "حافظ عشرة أجزاء",
+      "description": "أتممت حفظ عشرة أجزاء من القرآن",
+      "requirement": {
+        "type": "juz_count",
+        "value": 10
+      },
+      "badge": "✨",
+      "points": 1000
+    },
+    {
+      "id": "achievement-complete",
+      "name": "حافظ القرآن الكريم",
+      "description": "أتممت حفظ القرآن الكريم كاملاً - بارك الله فيك",
+      "requirement": {
+        "type": "juz_count",
+        "value": 30
+      },
+      "badge": "👑",
+      "points": 10000
+    },
+    {
+      "id": "achievement-consistent-week",
+      "name": "المثابر الأسبوعي",
+      "description": "حفظت لمدة أسبوع متواصل",
+      "requirement": {
+        "type": "streak_days",
+        "value": 7
+      },
+      "badge": "🔥",
+      "points": 50
+    },
+    {
+      "id": "achievement-consistent-month",
+      "name": "المثابر الشهري",
+      "description": "حفظت لمدة شهر متواصل",
+      "requirement": {
+        "type": "streak_days",
+        "value": 30
+      },
+      "badge": "💪",
+      "points": 200
+    },
+    {
+      "id": "achievement-perfect-test",
+      "name": "الامتحان المثالي",
+      "description": "حصلت على درجة كاملة في اختبار",
+      "requirement": {
+        "type": "perfect_test",
+        "value": 1
+      },
+      "badge": "💯",
+      "points": 30
+    }
+  ]
+}
