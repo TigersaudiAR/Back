@@ -2,6 +2,7 @@
   direction: rtl;
   text-align: justify;
   font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
+  line-height: 2.2;
 }
 
 .quran-manuscript__body {
@@ -48,6 +49,7 @@
   white-space: pre-wrap;
   word-spacing: 0.35rem;
   letter-spacing: 0.01em;
+  font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
 }
 
 .quran-ayah__number {
@@ -56,14 +58,15 @@
   justify-content: center;
   font-size: clamp(1.1rem, 2.4vw, 1.35rem);
   font-weight: 600;
-  color: #c58f00;
+  color: #0c5e40;
   margin-inline-start: 0.6rem;
+  min-width: 2em;
   width: 2em;
   height: 2em;
-  border: 2px solid #c58f00;
+  border: 2px solid #79c08b;
   border-radius: 50%;
-  background: rgba(255, 215, 0, 0.05);
-  box-shadow: 0 0 8px rgba(197, 143, 0, 0.15);
+  background: rgba(121, 192, 139, 0.08);
+  box-shadow: 0 0 8px rgba(121, 192, 139, 0.2);
 }
 
 .ayah-number {
@@ -72,14 +75,15 @@
   justify-content: center;
   font-size: 1rem;
   font-weight: 600;
-  color: #c58f00;
+  color: #0c5e40;
   margin-inline-start: 0.4rem;
   min-width: 1.8em;
+  width: 1.8em;
   height: 1.8em;
   border: 1.5px solid #79c08b;
   border-radius: 50%;
-  background: rgba(121, 192, 139, 0.05);
-  box-shadow: 0 0 6px rgba(121, 192, 139, 0.15);
+  background: rgba(121, 192, 139, 0.08);
+  box-shadow: 0 0 6px rgba(121, 192, 139, 0.2);
   font-family: "UthmanicHafs", "Scheherazade New", "Amiri", serif;
 }
 
@@ -94,6 +98,8 @@
   margin-block: clamp(1.75rem, 4vw, 3rem);
   text-align: center;
   color: #0c5e40;
+  font-family: "UthmanicHafs", "Scheherazade New", "Amiri", serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

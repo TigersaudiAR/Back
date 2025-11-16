@@ -26,6 +26,8 @@
 .hadith-text {
   font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
   line-height: 2.2;
+  text-align: justify;
+  word-spacing: 0.2rem;
 }
 
 body {
