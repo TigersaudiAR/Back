@@ -78,12 +78,14 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahN
     };
   }, [onSwipe]);
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onSelectAyah?.(ayah);
-    }
-  };
+const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    onSelectAyah?.(ayah, rect);
+  }
+};
 
   return (
     <div ref={containerRef} className="quran-view-scroll select-none">
@@ -102,7 +104,11 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahN
                         className={`quran-ayah${isActive ? " is-active" : ""}`}
                         role="button"
                         tabIndex={0}
-                        onClick={() => onSelectAyah?.(ayah)}
+                        onClick={(event) => {
+                          const target = event.currentTarget;
+                          const rect = target.getBoundingClientRect();
+                          onSelectAyah?.(ayah, rect);
+                        }}
                         onKeyDown={(event) => handleKeyDown(event, ayah)}
                       >
                         <span className="quran-ayah-text">{ayah.text_ar}</span>
@@ -111,9 +117,9 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahN
                     );
                   })}
                 </div>
-              ))
-            ) : (
-              <div className="quran-placeholder">
+}
+
+export default QuranCanvas;
                 {placeholder ?? "لا توجد آيات متاحة حالياً."}
               </div>
             )}
