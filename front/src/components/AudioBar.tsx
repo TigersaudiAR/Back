@@ -146,16 +146,10 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
       <audio ref={audioRef} src={track.url} preload="metadata" />
       <div className="flex items-center gap-3">
         <button
-<<<<<<< Updated upstream
           type="button"
           className="btn btn-sm btn-accent"
           onClick={() => setIsPlaying((prev) => !prev)}
           aria-label={isPlaying ? "إيقاف التلاوة مؤقتًا" : "تشغيل التلاوة"}
-=======
-          aria-label={isPlaying ? "إيقاف" : "تشغيل"}
-          className="btn btn-sm btn-accent"
-          onClick={() => setIsPlaying((prev: boolean) => !prev)}
->>>>>>> Stashed changes
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </button>
@@ -187,8 +181,3 @@ function AudioBar({ recitations, onProgress, variant = "floating", className }: 
 }
 
 export default AudioBar;
-{
-  "compilerOptions": {
-    "jsx": "react-jsx"
-  }
-}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
-import type { Ayah } from "../types/quran";
+import type { Ayah, Surah } from "../types/quran";
 
 type Props = {
   surah?: Surah;
@@ -13,7 +13,7 @@ type Props = {
   placeholder?: ReactNode;
 };
 
-export const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+export const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
 
 const chunkAyat = (items: Ayah[], size: number) => {
   const result: Ayah[][] = [];
@@ -44,12 +44,18 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahN
     };
   }, [ayat]);
 
+  const ayahGroups = useMemo(() => chunkAyat(ayat, 3), [ayat]);
+
   const textStyle = useMemo(() => {
     if (!fontSize) return undefined;
     const size = Math.max(18, Math.min(46, fontSize));
     const lineHeight = Math.round(size * 1.6);
     return { fontSize: `${size}px`, lineHeight: `${lineHeight}px` };
   }, [fontSize]);
+
+  const handleScrollToTop = () => {
+    containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const element = containerRef.current;
@@ -78,14 +84,14 @@ function QuranCanvas({ ayat, activeAyah, onSelectAyah, onSwipe, fontSize, surahN
     };
   }, [onSwipe]);
 
-const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    const target = event.currentTarget;
-    const rect = target.getBoundingClientRect();
-    onSelectAyah?.(ayah, rect);
-  }
-};
+  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const target = event.currentTarget;
+      const rect = target.getBoundingClientRect();
+      onSelectAyah?.(ayah, rect);
+    }
+  };
 
   return (
     <div ref={containerRef} className="quran-view-scroll select-none">
@@ -117,9 +123,9 @@ const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, ayah: Ayah) => {
                     );
                   })}
                 </div>
-}
-
-export default QuranCanvas;
+              ))
+            ) : (
+              <div className="quran-placeholder">
                 {placeholder ?? "لا توجد آيات متاحة حالياً."}
               </div>
             )}
