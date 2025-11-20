@@ -343,6 +343,8 @@ export async function getPage(pageNumber: number): Promise<{
   
   try {
     // Page image URL from Quran Complex
+    // Note: Using QURAN_COMPLEX_API directly for images as they're served from CDN
+    // If CORS issues occur, configure VITE_QURAN_PROXY to use Netlify Function
     const imageUrl = `${QURAN_COMPLEX_API}/images/page-${String(pageNumber).padStart(3, '0')}.png`;
     
     // Try to fetch ayat data for the page

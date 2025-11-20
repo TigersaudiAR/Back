@@ -46,7 +46,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     }
 
     // Construct API URL
-    const apiBase = process.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
+    const apiBase = process.env.QURAN_BASE || process.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
     const apiUrl = `${apiBase}${path}`;
 
     // Prepare headers
@@ -55,8 +55,9 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     };
 
     // Add API key if available
-    if (process.env.VITE_QURAN_API_KEY) {
-      headers['Authorization'] = `Bearer ${process.env.VITE_QURAN_API_KEY}`;
+    const apiKey = process.env.QURAN_API_KEY || process.env.VITE_QURAN_API_KEY;
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
     }
 
     // Forward request to Quran API

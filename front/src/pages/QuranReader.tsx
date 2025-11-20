@@ -172,14 +172,17 @@ export default function QuranReader() {
               showNavigation={!showToolbar}
             />
             
-            {/* Ayah Overlays - TODO: Add bounding boxes from API */}
-            {/* <AyahOverlayContainer
+            {/* TODO: Add Ayah Overlays when API provides bounding box coordinates
+                 Requires: API endpoint returning ayah positions on page images
+                 Component: AyahOverlayContainer (ready but needs bbox data)
+            <AyahOverlayContainer
               ayat={ayat}
               boundingBoxes={[]}
               tafsirMap={tafsirMap}
               onSelectAyah={handleSelectAyah}
               activeAyah={highlightedAyah || selectedAyah?.ayah_number}
-            /> */}
+            />
+            */}
           </div>
         </div>
       </main>
