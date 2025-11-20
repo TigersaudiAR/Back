@@ -1,45 +1,40 @@
 /**
  * AyahOverlay Component
- * 
+ *
  * Displays bounding boxes over Quran page images for each ayah
  * Shows popover with ayah text, tafsir, and audio controls when clicked
- * 
+ *
  * Note: Bounding box data from API required - placeholder structure shown
  */
 
-import { useState } from 'react';
-import { Volume2, BookOpen } from 'lucide-react';
-import type { Ayah, Tafsir } from '../../types/quran';
-
-interface AyahBoundingBox {
-  ayahId: string | number;
-  surahNumber: number;
-  ayahNumber: number;
-  x: number; // percentage or pixels
-  y: number;
-  width: number;
-  height: number;
-}
+import { useState } from "react";
+import { Volume2, BookOpen } from "lucide-react";
+import type { Ayah, Tafsir, AyahBoundingBox } from "../../types/quran";
 
 interface AyahOverlayProps {
-  pageNumber: number;
+  pageNumber: number; // Used for cache key or future functionality
   ayahBoxes: AyahBoundingBox[];
   onAyahClick?: (ayahId: string | number) => void;
   className?: string;
 }
 
 export default function AyahOverlay({
-  pageNumber,
+  // pageNumber is kept for future use (e.g., caching, analytics)
   ayahBoxes,
   onAyahClick,
-  className = '',
+  className = "",
 }: AyahOverlayProps) {
-  const [selectedAyah, setSelectedAyah] = useState<string | number | null>(null);
-  const [popoverPosition, setPopoverPosition] = useState<{ top: number; left: number } | null>(null);
+  const [selectedAyah, setSelectedAyah] = useState<string | number | null>(
+    null,
+  );
+  const [popoverPosition, setPopoverPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const handleBoxClick = (box: AyahBoundingBox, event: React.MouseEvent) => {
     event.stopPropagation();
-    
+
     // Calculate popover position
     const rect = event.currentTarget.getBoundingClientRect();
     setPopoverPosition({
@@ -98,7 +93,7 @@ interface AyahPopoverProps {
 function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
   const [loading, setLoading] = useState(true);
   const [ayah, setAyah] = useState<Ayah | null>(null);
-  const [tafsir, setTafsir] = useState<Tafsir[]>([]);
+  const [tafsir] = useState<Tafsir[]>([]); // Will be populated when tafsir is fetched
   const [showTafsir, setShowTafsir] = useState(false);
 
   // TODO: Fetch ayah and tafsir data using quranService
@@ -107,25 +102,24 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
     // Simulate API call
     setTimeout(() => {
       setAyah({
-        // Placeholder data - replace with actual API call
-        id: ayahId,
-        text: 'نص الآية من API',
-        // Add other fields as per Ayah type
-      } as any);
+        surah_id: 1,
+        ayah_number: 1,
+        text_ar: "نص الآية من API",
+      });
       setLoading(false);
     }, 500);
   });
 
   const handlePlayAudio = () => {
     // TODO: Implement audio playback
-    console.log('Play audio for ayah:', ayahId);
+    console.log("Play audio for ayah:", ayahId);
   };
 
   const handleToggleTafsir = () => {
     setShowTafsir(!showTafsir);
     if (!showTafsir && tafsir.length === 0) {
       // TODO: Fetch tafsir from API
-      console.log('Fetch tafsir for ayah:', ayahId);
+      console.log("Fetch tafsir for ayah:", ayahId);
     }
   };
 
@@ -143,7 +137,7 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
         style={{
           top: position.top,
           left: position.left,
-          transform: 'translate(-50%, 10px)',
+          transform: "translate(-50%, 10px)",
         }}
         dir="rtl"
       >
@@ -167,7 +161,7 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
             {ayah && (
               <div className="text-right">
                 <p className="text-2xl leading-relaxed font-['UthmanicHafs'] quran-manuscript__body">
-                  {ayah.text || 'قريباً - سيتم جلب النص من API الرسمي'}
+                  {ayah.text_ar || "قريباً - سيتم جلب النص من API الرسمي"}
                 </p>
               </div>
             )}
@@ -188,7 +182,7 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
                 aria-label="عرض التفسير"
               >
                 <BookOpen size={16} />
-                <span>{showTafsir ? 'إخفاء التفسير' : 'التفسير'}</span>
+                <span>{showTafsir ? "إخفاء التفسير" : "التفسير"}</span>
               </button>
             </div>
 
@@ -200,7 +194,7 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
                   <div className="space-y-2">
                     {tafsir.map((t, index) => (
                       <p key={index} className="text-sm leading-relaxed">
-                        {t.text}
+                        {t.text_ar}
                       </p>
                     ))}
                   </div>

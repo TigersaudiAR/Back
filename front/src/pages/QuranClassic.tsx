@@ -1,6 +1,6 @@
 /**
  * QuranClassic Page
- * 
+ *
  * Classic text-based Quran view for reading and printing
  * Features:
  * - Uthmanic text font
@@ -10,20 +10,20 @@
  * - Print-friendly styling
  */
 
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Printer } from 'lucide-react';
-import { getSurahAyat, getChapters } from '../services/quranService';
-import type { Ayah, Surah } from '../types/quran';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowRight, Printer } from "lucide-react";
+import { getSurahAyat, getChapters } from "../services/quranService";
+import type { Ayah, Surah } from "../types/quran";
 
 export default function QuranClassic() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  const surahParam = searchParams.get('surah');
+
+  const surahParam = searchParams.get("surah");
   const initialSurah = surahParam ? parseInt(surahParam, 10) : 1;
 
-  const [currentSurah, setCurrentSurah] = useState(initialSurah);
+  const [currentSurah] = useState(initialSurah);
   const [ayat, setAyat] = useState<Ayah[]>([]);
   const [surahInfo, setSurahInfo] = useState<Surah | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,8 +47,8 @@ export default function QuranClassic() {
 
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching surah data:', err);
-        setError('فشل في تحميل بيانات السورة');
+        console.error("Error fetching surah data:", err);
+        setError("فشل في تحميل بيانات السورة");
         setLoading(false);
       }
     };
@@ -63,7 +63,7 @@ export default function QuranClassic() {
   };
 
   const handleGoBack = () => {
-    navigate('/quran');
+    navigate("/quran");
   };
 
   return (
@@ -82,7 +82,7 @@ export default function QuranClassic() {
             </button>
 
             <h1 className="text-xl font-bold">
-              {surahInfo?.name_arabic || 'القرآن الكريم'}
+              {surahInfo?.name_ar || "القرآن الكريم"}
             </h1>
 
             <button
@@ -120,10 +120,11 @@ export default function QuranClassic() {
             {surahInfo && (
               <div className="text-center mb-8 print:mb-4">
                 <h2 className="text-3xl font-bold mb-2 quran-manuscript__body">
-                  سورة {surahInfo.name_arabic}
+                  سورة {surahInfo.name_ar}
                 </h2>
                 <p className="text-base-content text-opacity-70">
-                  {surahInfo.revelation_place === 'makkah' ? 'مكية' : 'مدنية'} • {surahInfo.verses_count} آية
+                  {surahInfo.revelation_place === "Mecca" ? "مكية" : "مدنية"} •{" "}
+                  {surahInfo.ayah_count} آية
                 </p>
               </div>
             )}
@@ -140,11 +141,14 @@ export default function QuranClassic() {
               {ayat.length > 0 ? (
                 <div className="space-y-6">
                   {ayat.map((ayah: Ayah, index: number) => (
-                    <div key={ayah.id || index} className="quran-ayah">
+                    <div
+                      key={`${ayah.surah_id}-${ayah.ayah_number}`}
+                      className="quran-ayah"
+                    >
                       <p className="quran-ayah__text">
-                        {ayah.text_uthmani || ayah.text || 'نص الآية غير متوفر'}
+                        {ayah.text_ar || "نص الآية غير متوفر"}
                         <span className="quran-ayah__number">
-                          {ayah.verse_number || index + 1}
+                          {ayah.ayah_number || index + 1}
                         </span>
                       </p>
                     </div>

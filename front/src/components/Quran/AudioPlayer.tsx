@@ -1,6 +1,6 @@
 /**
  * AudioPlayer Component
- * 
+ *
  * Audio playback for Quran recitation
  * Features:
  * - Play/pause/seek controls
@@ -9,8 +9,16 @@
  * - Timestamp-based highlighting
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Play, Pause, SkipForward, SkipBack, Repeat, Volume2, VolumeX } from 'lucide-react';
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  Play,
+  Pause,
+  SkipForward,
+  SkipBack,
+  Repeat,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -25,7 +33,7 @@ export default function AudioPlayer({
   onProgress,
   onHighlight,
   ayahTimestamps = [],
-  className = '',
+  className = "",
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -61,7 +69,7 @@ export default function AudioPlayer({
       // Check if we need to highlight an ayah based on timestamp
       if (ayahTimestamps.length > 0) {
         const currentAyah = ayahTimestamps.find(
-          (t) => time >= t.start && time < t.end
+          (t) => time >= t.start && time < t.end,
         );
         if (currentAyah) {
           onHighlight?.(currentAyah.ayahNumber);
@@ -80,7 +88,7 @@ export default function AudioPlayer({
 
   const handleError = () => {
     setLoading(false);
-    console.error('Error loading audio');
+    console.error("Error loading audio");
   };
 
   // Playback controls
@@ -131,23 +139,26 @@ export default function AudioPlayer({
     if (audioRef.current) {
       audioRef.current.currentTime = Math.min(
         audioRef.current.currentTime + 10,
-        duration
+        duration,
       );
     }
   };
 
   const skipBackward = () => {
     if (audioRef.current) {
-      audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 10, 0);
+      audioRef.current.currentTime = Math.max(
+        audioRef.current.currentTime - 10,
+        0,
+      );
     }
   };
 
   // Format time as MM:SS
   const formatTime = (seconds: number): string => {
-    if (!isFinite(seconds)) return '00:00';
+    if (!isFinite(seconds)) return "00:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
   return (
@@ -187,7 +198,7 @@ export default function AudioPlayer({
           <button
             onClick={toggleMute}
             className="btn btn-ghost btn-sm btn-circle"
-            aria-label={isMuted ? 'إلغاء كتم الصوت' : 'كتم الصوت'}
+            aria-label={isMuted ? "إلغاء كتم الصوت" : "كتم الصوت"}
           >
             {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
           </button>
@@ -217,7 +228,7 @@ export default function AudioPlayer({
             onClick={togglePlay}
             className="btn btn-primary btn-circle"
             disabled={!audioUrl || loading}
-            aria-label={isPlaying ? 'إيقاف مؤقت' : 'تشغيل'}
+            aria-label={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
           >
             {loading ? (
               <div className="loading loading-spinner loading-sm"></div>
@@ -242,10 +253,10 @@ export default function AudioPlayer({
         <div className="flex-1 flex justify-end">
           <button
             onClick={toggleRepeat}
-            className={`btn btn-ghost btn-sm btn-circle ${repeat ? 'btn-active' : ''}`}
+            className={`btn btn-ghost btn-sm btn-circle ${repeat ? "btn-active" : ""}`}
             aria-label="تكرار"
           >
-            <Repeat size={18} className={repeat ? 'text-primary' : ''} />
+            <Repeat size={18} className={repeat ? "text-primary" : ""} />
           </button>
         </div>
       </div>

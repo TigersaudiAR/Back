@@ -1,0 +1,55 @@
+{
+  "quranReader": {
+    "title": "مصحف الهدى",
+    "back": "رجوع",
+    "search": "بحث",
+    "toggleMode": "تبديل الوضع",
+    "previousPage": "السابقة",
+    "nextPage": "التالية",
+    "page": "صفحة",
+    "of": "من",
+    "index": "الفهرس",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "loading": "جاري التحميل...",
+    "error": "فشل تحميل صفحة المصحف",
+    "retry": "إعادة المحاولة",
+    "searchPlaceholder": "ابحث في القرآن الكريم...",
+    "searchTitle": "بحث في القرآن",
+    "cancel": "إلغاء",
+    "comingSoon": "قريباً - سيتم ربط البحث بـ API الرسمي",
+    "indexTitle": "فهرس المصحف",
+    "indexComingSoon": "قريباً - سيتم عرض قائمة السور والأجزاء",
+    "close": "إغلاق"
+  },
+  "quranClassic": {
+    "title": "القرآن الكريم",
+    "back": "رجوع",
+    "print": "طباعة",
+    "loading": "جاري التحميل...",
+    "error": "فشل في تحميل بيانات السورة",
+    "makki": "مكية",
+    "madani": "مدنية",
+    "verses": "آية",
+    "comingSoon": "قريباً - سيتم جلب نص السورة من API الرسمي"
+  },
+  "ayahOverlay": {
+    "listen": "استماع",
+    "tafsir": "التفسير",
+    "hideTafsir": "إخفاء التفسير",
+    "close": "إغلاق",
+    "loading": "جاري التحميل...",
+    "comingSoon": "قريباً - سيتم جلب النص من API الرسمي",
+    "tafsirTitle": "التفسير",
+    "tafsirComingSoon": "قريباً - سيتم جلب التفسير من API الرسمي"
+  },
+  "audioPlayer": {
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "skipForward": "تأخير 10 ثواني",
+    "skipBackward": "تقديم 10 ثواني",
+    "repeat": "تكرار",
+    "mute": "كتم الصوت",
+    "unmute": "إلغاء كتم الصوت"
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * QuranReader Page
- * 
+ *
  * Modern Quran reader with edge-to-edge page image viewer
  * Features:
  * - Page image viewer from King Fahd Complex
@@ -14,32 +14,33 @@
  * - Search functionality (placeholder)
  */
 
-import { useEffect, useState, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Search, Sun, Moon, List } from 'lucide-react';
-import PageView from '../../components/Quran/PageView';
-import AyahOverlay from '../../components/Quran/AyahOverlay';
-import AudioPlayer from '../../components/Quran/AudioPlayer';
-import { saveLastRead, getLastRead } from '../../services/quranService';
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowRight, Search, Sun, Moon, List } from "lucide-react";
+import PageView from "../../components/Quran/PageView";
+import AyahOverlay from "../../components/Quran/AyahOverlay";
+import AudioPlayer from "../../components/Quran/AudioPlayer";
+import { saveLastRead, getLastRead } from "../../services/quranService";
+import type { AyahBoundingBox } from "../../types/quran";
 
 export default function QuranReader() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   // Get initial page from URL or last read position
   const getInitialPage = (): number => {
-    const urlPage = searchParams.get('page');
+    const urlPage = searchParams.get("page");
     if (urlPage) {
       const page = parseInt(urlPage, 10);
       if (page >= 1 && page <= 604) return page;
     }
-    
+
     // Try to get last read position
     const lastRead = getLastRead();
     if (lastRead?.pageNumber) {
       return lastRead.pageNumber;
     }
-    
+
     return 1; // Default to first page
   };
 
@@ -48,7 +49,7 @@ export default function QuranReader() {
   const [darkMode, setDarkMode] = useState(false);
   const [showIndex, setShowIndex] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string>('');
+  const [audioUrl] = useState<string>("");
 
   // Update URL when page changes
   useEffect(() => {
@@ -64,21 +65,24 @@ export default function QuranReader() {
 
   // Toggle toolbar visibility
   const handleToggleToolbar = useCallback(() => {
-    setToolbarVisible(prev => !prev);
+    setToolbarVisible((prev) => !prev);
   }, []);
 
   // Toggle dark mode
   const handleToggleDarkMode = useCallback(() => {
-    setDarkMode(prev => {
+    setDarkMode((prev) => {
       const newMode = !prev;
-      document.documentElement.setAttribute('data-theme', newMode ? 'dark' : 'light');
+      document.documentElement.setAttribute(
+        "data-theme",
+        newMode ? "dark" : "light",
+      );
       return newMode;
     });
   }, []);
 
   // Navigate back
   const handleGoBack = () => {
-    navigate('/quran');
+    navigate("/quran");
   };
 
   // Open search
@@ -89,17 +93,18 @@ export default function QuranReader() {
 
   // Toggle index/navigation panel
   const handleToggleIndex = () => {
-    setShowIndex(prev => !prev);
+    setShowIndex((prev) => !prev);
   };
 
   // Get current surah name (placeholder - would need API data)
   const getSurahName = (): string => {
     // TODO: Map page number to surah name using API data
-    return 'المصحف الشريف';
+    return "المصحف الشريف";
   };
 
   // Placeholder ayah boxes - in production, fetch from API
-  const ayahBoxes: any[] = [];
+  // Type will be properly defined when API integration is complete
+  const ayahBoxes: AyahBoundingBox[] = [];
 
   return (
     <div className="fixed inset-0 flex flex-col bg-base-100" dir="rtl">
@@ -149,14 +154,14 @@ export default function QuranReader() {
           onTap={handleToggleToolbar}
           className="h-full"
         />
-        
+
         {/* Ayah overlay (when bounding box data available) */}
         {ayahBoxes.length > 0 && (
           <AyahOverlay
             pageNumber={currentPage}
             ayahBoxes={ayahBoxes}
             onAyahClick={(ayahId) => {
-              console.log('Ayah clicked:', ayahId);
+              console.log("Ayah clicked:", ayahId);
               // TODO: Fetch audio URL and set it
             }}
           />
@@ -177,7 +182,7 @@ export default function QuranReader() {
                 <List size={18} />
                 <span>الفهرس</span>
               </button>
-              
+
               <div className="flex-1 text-center">
                 <span className="text-sm">صفحة</span>
                 <input
@@ -205,7 +210,9 @@ export default function QuranReader() {
                   السابقة
                 </button>
                 <button
-                  onClick={() => handlePageChange(Math.min(604, currentPage + 1))}
+                  onClick={() =>
+                    handlePageChange(Math.min(604, currentPage + 1))
+                  }
                   className="btn btn-sm btn-primary"
                   disabled={currentPage >= 604}
                 >
@@ -218,8 +225,8 @@ export default function QuranReader() {
             {audioUrl && (
               <AudioPlayer
                 audioUrl={audioUrl}
-                onProgress={(time, duration) => {
-                  console.log('Audio progress:', time, duration);
+                onProgress={(time: number, duration: number) => {
+                  console.log("Audio progress:", time, duration);
                 }}
               />
             )}
@@ -232,7 +239,10 @@ export default function QuranReader() {
       {/* Search Modal */}
       {searchOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-base-100 rounded-lg p-6 max-w-md w-full mx-4" dir="rtl">
+          <div
+            className="bg-base-100 rounded-lg p-6 max-w-md w-full mx-4"
+            dir="rtl"
+          >
             <h2 className="text-xl font-bold mb-4">بحث في القرآن</h2>
             <input
               type="text"
@@ -247,9 +257,7 @@ export default function QuranReader() {
               >
                 إلغاء
               </button>
-              <button className="btn btn-primary">
-                بحث
-              </button>
+              <button className="btn btn-primary">بحث</button>
             </div>
             <p className="text-sm text-base-content text-opacity-70 mt-4 text-center">
               قريباً - سيتم ربط البحث بـ API الرسمي
@@ -261,7 +269,10 @@ export default function QuranReader() {
       {/* Index/Navigation Panel */}
       {showIndex && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-base-100 rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto" dir="rtl">
+          <div
+            className="bg-base-100 rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto"
+            dir="rtl"
+          >
             <h2 className="text-xl font-bold mb-4">فهرس المصحف</h2>
             <p className="text-sm text-base-content text-opacity-70 mb-4">
               قريباً - سيتم عرض قائمة السور والأجزاء

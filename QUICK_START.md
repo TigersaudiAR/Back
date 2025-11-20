@@ -144,6 +144,38 @@ cd front
 npm run dev
 ```
 
+### Environment Variables | متغيرات البيئة
+
+Create a `.env` file in the `front/` directory:
+
+أنشئ ملف `.env` في مجلد `front/`:
+
+```env
+# Quran API Configuration
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=your_api_key_if_required
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+
+# Backend API (optional)
+VITE_API_URL=http://localhost:4000
+```
+
+### Netlify Functions | وظائف Netlify
+
+To test Netlify Functions locally:
+
+لاختبار وظائف Netlify محلياً:
+
+```bash
+cd front
+npm install netlify-cli -g
+netlify dev
+```
+
+Available functions | الوظائف المتاحة:
+- `/.netlify/functions/quran-proxy` - Proxy to King Fahd Complex API
+- `/.netlify/functions/save-question` - Save user questions
+
 ---
 
 ## ⚡ Quick Commands | أوامر سريعة

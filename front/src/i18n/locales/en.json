@@ -1,0 +1,55 @@
+{
+  "quranReader": {
+    "title": "Quran Al-Huda",
+    "back": "Back",
+    "search": "Search",
+    "toggleMode": "Toggle Mode",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "page": "Page",
+    "of": "of",
+    "index": "Index",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "loading": "Loading...",
+    "error": "Failed to load Quran page",
+    "retry": "Retry",
+    "searchPlaceholder": "Search in the Holy Quran...",
+    "searchTitle": "Search in Quran",
+    "cancel": "Cancel",
+    "comingSoon": "Coming soon - Search will be connected to official API",
+    "indexTitle": "Quran Index",
+    "indexComingSoon": "Coming soon - List of surahs and juz will be displayed",
+    "close": "Close"
+  },
+  "quranClassic": {
+    "title": "Holy Quran",
+    "back": "Back",
+    "print": "Print",
+    "loading": "Loading...",
+    "error": "Failed to load surah data",
+    "makki": "Makki",
+    "madani": "Madani",
+    "verses": "verses",
+    "comingSoon": "Coming soon - Surah text will be fetched from official API"
+  },
+  "ayahOverlay": {
+    "listen": "Listen",
+    "tafsir": "Tafsir",
+    "hideTafsir": "Hide Tafsir",
+    "close": "Close",
+    "loading": "Loading...",
+    "comingSoon": "Coming soon - Text will be fetched from official API",
+    "tafsirTitle": "Tafsir",
+    "tafsirComingSoon": "Coming soon - Tafsir will be fetched from official API"
+  },
+  "audioPlayer": {
+    "play": "Play",
+    "pause": "Pause",
+    "skipForward": "Skip Forward 10s",
+    "skipBackward": "Skip Backward 10s",
+    "repeat": "Repeat",
+    "mute": "Mute",
+    "unmute": "Unmute"
+  }
+}

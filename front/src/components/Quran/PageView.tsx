@@ -1,6 +1,6 @@
 /**
  * PageView Component
- * 
+ *
  * Displays Quran page images from King Fahd Complex
  * Features:
  * - Edge-to-edge page image viewer
@@ -10,8 +10,8 @@
  * - RTL support
  */
 
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { ChevronRight, ChevronLeft, ZoomIn, ZoomOut } from 'lucide-react';
+import { useEffect, useState, useRef, useCallback } from "react";
+import { ChevronRight, ChevronLeft, ZoomIn, ZoomOut } from "lucide-react";
 
 interface PageViewProps {
   pageNumber: number;
@@ -20,13 +20,14 @@ interface PageViewProps {
   className?: string;
 }
 
-const QURAN_BASE = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
+const QURAN_BASE =
+  import.meta.env.VITE_QURAN_BASE || "https://qurancomplex.gov.sa/quran-dev";
 
 export default function PageView({
   pageNumber,
   onPageChange,
   onTap,
-  className = '',
+  className = "",
 }: PageViewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export default function PageView({
   // Build page image URL
   const getPageImageUrl = (page: number): string => {
     // Pad page number to 3 digits (e.g., 001, 002, ...)
-    const paddedPage = String(page).padStart(3, '0');
+    const paddedPage = String(page).padStart(3, "0");
     return `${QURAN_BASE}/images/pages/page${paddedPage}.png`;
   };
 
@@ -67,7 +68,7 @@ export default function PageView({
 
   const handleImageError = () => {
     setLoading(false);
-    setError('فشل تحميل صفحة المصحف');
+    setError("فشل تحميل صفحة المصحف");
   };
 
   // Navigation handlers
@@ -87,20 +88,20 @@ export default function PageView({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // RTL: Right arrow = previous, Left arrow = next
-      if (e.key === 'ArrowRight') {
+      if (e.key === "ArrowRight") {
         e.preventDefault();
         goToPrevPage();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         goToNextPage();
-      } else if (e.key === 't' || e.key === 'T') {
+      } else if (e.key === "t" || e.key === "T") {
         e.preventDefault();
         onTap?.();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNextPage, goToPrevPage, onTap]);
 
   // Touch/swipe navigation
@@ -128,11 +129,11 @@ export default function PageView({
 
   // Zoom controls
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 10, 200));
+    setZoom((prev) => Math.min(prev + 10, 200));
   };
 
   const handleZoomOut = () => {
-    setZoom(prev => Math.max(prev - 10, 50));
+    setZoom((prev) => Math.max(prev - 10, 50));
   };
 
   const handleZoomReset = () => {
@@ -147,7 +148,7 @@ export default function PageView({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={onTap}
-      style={{ direction: 'rtl' }}
+      style={{ direction: "rtl" }}
     >
       {/* Loading overlay */}
       {loading && (
