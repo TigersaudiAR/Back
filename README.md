@@ -175,6 +175,42 @@ cd front
 npx netlify dev
 ```
 
+## 📝 الاستخدام
+
+### الوصول لقارئ القرآن الكريم
+
+After running the application, you can access the new Quran reader features:
+
+**QuranReader (Modern Page Viewer):**
+- Navigate to: `http://localhost:5173/quran/reader`
+- Features:
+  - Edge-to-edge page image viewer
+  - RTL navigation (keyboard arrows, touch/swipe)
+  - Zoom controls
+  - Dark mode toggle
+  - Last-read position saved automatically
+
+**QuranClassic (Printable Text View):**
+- Navigate to: `http://localhost:5173/quran/classic-text`
+- Features:
+  - Clean printable layout
+  - Uthmanic Hafs font
+  - Print-friendly styling
+
+### Testing Netlify Functions Locally
+
+To test the serverless functions locally:
+
+```bash
+cd front
+npm install -g netlify-cli  # If not already installed
+netlify dev
+```
+
+The functions will be available at:
+- `http://localhost:8888/.netlify/functions/quran-proxy`
+- `http://localhost:8888/.netlify/functions/save-question`
+
 ## 📝 المساهمة
 
 نرحب بالمساهمات! يرجى:

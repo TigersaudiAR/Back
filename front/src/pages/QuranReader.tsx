@@ -17,11 +17,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Search, Sun, Moon, List } from "lucide-react";
-import PageView from "../../components/Quran/PageView";
-import AyahOverlay from "../../components/Quran/AyahOverlay";
-import AudioPlayer from "../../components/Quran/AudioPlayer";
-import { saveLastRead, getLastRead } from "../../services/quranService";
-import type { AyahBoundingBox } from "../../types/quran";
+import PageView from "../components/Quran/PageView";
+import AyahOverlay from "../components/Quran/AyahOverlay";
+import AudioPlayer from "../components/Quran/AudioPlayer";
+import { saveLastRead, getLastRead } from "../services/quranService";
+import type { AyahBoundingBox } from "../types/quran";
 
 export default function QuranReader() {
   const navigate = useNavigate();
