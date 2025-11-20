@@ -55,3 +55,10 @@ export interface AyahBoundingBox {
   width: number;
   height: number;
 }
+
+export interface QuranPage {
+  page_number: number;
+  ayat: Ayah[];
+  verses?: Ayah[];
+  // Add other fields as per actual API response
+}

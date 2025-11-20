@@ -1,28 +1,29 @@
 /**
  * خدمة API لمجمع الملك فهد لطباعة المصحف الشريف
  * King Fahd Glorious Quran Printing Complex API Service
- * 
+ *
  * المصدر المعتمد: https://qurancomplex.gov.sa/quran-dev/
- * 
+ *
  * Features:
  * - localStorage caching with TTL (24 hours default)
  * - Automatic cache invalidation
  * - Retry logic for failed requests
  * - Environment variable configuration
- * 
+ *
  * TODO: Future enhancement - migrate to IndexedDB for larger cache capacity
  * localStorage has ~5-10MB limit; IndexedDB can handle 50MB+ and structured data
  */
 
-import axios from 'axios';
-import type { Surah, Ayah, Tafsir } from '../types/quran';
+import axios from "axios";
+import type { Surah, Ayah, Tafsir, QuranPage } from "../types/quran";
 
 // Base URL for King Fahd Complex API - can be overridden via environment variable
-const QURAN_BASE = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
+const QURAN_BASE =
+  import.meta.env.VITE_QURAN_BASE || "https://qurancomplex.gov.sa/quran-dev";
 const QURAN_PROXY = import.meta.env.VITE_QURAN_PROXY; // Optional proxy for Netlify Functions
 
 // Cache configuration
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = "v1";
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 const CACHE_PREFIX = `quran_cache_${CACHE_VERSION}_`;
 
@@ -63,7 +64,7 @@ class LocalStorageCache {
 
       return entry.data;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       return null;
     }
   }
@@ -77,7 +78,7 @@ class LocalStorageCache {
       };
       localStorage.setItem(this.getKey(key), JSON.stringify(entry));
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
       // If localStorage is full, try to clear old entries
       this.clearExpired();
     }
@@ -87,27 +88,40 @@ class LocalStorageCache {
     try {
       localStorage.removeItem(this.getKey(key));
     } catch (error) {
-      console.error('Cache remove error:', error);
+      console.error("Cache remove error:", error);
     }
   }
 
   clearExpired(): void {
     try {
       const now = Date.now();
+      const keysToCheck: string[] = [];
+
+      // First, collect all keys that match our prefix
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith(this.prefix)) {
-          const item = localStorage.getItem(key);
-          if (item) {
+          keysToCheck.push(key);
+        }
+      }
+
+      // Then, check and remove expired entries
+      keysToCheck.forEach((key) => {
+        const item = localStorage.getItem(key);
+        if (item) {
+          try {
             const entry: CacheEntry<unknown> = JSON.parse(item);
             if (now - entry.timestamp > entry.ttl) {
               localStorage.removeItem(key);
             }
+          } catch {
+            // Invalid entry, remove it
+            localStorage.removeItem(key);
           }
         }
-      }
+      });
     } catch (error) {
-      console.error('Cache clearExpired error:', error);
+      console.error("Cache clearExpired error:", error);
     }
   }
 
@@ -120,9 +134,9 @@ class LocalStorageCache {
           keysToRemove.push(key);
         }
       }
-      keysToRemove.forEach(key => localStorage.removeItem(key));
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
     } catch (error) {
-      console.error('Cache clearAll error:', error);
+      console.error("Cache clearAll error:", error);
     }
   }
 }
@@ -144,8 +158,8 @@ function getApiUrl(endpoint: string): string {
  * Get list of all Surahs (chapters)
  */
 export async function getChapters(): Promise<Surah[]> {
-  const cacheKey = 'chapters';
-  
+  const cacheKey = "chapters";
+
   // Try to get from cache first
   const cached = cache.get<Surah[]>(cacheKey);
   if (cached) {
@@ -153,15 +167,15 @@ export async function getChapters(): Promise<Surah[]> {
   }
 
   try {
-    const response = await axios.get(getApiUrl('/chapters'));
+    const response = await axios.get(getApiUrl("/chapters"));
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
-    console.error('Error fetching chapters from Quran Complex:', error);
+    console.error("Error fetching chapters from Quran Complex:", error);
     throw error;
   }
 }
@@ -177,15 +191,17 @@ export const getSurahList = getChapters;
  * Get Quran page information (1-604)
  * @param pageNumber - رقم الصفحة (1-604)
  */
-export async function getPage(pageNumber: number): Promise<any> {
+export async function getPage(pageNumber: number): Promise<QuranPage> {
   if (pageNumber < 1 || pageNumber > 604) {
-    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+    throw new Error(
+      `Invalid page number: ${pageNumber}. Must be between 1 and 604.`,
+    );
   }
 
   const cacheKey = `page_${pageNumber}`;
-  
+
   // Try to get from cache first
-  const cached = cache.get<any>(cacheKey);
+  const cached = cache.get<QuranPage>(cacheKey);
   if (cached) {
     return cached;
   }
@@ -193,10 +209,10 @@ export async function getPage(pageNumber: number): Promise<any> {
   try {
     const response = await axios.get(getApiUrl(`/page/${pageNumber}`));
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     console.error(`Error fetching page ${pageNumber}:`, error);
@@ -213,11 +229,13 @@ export async function getSurahAyat(surahId: number): Promise<Ayah[]> {
   try {
     // Validate surah ID
     if (surahId < 1 || surahId > 114) {
-      throw new Error(`Invalid surah ID: ${surahId}. Must be between 1 and 114.`);
+      throw new Error(
+        `Invalid surah ID: ${surahId}. Must be between 1 and 114.`,
+      );
     }
 
     const cacheKey = `surah_${surahId}_ayat`;
-    
+
     // Try to get from cache first
     const cached = cache.get<Ayah[]>(cacheKey);
     if (cached) {
@@ -226,10 +244,10 @@ export async function getSurahAyat(surahId: number): Promise<Ayah[]> {
 
     const response = await axios.get(getApiUrl(`/surah/${surahId}`));
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     console.error(`Error fetching ayat for surah ${surahId}:`, error);
@@ -244,7 +262,7 @@ export async function getSurahAyat(surahId: number): Promise<Ayah[]> {
  */
 export async function getAyah(ayahId: string | number): Promise<Ayah> {
   const cacheKey = `ayah_${ayahId}`;
-  
+
   // Try to get from cache first
   const cached = cache.get<Ayah>(cacheKey);
   if (cached) {
@@ -254,10 +272,10 @@ export async function getAyah(ayahId: string | number): Promise<Ayah> {
   try {
     const response = await axios.get(getApiUrl(`/ayah/${ayahId}`));
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     console.error(`Error fetching ayah ${ayahId}:`, error);
@@ -273,10 +291,10 @@ export async function getAyah(ayahId: string | number): Promise<Ayah> {
  */
 export async function getTafsir(
   ayahId: string | number,
-  tafsirSource?: string
+  tafsirSource?: string,
 ): Promise<Tafsir[]> {
-  const cacheKey = `tafsir_${ayahId}_${tafsirSource || 'default'}`;
-  
+  const cacheKey = `tafsir_${ayahId}_${tafsirSource || "default"}`;
+
   // Try to get from cache first
   const cached = cache.get<Tafsir[]>(cacheKey);
   if (cached) {
@@ -285,15 +303,14 @@ export async function getTafsir(
 
   try {
     const params = tafsirSource ? { source: tafsirSource } : {};
-    const response = await axios.get(
-      getApiUrl(`/ayah/${ayahId}/tafsir`),
-      { params }
-    );
+    const response = await axios.get(getApiUrl(`/ayah/${ayahId}/tafsir`), {
+      params,
+    });
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     console.error(`Error fetching tafsir for ayah ${ayahId}:`, error);
@@ -309,10 +326,10 @@ export async function getTafsir(
  */
 export async function getSurahTafsir(
   surahId: number,
-  tafsirSource?: string
+  tafsirSource?: string,
 ): Promise<Tafsir[]> {
-  const cacheKey = `tafsir_surah_${surahId}_${tafsirSource || 'default'}`;
-  
+  const cacheKey = `tafsir_surah_${surahId}_${tafsirSource || "default"}`;
+
   // Try to get from cache first
   const cached = cache.get<Tafsir[]>(cacheKey);
   if (cached) {
@@ -321,15 +338,14 @@ export async function getSurahTafsir(
 
   try {
     const params = tafsirSource ? { source: tafsirSource } : {};
-    const response = await axios.get(
-      getApiUrl(`/surah/${surahId}/tafsir`),
-      { params }
-    );
+    const response = await axios.get(getApiUrl(`/surah/${surahId}/tafsir`), {
+      params,
+    });
     const data = response.data;
-    
+
     // Cache the result
     cache.set(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     console.error(`Error fetching tafsir for surah ${surahId}:`, error);
@@ -344,12 +360,12 @@ export async function getSurahTafsir(
  */
 export async function searchQuran(query: string): Promise<Ayah[]> {
   try {
-    const response = await axios.get(getApiUrl('/search'), {
-      params: { q: query }
+    const response = await axios.get(getApiUrl("/search"), {
+      params: { q: query },
     });
     return response.data;
   } catch (error) {
-    console.error('Error searching Quran:', error);
+    console.error("Error searching Quran:", error);
     throw error;
   }
 }
@@ -370,21 +386,22 @@ export async function getPageAyat(pageNumber: number): Promise<Ayah[]> {
  */
 export async function getAudioUrls(
   identifier: string | number,
-  reciter: string = 'ar.mahermuaiqly'
+  reciter: string = "ar.mahermuaiqly",
 ): Promise<string[]> {
   try {
     // For now, construct audio URL using the Islamic Network CDN
     // This is a fallback pattern - actual API may provide direct links
-    const baseUrl = 'https://cdn.islamic.network/quran/audio/128';
-    
+    const baseUrl = "https://cdn.islamic.network/quran/audio/128";
+
     // If identifier is a page number, we'd need to get all ayat on that page
-    if (typeof identifier === 'number' && identifier <= 604) {
-      const pageData = await getPage(identifier);
-      // Extract ayah IDs from page data and return audio URLs
-      // This is a placeholder - actual implementation depends on API response structure
+    if (typeof identifier === "number" && identifier <= 604) {
+      // Fetch page data to get ayat - currently not used but available for future implementation
+      await getPage(identifier);
+      // TODO: Extract ayah IDs from page data and return corresponding audio URLs
+      // For now, return a placeholder URL pattern
       return [`${baseUrl}/${reciter}/${identifier}.mp3`];
     }
-    
+
     // For individual ayah
     return [`${baseUrl}/${reciter}/${identifier}.mp3`];
   } catch (error) {
@@ -400,7 +417,7 @@ export async function getAudioUrls(
 export async function fetchWithRetry<T>(
   fetchFn: () => Promise<T>,
   maxRetries: number = 3,
-  delay: number = 1000
+  delay: number = 1000,
 ): Promise<T> {
   let lastError: Error;
 
@@ -410,7 +427,7 @@ export async function fetchWithRetry<T>(
     } catch (error) {
       lastError = error as Error;
       if (i < maxRetries - 1) {
-        await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+        await new Promise((resolve) => setTimeout(resolve, delay * (i + 1)));
       }
     }
   }
@@ -432,7 +449,11 @@ export function clearExpiredCache(): void {
 /**
  * Save last read position to localStorage
  */
-export function saveLastRead(surahId: number, ayahNumber?: number, pageNumber?: number): void {
+export function saveLastRead(
+  surahId: number,
+  ayahNumber?: number,
+  pageNumber?: number,
+): void {
   try {
     const lastRead = {
       surahId,
@@ -440,22 +461,26 @@ export function saveLastRead(surahId: number, ayahNumber?: number, pageNumber?: 
       pageNumber,
       timestamp: Date.now(),
     };
-    localStorage.setItem('quran_last_read', JSON.stringify(lastRead));
+    localStorage.setItem("quran_last_read", JSON.stringify(lastRead));
   } catch (error) {
-    console.error('Error saving last read position:', error);
+    console.error("Error saving last read position:", error);
   }
 }
 
 /**
  * Get last read position from localStorage
  */
-export function getLastRead(): { surahId: number; ayahNumber?: number; pageNumber?: number } | null {
+export function getLastRead(): {
+  surahId: number;
+  ayahNumber?: number;
+  pageNumber?: number;
+} | null {
   try {
-    const item = localStorage.getItem('quran_last_read');
+    const item = localStorage.getItem("quran_last_read");
     if (!item) return null;
     return JSON.parse(item);
   } catch (error) {
-    console.error('Error getting last read position:', error);
+    console.error("Error getting last read position:", error);
     return null;
   }
 }

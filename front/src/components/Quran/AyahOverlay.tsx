@@ -7,7 +7,7 @@
  * Note: Bounding box data from API required - placeholder structure shown
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Volume2, BookOpen } from "lucide-react";
 import type { Ayah, Tafsir, AyahBoundingBox } from "../../types/quran";
 
@@ -98,9 +98,9 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
 
   // TODO: Fetch ayah and tafsir data using quranService
   // This is a placeholder implementation
-  useState(() => {
+  useEffect(() => {
     // Simulate API call
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setAyah({
         surah_id: 1,
         ayah_number: 1,
@@ -108,7 +108,9 @@ function AyahPopover({ ayahId, position, onClose }: AyahPopoverProps) {
       });
       setLoading(false);
     }, 500);
-  });
+
+    return () => clearTimeout(timer);
+  }, [ayahId]);
 
   const handlePlayAudio = () => {
     // TODO: Implement audio playback

@@ -219,7 +219,7 @@ export default function AudioPlayer({
             onClick={skipBackward}
             className="btn btn-ghost btn-sm btn-circle"
             disabled={!audioUrl || loading}
-            aria-label="تقديم 10 ثواني"
+            aria-label="تأخير 10 ثواني"
           >
             <SkipBack size={18} />
           </button>
@@ -243,7 +243,7 @@ export default function AudioPlayer({
             onClick={skipForward}
             className="btn btn-ghost btn-sm btn-circle"
             disabled={!audioUrl || loading}
-            aria-label="تأخير 10 ثواني"
+            aria-label="تقديم 10 ثواني"
           >
             <SkipForward size={18} />
           </button>
