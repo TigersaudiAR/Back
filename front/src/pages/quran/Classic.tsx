@@ -5,6 +5,7 @@ import { useQuranSurah, useSurahIndex } from "../../hooks/useQuranContent";
 import { BISMILLAH_TEXT } from "../../components/QuranCanvas";
 import { findSurahBySlug } from "../../utils/quran";
 import AyahComponent from "../../components/Ayah";
+import "../../styles/quran.css";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
