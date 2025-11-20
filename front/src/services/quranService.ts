@@ -285,12 +285,12 @@ export async function fetchWithRetry<T>(
  * Get audio URL for a specific ayah
  * @param surahId - Surah number
  * @param ayahNumber - Ayah number
- * @param reciter - Reciter ID (default: ar.mahermuaiqly)
+ * @param _reciter - Reciter ID (default: ar.mahermuaiqly) - TODO: implement reciter selection
  */
 export function getAyahAudioUrl(
   surahId: number,
   ayahNumber: number,
-  reciter: string = 'ar.mahermuaiqly'
+  _reciter: string = 'ar.mahermuaiqly'
 ): string {
   // Calculate global ayah number (needed for some CDNs)
   // This is a simplified version - actual calculation would need ayah count per surah
@@ -324,11 +324,11 @@ export function getPageImageUrl(pageNumber: number): string {
  * Get page bounding boxes for ayah overlay
  * @param pageNumber - Page number (1-604)
  */
-export async function getPageBoundingBoxes(pageNumber: number): Promise<any[]> {
+export async function getPageBoundingBoxes(pageNumber: number): Promise<AyahBoundingBox[]> {
   const cacheKey = `page_${pageNumber}_boxes`;
   
   // Try cache first
-  const cached = getFromCache<any[]>(cacheKey);
+  const cached = getFromCache<AyahBoundingBox[]>(cacheKey);
   if (cached) {
     return cached;
   }
@@ -337,7 +337,7 @@ export async function getPageBoundingBoxes(pageNumber: number): Promise<any[]> {
     // TODO: Implement actual API call when available
     // For now, return empty array with TODO notice
     console.log('TODO: Implement bounding box API integration');
-    const boxes: any[] = [];
+    const boxes: AyahBoundingBox[] = [];
     
     // Save to cache
     saveToCache(cacheKey, boxes);
@@ -346,6 +346,18 @@ export async function getPageBoundingBoxes(pageNumber: number): Promise<any[]> {
     console.error(`Error fetching bounding boxes for page ${pageNumber}:`, error);
     return [];
   }
+}
+
+/**
+ * Bounding box interface for ayah overlay
+ */
+export interface AyahBoundingBox {
+  ayahNumber: number;
+  surahId: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /**

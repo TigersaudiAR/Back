@@ -62,14 +62,18 @@ async function writeQuestions(questions: Question[]): Promise<void> {
 }
 
 // Validate question data
-function validateQuestion(data: any): data is SaveQuestionRequest {
-  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+function validateQuestion(data: SaveQuestionRequest | unknown): data is SaveQuestionRequest {
+  if (!data || typeof data !== 'object') {
     return false;
   }
-  if (!data.question || typeof data.question !== 'string' || data.question.trim().length === 0) {
+  const req = data as SaveQuestionRequest;
+  if (!req.name || typeof req.name !== 'string' || req.name.trim().length === 0) {
     return false;
   }
-  if (data.email && typeof data.email !== 'string') {
+  if (!req.question || typeof req.question !== 'string' || req.question.trim().length === 0) {
+    return false;
+  }
+  if (req.email && typeof req.email !== 'string') {
     return false;
   }
   return true;
@@ -80,7 +84,7 @@ function generateId(): string {
   return `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {

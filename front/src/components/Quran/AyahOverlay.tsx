@@ -7,7 +7,7 @@
 import React, { useState, useCallback } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
-interface AyahBoundingBox {
+export interface AyahBoundingBox {
   ayahNumber: number;
   surahId: number;
   x: number;
@@ -29,7 +29,6 @@ interface AyahOverlayProps {
   onAyahClick: (surahId: number, ayahNumber: number) => void;
   activeAyah?: number;
   ayahData?: AyahData;
-  onAudioProgress?: (progress: number) => void;
 }
 
 const AyahOverlay: React.FC<AyahOverlayProps> = ({
@@ -39,7 +38,6 @@ const AyahOverlay: React.FC<AyahOverlayProps> = ({
   onAyahClick,
   activeAyah,
   ayahData,
-  onAudioProgress,
 }) => {
   const [popoverPosition, setPopoverPosition] = useState<{ top: number; left: number } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);

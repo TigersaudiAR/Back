@@ -15,7 +15,7 @@ interface ErrorResponse {
   statusCode: number;
 }
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Only allow GET requests
   if (event.httpMethod !== 'GET') {
     return {

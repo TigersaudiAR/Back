@@ -12,8 +12,6 @@ interface PageViewProps {
   totalPages?: number;
 }
 
-const QURAN_PAGE_BASE_URL = 'https://qurancomplex.gov.sa/quran-dev';
-
 const PageView: React.FC<PageViewProps> = ({ 
   currentPage, 
   onPageChange, 

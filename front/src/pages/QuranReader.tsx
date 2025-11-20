@@ -8,16 +8,21 @@ import { useSearchParams } from 'react-router-dom';
 import PageView from '../components/Quran/PageView';
 import AyahOverlay from '../components/Quran/AyahOverlay';
 import AudioPlayer from '../components/Quran/AudioPlayer';
+import type { AyahBoundingBox } from '../components/Quran/AyahOverlay';
 import { 
-  getPageImageUrl, 
   getPageBoundingBoxes,
   saveLastReadPosition,
   getLastReadPosition,
   getAyahAudioUrl,
-  getSurahAyat
 } from '../services/quranService';
-import { Book, Settings, Home, Menu } from 'lucide-react';
+import { Book, Home, Menu } from 'lucide-react';
 import '../styles/quran.css';
+
+interface AyahData {
+  text: string;
+  tafsir?: string;
+  audioUrl?: string;
+}
 
 const QuranReader: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,9 +32,9 @@ const QuranReader: React.FC = () => {
     return pageParam ? parseInt(pageParam, 10) : (lastRead?.page || 1);
   });
   
-  const [boundingBoxes, setBoundingBoxes] = useState<any[]>([]);
+  const [boundingBoxes, setBoundingBoxes] = useState<AyahBoundingBox[]>([]);
   const [activeAyah, setActiveAyah] = useState<number | undefined>();
-  const [ayahData, setAyahData] = useState<any>(null);
+  const [ayahData, setAyahData] = useState<AyahData | null>(null);
   const [showToolbar, setShowToolbar] = useState(false);
   const [showTopBar, setShowTopBar] = useState(true);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
