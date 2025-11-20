@@ -1,7 +1,9 @@
 // Service Worker for offline capabilities and caching
-const CACHE_NAME = 'quran-alhuda-v1';
-const STATIC_CACHE = 'quran-alhuda-static-v1';
-const API_CACHE = 'quran-alhuda-api-v1';
+const CACHE_NAME = 'quran-alhuda-v2';
+const STATIC_CACHE = 'quran-alhuda-static-v2';
+const API_CACHE = 'quran-alhuda-api-v2';
+const IMAGES_CACHE = 'quran-alhuda-images-v1';
+const FONTS_CACHE = 'quran-alhuda-fonts-v1';
 
 // Files to cache immediately
 const STATIC_ASSETS = [
@@ -31,7 +33,9 @@ self.addEventListener('activate', (event) => {
             return name.startsWith('quran-alhuda-') && 
                    name !== CACHE_NAME && 
                    name !== STATIC_CACHE && 
-                   name !== API_CACHE;
+                   name !== API_CACHE &&
+                   name !== IMAGES_CACHE &&
+                   name !== FONTS_CACHE;
           })
           .map((name) => caches.delete(name))
       );
@@ -49,11 +53,54 @@ self.addEventListener('fetch', (event) => {
   const allowedOrigins = [
     location.origin,
     'https://api.quran.com',
-    'https://cdn.islamic.network'
+    'https://cdn.islamic.network',
+    'https://qurancomplex.gov.sa'
   ];
   
   // Skip requests from non-whitelisted origins
-  if (!allowedOrigins.some(origin => url.origin === origin)) {
+  if (!allowedOrigins.some(origin => url.origin === origin || url.origin.startsWith(origin))) {
+    return;
+  }
+
+  // Quran page images - cache first with long expiry
+  if (url.pathname.includes('/images/pages/') || url.pathname.includes('page') && url.pathname.match(/\.(png|jpg|jpeg|webp)$/i)) {
+    event.respondWith(
+      caches.open(IMAGES_CACHE).then((cache) => {
+        return cache.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          return fetch(request).then((response) => {
+            if (response.ok) {
+              cache.put(request, response.clone());
+            }
+            return response;
+          });
+        });
+      })
+    );
+    return;
+  }
+
+  // Font files - cache first with long expiry
+  if (url.pathname.match(/\.(woff2|woff|ttf|otf)$/i)) {
+    event.respondWith(
+      caches.open(FONTS_CACHE).then((cache) => {
+        return cache.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          return fetch(request).then((response) => {
+            if (response.ok) {
+              cache.put(request, response.clone());
+            }
+            return response;
+          });
+        });
+      })
+    );
     return;
   }
 

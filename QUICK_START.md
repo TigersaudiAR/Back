@@ -168,17 +168,66 @@ Ctrl+C                      # Linux/macOS
 
 التطبيق يشمل:
 
-✅ **القرآن الكريم** - Quran Reader with Juz/Hizb/Page numbers
+✅ **القرآن الكريم** - Quran Reader with advanced features:
+  - Page-based image reader with King Fahd Complex images
+  - Classic text view for reading and printing
+  - localStorage caching for offline reading
+  - Ayah overlays with tafsir (coming soon)
+  - Audio recitation support (coming soon)
 ✅ **تعلم الإسلام** - Islamic Learning (8 comprehensive topics)
 ✅ **السيرة النبوية** - Prophet's Biography (6 major events)
 ✅ **التعليم الذاتي** - Self-learning modules (Arabic, Tajweed, Hifz)
 ✅ **الأحاديث** - Hadith collection from authentic sources
 ✅ **الأذكار** - Daily Adhkar and supplications
 ✅ **حلقات التحفيظ** - Memorization circles management
+✅ **Netlify Functions** - API proxy and question saving endpoints
 ✅ **PWA Support** - Works offline, installable as native app
-✅ **Service Worker** - Smart caching for better performance
+✅ **Service Worker** - Smart caching for Quran pages and fonts
 ✅ **Error Handling** - Beautiful error pages with recovery options
 ✅ **Network Status** - Real-time online/offline indicator
+✅ **i18n Support** - Arabic localization with react-i18next
+
+---
+
+## 🌐 Environment Setup | إعداد متغيرات البيئة
+
+### Frontend Environment Variables
+
+Create a `.env` file in `front/` directory (copy from `.env.example`):
+
+```env
+# Backend API
+VITE_API_URL=http://localhost:4000
+
+# Quran API - King Fahd Complex for Printing the Holy Quran
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev/
+VITE_QURAN_API_KEY=
+VITE_QURAN_PROXY=
+```
+
+**Environment Variables:**
+- `VITE_API_URL`: Backend server URL (default: http://localhost:4000)
+- `VITE_QURAN_BASE`: King Fahd Complex API base URL (default: https://qurancomplex.gov.sa/quran-dev/)
+- `VITE_QURAN_API_KEY`: API key if required (optional)
+- `VITE_QURAN_PROXY`: Netlify Functions proxy URL (optional, e.g., `/.netlify/functions/quran-proxy`)
+
+---
+
+## 🔌 Netlify Functions | وظائف Netlify
+
+For local development of Netlify Functions:
+
+```bash
+cd front
+npm install -g netlify-cli
+netlify dev
+```
+
+**Available Functions:**
+- `/api/quran-proxy` - Proxies requests to King Fahd Complex API with CORS support
+- `/api/save-question` - Saves user questions (demo only, use persistent DB for production)
+
+**Note**: File-based storage in `save-question` is ephemeral on serverless platforms. Migrate to a persistent database (MongoDB, PostgreSQL) for production use.
 
 ---
 
