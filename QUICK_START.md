@@ -327,3 +327,54 @@ After the app is running, you can:
 **نسخ، لصق، وانطلق!**
 
 </div>
+
+---
+
+## 📖 New Quran Reader Features | مميزات قارئ القرآن الجديدة
+
+### Environment Variables | متغيرات البيئة
+
+Create `.env` file in `front/` directory:
+
+```env
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=your_api_key_if_required
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+```
+
+### Netlify Functions Setup | إعداد دوال Netlify
+
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Run development with functions
+cd front
+netlify dev
+```
+
+### Features | المميزات
+
+1. **QuranReader** - Modern page image viewer | عارض صفحات حديث
+   - Edge-to-edge page display | عرض صفحة كاملة
+   - RTL swipe navigation | التنقل بالسحب
+   - Keyboard shortcuts (arrows, 'T' for toolbar) | اختصارات لوحة المفاتيح
+   - Persistent last-read position | حفظ آخر موضع قراءة
+
+2. **QuranClassic** - Printable text view | عرض نصي للطباعة
+   - Uthmanic font | الخط العثماني
+   - Print-optimized | محسّن للطباعة
+   - Classic layout | تصميم كلاسيكي
+
+3. **Offline Support** - Service worker caching | الدعم بدون اتصال
+   - Page images cached | تخزين صور الصفحات
+   - Fonts cached | تخزين الخطوط
+   - Previously visited pages work offline | الصفحات المزارة سابقاً تعمل بدون اتصال
+
+### Accessing Quran Reader | الوصول إلى قارئ القرآن
+
+```
+http://localhost:5173/quran/reader?page=1
+http://localhost:5173/quran/classic?surah=1
+```
+
