@@ -48,12 +48,55 @@ self.addEventListener('fetch', (event) => {
   // Whitelist of allowed origins for security
   const allowedOrigins = [
     location.origin,
+    'https://qurancomplex.gov.sa',
     'https://api.quran.com',
     'https://cdn.islamic.network'
   ];
   
   // Skip requests from non-whitelisted origins
   if (!allowedOrigins.some(origin => url.origin === origin)) {
+    return;
+  }
+
+  // Quran page images - cache first for offline reading
+  if (url.pathname.includes('/images/page') || url.pathname.includes('.png')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
+          if (response && response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Font files - cache first
+  if (url.pathname.includes('/fonts/') || request.destination === 'font') {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
+          if (response && response.ok) {
+            const responseClone = response.clone();
+            caches.open(STATIC_CACHE).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
 
