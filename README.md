@@ -136,10 +136,78 @@ front/src/
 
 ### متغيرات البيئة (Environment Variables)
 
+#### Frontend (`front/.env`)
 إنشاء ملف `.env` في مجلد `front/`:
 ```env
+# Backend API URL
 VITE_API_URL=http://localhost:4000
+
+# Quran Complex API Configuration
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=your_api_key_if_needed
+
+# Netlify Functions (for production)
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
 ```
+
+#### Backend (`back/.env`)
+إنشاء ملف `.env` في مجلد `back/`:
+```env
+PORT=4000
+NODE_ENV=development
+```
+
+### Netlify Deployment
+
+لنشر التطبيق على Netlify:
+
+1. **تثبيت Netlify CLI**:
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **تسجيل الدخول**:
+   ```bash
+   netlify login
+   ```
+
+3. **الربط بالمشروع**:
+   ```bash
+   cd front
+   netlify init
+   ```
+
+4. **تعيين متغيرات البيئة في Netlify Dashboard**:
+   - `VITE_QURAN_BASE`
+   - `VITE_QURAN_API_KEY` (if needed)
+   - `VITE_API_URL`
+
+5. **النشر**:
+   ```bash
+   netlify deploy --prod
+   ```
+
+أو استخدم GitHub integration للنشر التلقائي.
+
+### Netlify Functions Endpoints
+
+بعد النشر، ستتوفر الـ Functions التالية:
+
+- `/.netlify/functions/quran-proxy` - CORS proxy for Quran API
+- `/.netlify/functions/save-question` - Save questions from scholars form
+
+### QuranReader Features
+
+المزايا الجديدة في قارئ القرآن:
+
+- ✅ عرض صفحات المصحف بالصور الرسمية
+- ✅ التنقل بالسحب (Swipe) أو مفاتيح الأسهم
+- ✅ حفظ آخر موضع قراءة
+- ✅ العرض التقليدي (نصي) للطباعة
+- ✅ دعم PWA للعمل بدون اتصال
+- ✅ التخزين المؤقت الذكي
+- 🔄 التفسير والتلاوة (قيد التطوير)
+- 🔄 الآيات التفاعلية مع Bounding Boxes (قيد التطوير)
 
 ## 📝 المساهمة
 

@@ -1,0 +1,56 @@
+# Netlify Configuration for Quran Al-Huda Platform
+[build]
+  # Build command
+  command = "npm run build"
+  
+  # Directory with the serverless functions
+  functions = "netlify/functions"
+  
+  # Directory that contains the deploy-ready files
+  publish = "dist"
+  
+  # Base directory (if your frontend is in a subdirectory)
+  base = "front"
+
+[build.environment]
+  # Node version
+  NODE_VERSION = "20"
+
+# Redirect rules for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  
+# Headers for static assets with long cache
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Headers for fonts
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# Headers for Quran page images
+[[headers]]
+  for = "/quran-images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+# Headers for API responses
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+
+# Environment variables (set these in Netlify dashboard)
+# VITE_QURAN_BASE - Base URL for Quran Complex API
+# VITE_QURAN_API_KEY - API key if required
+# VITE_API_URL - Backend API URL

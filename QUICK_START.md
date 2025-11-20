@@ -79,10 +79,16 @@ The script will automatically:
 
 **Frontend UI (الواجهة):**
 - 🌐 http://localhost:3000
+- 📖 http://localhost:3000/quran/reader (قارئ القرآن الجديد)
+- 📝 http://localhost:3000/quran/classic-view (العرض التقليدي)
 
 **Backend API (الخادم):**
 - 🔧 http://localhost:4000
 - 🔧 http://localhost:4000/api/health (Health Check)
+
+**Netlify Functions (in production):**
+- 🔌 /.netlify/functions/quran-proxy
+- 💬 /.netlify/functions/save-question
 
 ---
 

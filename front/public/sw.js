@@ -1,7 +1,9 @@
 // Service Worker for offline capabilities and caching
-const CACHE_NAME = 'quran-alhuda-v1';
-const STATIC_CACHE = 'quran-alhuda-static-v1';
-const API_CACHE = 'quran-alhuda-api-v1';
+const CACHE_NAME = 'quran-alhuda-v2';
+const STATIC_CACHE = 'quran-alhuda-static-v2';
+const API_CACHE = 'quran-alhuda-api-v2';
+const QURAN_IMAGES_CACHE = 'quran-alhuda-images-v1';
+const FONTS_CACHE = 'quran-alhuda-fonts-v1';
 
 // Files to cache immediately
 const STATIC_ASSETS = [
@@ -31,7 +33,9 @@ self.addEventListener('activate', (event) => {
             return name.startsWith('quran-alhuda-') && 
                    name !== CACHE_NAME && 
                    name !== STATIC_CACHE && 
-                   name !== API_CACHE;
+                   name !== API_CACHE &&
+                   name !== QURAN_IMAGES_CACHE &&
+                   name !== FONTS_CACHE;
           })
           .map((name) => caches.delete(name))
       );
@@ -49,16 +53,64 @@ self.addEventListener('fetch', (event) => {
   const allowedOrigins = [
     location.origin,
     'https://api.quran.com',
-    'https://cdn.islamic.network'
+    'https://cdn.islamic.network',
+    'https://qurancomplex.gov.sa',
+    'https://quran-images.pages.dev'
   ];
   
   // Skip requests from non-whitelisted origins
-  if (!allowedOrigins.some(origin => url.origin === origin)) {
+  if (!allowedOrigins.includes(url.origin)) {
+    return;
+  }
+
+  // Quran page images - cache first, long TTL
+  if (url.origin === 'https://quran-images.pages.dev' || url.pathname.includes('page')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(QURAN_IMAGES_CACHE).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Fonts - cache first with long TTL
+  if (url.pathname.includes('fonts') || url.pathname.includes('.woff') || url.pathname.includes('.woff2')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(FONTS_CACHE).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
 
   // API requests - network first, fallback to cache
-  if (url.pathname.startsWith('/api/')) {
+  if (url.pathname.startsWith('/api/') || 
+      url.origin === 'https://api.quran.com' || 
+      url.origin === 'https://qurancomplex.gov.sa') {
     event.respondWith(
       fetch(request)
         .then((response) => {

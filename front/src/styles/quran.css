@@ -109,3 +109,274 @@
     transition: none;
   }
 }
+
+/* ===== Additional Quran Reader Styles ===== */
+
+/* UthmanicHafs Font from Official CDN */
+@font-face {
+  font-family: 'UthmanicHafs';
+  src: url('https://cdn.islamic.network/fonts/UthmanicHafs-Regular.woff2') format('woff2');
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Page View Styles */
+.quran-page-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #041b10;
+}
+
+.quran-page-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+/* Ayah Overlay Styles */
+.ayah-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ayah-box {
+  position: absolute;
+  background: rgba(111, 191, 115, 0.1);
+  border: 1px solid rgba(111, 191, 115, 0.3);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+.ayah-box:hover {
+  background: rgba(111, 191, 115, 0.2);
+  border-color: rgba(111, 191, 115, 0.5);
+}
+
+.ayah-box.active {
+  background: rgba(111, 191, 115, 0.3);
+  border-color: #79c08b;
+  border-width: 2px;
+}
+
+/* Tafsir Popover */
+.tafsir-popover {
+  background: #0f3d2e;
+  border: 1px solid #79c08b;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  direction: rtl;
+  text-align: right;
+}
+
+.tafsir-text {
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #c7f0d8;
+}
+
+/* Audio Player Styles */
+.audio-player {
+  background: #0f3d2e;
+  border-top: 1px solid #79c08b;
+  padding: 1rem;
+  direction: rtl;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.audio-button {
+  background: transparent;
+  border: 1px solid #79c08b;
+  color: #79c08b;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.audio-button:hover {
+  background: #79c08b;
+  color: #041b10;
+}
+
+.audio-progress {
+  flex: 1;
+  height: 4px;
+  background: #1a4d36;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.audio-progress-bar {
+  height: 100%;
+  background: #79c08b;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* Hidden Toolbar */
+.hidden-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 61, 46, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid #79c08b;
+  padding: 1rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 40;
+}
+
+.hidden-toolbar.visible {
+  transform: translateY(0);
+}
+
+.toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Top Bar */
+.quran-top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 61, 46, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #79c08b;
+  padding: 0.5rem 1rem;
+  z-index: 50;
+  direction: rtl;
+}
+
+/* Classic Text View */
+.quran-classic-view {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  direction: rtl;
+  font-family: 'UthmanicHafs', 'Amiri Quran', serif;
+}
+
+.surah-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #79c08b;
+}
+
+.surah-name {
+  font-size: 2rem;
+  color: #79c08b;
+  margin-bottom: 0.5rem;
+}
+
+.surah-info {
+  font-size: 0.9rem;
+  color: #c7f0d8;
+  opacity: 0.8;
+}
+
+/* Loading State */
+.quran-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #79c08b;
+}
+
+.spinner {
+  border: 3px solid #1a4d36;
+  border-top-color: #79c08b;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .quran-top-bar,
+  .hidden-toolbar,
+  .audio-player,
+  button {
+    display: none !important;
+  }
+
+  .quran-classic-view {
+    max-width: 100%;
+  }
+
+  .quran-ayah {
+    page-break-inside: avoid;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .tafsir-popover {
+    max-width: 90vw;
+  }
+
+  .quran-classic-view {
+    padding: 1rem;
+  }
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus Styles for Keyboard Navigation */
+button:focus-visible,
+.ayah-box:focus-visible {
+  outline: 2px solid #79c08b;
+  outline-offset: 2px;
+}
