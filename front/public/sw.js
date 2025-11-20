@@ -59,12 +59,12 @@ self.addEventListener('fetch', (event) => {
   ];
   
   // Skip requests from non-whitelisted origins
-  if (!allowedOrigins.some(origin => url.origin === origin || url.origin.includes(origin))) {
+  if (!allowedOrigins.includes(url.origin)) {
     return;
   }
 
   // Quran page images - cache first, long TTL
-  if (url.href.includes('quran-images.pages.dev') || url.pathname.includes('page')) {
+  if (url.origin === 'https://quran-images.pages.dev' || url.pathname.includes('page')) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -86,7 +86,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Fonts - cache first with long TTL
-  if (url.href.includes('fonts') || url.pathname.includes('.woff') || url.pathname.includes('.woff2')) {
+  if (url.pathname.includes('fonts') || url.pathname.includes('.woff') || url.pathname.includes('.woff2')) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -108,7 +108,9 @@ self.addEventListener('fetch', (event) => {
   }
 
   // API requests - network first, fallback to cache
-  if (url.pathname.startsWith('/api/') || url.href.includes('api.quran.com') || url.href.includes('qurancomplex.gov.sa')) {
+  if (url.pathname.startsWith('/api/') || 
+      url.origin === 'https://api.quran.com' || 
+      url.origin === 'https://qurancomplex.gov.sa') {
     event.respondWith(
       fetch(request)
         .then((response) => {
