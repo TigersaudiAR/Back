@@ -139,6 +139,36 @@ front/src/
 إنشاء ملف `.env` في مجلد `front/`:
 ```env
 VITE_API_URL=http://localhost:4000
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev/
+VITE_QURAN_API_KEY=<optional-api-key>
+VITE_QURAN_PROXY=/api/quran-proxy
+```
+
+**Environment Variables Explained:**
+
+- `VITE_API_URL`: Backend API URL (default: http://localhost:4000)
+- `VITE_QURAN_BASE`: King Fahd Complex Quran API base URL (default: https://qurancomplex.gov.sa/quran-dev/)
+- `VITE_QURAN_API_KEY`: Optional API key for authenticated requests to Quran API
+- `VITE_QURAN_PROXY`: Netlify Function proxy endpoint for CORS-free API access (default: /api/quran-proxy)
+
+### Netlify Functions Setup
+
+The project includes Netlify Functions for serverless API endpoints:
+
+1. **quran-proxy**: CORS proxy for King Fahd Complex API
+   - Endpoint: `/.netlify/functions/quran-proxy?endpoint=/surah/1`
+   - Usage: Forwards requests to avoid CORS issues
+
+2. **save-question**: Save user questions (demonstration only)
+   - Endpoint: `/.netlify/functions/save-question`
+   - Method: POST
+   - ⚠️ **Note**: File storage is ephemeral. Migrate to a database for production.
+
+To test Netlify Functions locally:
+```bash
+npm install -g netlify-cli
+cd front
+netlify dev
 ```
 
 ## 📝 المساهمة

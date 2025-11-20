@@ -281,6 +281,32 @@ After deployment | بعد التشغيل:
 4. ✅ Test offline functionality | اختبر العمل بدون إنترنت
 5. ✅ Use admin dashboard | استخدم لوحة التحكم للإدارة
 
+### 🚀 Netlify Deployment (Optional)
+
+To deploy with Netlify Functions support:
+
+```bash
+# Install Netlify CLI
+npm install -g netlify-cli
+
+# Login to Netlify
+netlify login
+
+# Initialize Netlify site
+cd front
+netlify init
+
+# Deploy
+netlify deploy --prod
+```
+
+**Environment Variables for Netlify:**
+- `VITE_QURAN_BASE`: https://qurancomplex.gov.sa/quran-dev/
+- `VITE_QURAN_API_KEY`: (optional) Your API key
+- `VITE_QURAN_PROXY`: /api/quran-proxy
+
+**Note:** Netlify Functions provide serverless endpoints for CORS-free API access.
+
 ---
 
 ## 📞 Support | الدعم

@@ -109,3 +109,111 @@
     transition: none;
   }
 }
+
+/* Additional styles for QuranReader and QuranClassic components */
+
+/* Font-face for Uthmanic Hafs */
+@font-face {
+  font-family: "UthmanicHafs";
+  src: url("https://cdn.islamic.network/fonts/UthmanicHafs-Regular.woff2") format("woff2");
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Font-face for Scheherazade New (fallback) */
+@font-face {
+  font-family: "Scheherazade New";
+  src: url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap");
+  font-display: swap;
+}
+
+/* Arabic font class */
+.font-arabic {
+  font-family: "UthmanicHafs", "Scheherazade New", "Amiri", "Lateef", serif;
+}
+
+/* Slide up animation for toolbar */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Print styles for QuranClassic */
+@media print {
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  .quran-manuscript {
+    background: white !important;
+    color: black !important;
+  }
+
+  .quran-ayah__text {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure Uthmanic font is used in print */
+  .quran-ayah__text,
+  .font-arabic {
+    font-family: "UthmanicHafs", "Scheherazade New", serif !important;
+  }
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Responsive font sizing for better readability */
+@media (max-width: 640px) {
+  .quran-ayah__text {
+    font-size: clamp(1.35rem, 4vw, 1.65rem);
+  }
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .quran-ayah__number,
+  .ayah-number {
+    border-width: 3px;
+    font-weight: bold;
+  }
+}
