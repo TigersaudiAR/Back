@@ -13,6 +13,9 @@ const QURAN_BASE_URL = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.
 const QURAN_PROXY_URL = import.meta.env.VITE_QURAN_PROXY || '';
 const QURAN_API_KEY = import.meta.env.VITE_QURAN_API_KEY || '';
 
+// Fallback CDN for audio - can be overridden via env variable
+const AUDIO_CDN_BASE = import.meta.env.VITE_AUDIO_CDN || 'https://cdn.islamic.network/quran/audio/128';
+
 // Cache configuration
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 const CACHE_PREFIX = 'quran_cache_';
@@ -142,8 +145,8 @@ function getApiUrl(endpoint: string): string {
 /**
  * Get axios config with API key if available
  */
-function getAxiosConfig() {
-  const config: any = {};
+function getAxiosConfig(): { headers?: Record<string, string> } {
+  const config: { headers?: Record<string, string> } = {};
   if (QURAN_API_KEY) {
     config.headers = {
       'X-API-Key': QURAN_API_KEY,
@@ -218,8 +221,7 @@ export async function getAudioUrls(
     console.error(`Error fetching audio URLs for ${identifier}:`, error);
     // Fallback to CDN pattern if API doesn't provide audio URLs
     // Note: Adjust this pattern based on actual King Fahd Complex CDN structure
-    const baseUrl = 'https://cdn.islamic.network/quran/audio/128';
-    return [`${baseUrl}/${reciter}/${identifier}.mp3`];
+    return [`${AUDIO_CDN_BASE}/${reciter}/${identifier}.mp3`];
   }
 }
 

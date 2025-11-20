@@ -81,7 +81,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
 
     // Create question object
     const question: Question = {
-      id: `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `q_${Date.now()}_${crypto.randomUUID ? crypto.randomUUID().substring(0, 9) : Math.random().toString(36).substr(2, 9)}`,
       name: body.name?.trim() || 'مجهول',
       contact: body.contact?.trim() || '',
       type: body.type.trim(),
@@ -123,7 +123,6 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
         success: true,
         questionId: question.id,
         message: 'تم إرسال سؤالك بنجاح. سنقوم بالرد عليك في أقرب وقت ممكن.',
-        note: 'File-based storage is ephemeral. Please migrate to a database for production use.',
       }),
     };
   } catch (error: any) {

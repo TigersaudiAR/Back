@@ -40,7 +40,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     audio.load();
 
     if (autoPlay) {
-      audio.play().catch(console.error);
+      audio.play().catch((err) => {
+        console.error('Error auto-playing audio:', err);
+        // TODO: Show user-friendly error message
+      });
     }
   }, [audioUrl, autoPlay]);
 
@@ -100,7 +103,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play().catch(console.error);
+      audio.play().catch((err) => {
+        console.error('Error playing audio:', err);
+        // TODO: Show user-friendly error message
+      });
     }
   }, [isPlaying]);
 

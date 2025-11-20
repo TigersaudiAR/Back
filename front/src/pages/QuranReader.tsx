@@ -8,6 +8,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowRight, Search, Moon, Sun, ZoomIn, ZoomOut, BookOpen, Menu } from 'lucide-react';
 import PageView from '../components/Quran/PageView';
 import AudioPlayer from '../components/Quran/AudioPlayer';
+import ErrorToast from '../components/ErrorToast';
 import { getAudioUrls } from '../services/quranService';
 import '../styles/quran.css';
 
@@ -31,6 +32,7 @@ const QuranReader: React.FC = () => {
   const [audioUrl, setAudioUrl] = useState<string>('');
   const [showAudio, setShowAudio] = useState(false);
   const [surahName, setSurahName] = useState('القرآن الكريم');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   // Save last read position
   useEffect(() => {
@@ -108,7 +110,7 @@ const QuranReader: React.FC = () => {
       }
     } catch (error) {
       console.error('Error loading audio:', error);
-      alert('عذراً، حدث خطأ في تحميل الصوت');
+      setErrorMessage('عذراً، حدث خطأ في تحميل الصوت');
     }
   }, [currentPage]);
 
@@ -264,6 +266,14 @@ const QuranReader: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Error Toast */}
+      {errorMessage && (
+        <ErrorToast
+          message={errorMessage}
+          onClose={() => setErrorMessage('')}
+        />
       )}
     </div>
   );

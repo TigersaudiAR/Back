@@ -64,8 +64,14 @@ const AyahOverlay: React.FC<AyahOverlayProps> = ({
     try {
       // Fetch ayah and tafsir
       const [ayahData, tafsirData] = await Promise.all([
-        getAyah(ayahId).catch(() => null),
-        getTafsir(ayahId).catch(() => null),
+        getAyah(ayahId).catch((err) => {
+          console.error('Error fetching ayah:', err);
+          return null;
+        }),
+        getTafsir(ayahId).catch((err) => {
+          console.error('Error fetching tafsir:', err);
+          return null;
+        }),
       ]);
 
       setPopover(prev => prev ? {
