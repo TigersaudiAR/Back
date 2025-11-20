@@ -23,10 +23,9 @@ export default function PageView({
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
-  // Construct image URL
-  const getImageUrl = (page: number) => {
+  const getImageUrl = useCallback((page: number) => {
     return `${baseUrl}/images/pages/page${String(page).padStart(3, '0')}.png`;
-  };
+  }, [baseUrl]);
 
   const currentImageUrl = getImageUrl(pageNumber);
 
@@ -45,7 +44,7 @@ export default function PageView({
       nextImg.src = getImageUrl(pageNumber + 1);
       preloadPages.push(nextImg);
     }
-  }, [pageNumber, baseUrl]);
+  }, [pageNumber, getImageUrl]);
 
   // Handle image load
   useEffect(() => {

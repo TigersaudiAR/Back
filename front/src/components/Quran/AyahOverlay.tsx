@@ -117,7 +117,7 @@ export default function AyahOverlay({
             aria-label={`الآية ${box.ayah_number} من سورة ${box.surah_id}`}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                handleBoxClick(box, e as any);
+                handleBoxClick(box, e as unknown as React.MouseEvent);
               }
             }}
           />
