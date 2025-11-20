@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write ."
   },
@@ -18,6 +19,7 @@
     "clsx": "^2.1.1",
     "daisyui": "^4.12.14",
     "framer-motion": "^11.2.10",
+    "idb": "^8.0.3",
     "lucide-react": "^0.446.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -25,6 +27,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@netlify/functions": "^5.1.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/react": "^18.3.26",
     "@types/react-dom": "^18.3.0",
