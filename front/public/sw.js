@@ -49,11 +49,56 @@ self.addEventListener('fetch', (event) => {
   const allowedOrigins = [
     location.origin,
     'https://api.quran.com',
-    'https://cdn.islamic.network'
+    'https://cdn.islamic.network',
+    'https://qurancomplex.gov.sa'
   ];
   
   // Skip requests from non-whitelisted origins
   if (!allowedOrigins.some(origin => url.origin === origin)) {
+    return;
+  }
+
+  // Quran page images - cache first strategy
+  if (url.hostname === 'qurancomplex.gov.sa' && url.pathname.includes('/images/page-')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(request).then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Fonts - cache first strategy
+  if (url.hostname === 'cdn.islamic.network' && url.pathname.includes('/fonts/')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(request).then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
 

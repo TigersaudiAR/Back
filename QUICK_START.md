@@ -164,6 +164,40 @@ Ctrl+C                      # Linux/macOS
 
 ---
 
+## 🌐 Environment Variables | متغيرات البيئة
+
+### Frontend Environment Variables
+
+إنشاء ملف `.env` في مجلد `front/`:
+
+```env
+# API Configuration
+VITE_API_URL=http://localhost:4000
+
+# Quran API Configuration  
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=<optional-api-key>
+VITE_QURAN_PROXY=<optional-netlify-function-url>
+```
+
+### Netlify Functions Usage
+
+للاستفادة من Netlify Functions محليًا:
+
+```bash
+cd front
+npm install -g netlify-cli
+netlify dev
+```
+
+دوال Netlify المتوفرة:
+- **quran-proxy**: وكيل لـ API مجمع الملك فهد
+- **save-question**: حفظ الأسئلة الواردة
+
+**ملاحظة:** في بيئة الإنتاج، استخدم قاعدة بيانات بدلاً من التخزين الملفي.
+
+---
+
 ## 📦 What's Included | المحتويات
 
 التطبيق يشمل:

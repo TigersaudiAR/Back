@@ -23,6 +23,9 @@ function QuranIndexPage() {
           <Link className="btn btn-outline gap-2" to="page-view">
             <BookOpen className="h-4 w-4" /> عرض الصفحات التفاعلي
           </Link>
+          <Link className="btn btn-outline gap-2" to="reader">
+            <BookOpen className="h-4 w-4" /> قارئ القرآن الحديث
+          </Link>
         </div>
         {fromCache && (
           <p className="mt-4 text-xs text-amber-300">يتم عرض الفهرس من النسخة المخزنة، وسيجري تحديثه تلقائيًا عند توفر الاتصال.</p>

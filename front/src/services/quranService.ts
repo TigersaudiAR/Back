@@ -6,23 +6,70 @@
  */
 
 import axios from 'axios';
-import type { Surah, Ayah, Tafsir } from '../types/quran';
+import type { Surah, Ayah, Tafsir, Recitation } from '../types/quran';
+import { getCached, setCached } from './quranCache';
 
-// Base URL for King Fahd Complex API
-const QURAN_COMPLEX_API = 'https://qurancomplex.gov.sa/quran-dev';
+// Base URL for King Fahd Complex API - configurable via environment
+const QURAN_COMPLEX_API = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
+const QURAN_API_KEY = import.meta.env.VITE_QURAN_API_KEY || '';
+const QURAN_PROXY = import.meta.env.VITE_QURAN_PROXY || '';
+
+// Cache TTL configurations (in milliseconds)
+const CACHE_TTL = {
+  CHAPTERS: 30 * 24 * 60 * 60 * 1000, // 30 days
+  PAGE: 7 * 24 * 60 * 60 * 1000,      // 7 days
+  AYAH: 7 * 24 * 60 * 60 * 1000,      // 7 days
+  TAFSIR: 7 * 24 * 60 * 60 * 1000,    // 7 days
+  AUDIO: 24 * 60 * 60 * 1000,         // 1 day
+};
 
 /**
- * الحصول على قائمة السور
- * Get list of all Surahs
+ * Get API base URL (use proxy if configured)
  */
-export async function getSurahList(): Promise<Surah[]> {
+function getApiBase(): string {
+  return QURAN_PROXY || QURAN_COMPLEX_API;
+}
+
+/**
+ * Get request headers
+ */
+function getHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (QURAN_API_KEY) {
+    headers['Authorization'] = `Bearer ${QURAN_API_KEY}`;
+  }
+  
+  return headers;
+}
+
+/**
+ * الحصول على قائمة السور (Chapters)
+ * Get list of all Surahs/Chapters
+ */
+export async function getChapters(): Promise<Surah[]> {
+  const cacheKey = 'chapters';
+  
+  // Try cache first
+  const cached = await getCached<Surah[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
   try {
-    // Note: The actual endpoint may vary. This is a placeholder structure
-    // based on common API patterns. Adjust according to actual API documentation.
-    const response = await axios.get(`${QURAN_COMPLEX_API}/surahs`);
-    return response.data;
+    const response = await axios.get(`${getApiBase()}/surahs`, {
+      headers: getHeaders(),
+    });
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.CHAPTERS);
+    
+    return data;
   } catch (error) {
-    console.error('Error fetching surah list from Quran Complex:', error);
+    console.error('Error fetching chapters from Quran Complex:', error);
     throw error;
   }
 }
@@ -33,14 +80,29 @@ export async function getSurahList(): Promise<Surah[]> {
  * @param surahId - رقم السورة (1-114)
  */
 export async function getSurahAyat(surahId: number): Promise<Ayah[]> {
-  try {
-    // Validate surah ID
-    if (surahId < 1 || surahId > 114) {
-      throw new Error(`Invalid surah ID: ${surahId}. Must be between 1 and 114.`);
-    }
+  // Validate surah ID
+  if (surahId < 1 || surahId > 114) {
+    throw new Error(`Invalid surah ID: ${surahId}. Must be between 1 and 114.`);
+  }
+  
+  const cacheKey = `surah_ayat_${surahId}`;
+  
+  // Try cache first
+  const cached = await getCached<Ayah[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
 
-    const response = await axios.get(`${QURAN_COMPLEX_API}/surah/${surahId}`);
-    return response.data;
+  try {
+    const response = await axios.get(`${getApiBase()}/surah/${surahId}`, {
+      headers: getHeaders(),
+    });
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.AYAH);
+    
+    return data;
   } catch (error) {
     console.error(`Error fetching ayat for surah ${surahId}:`, error);
     throw error;
@@ -50,15 +112,49 @@ export async function getSurahAyat(surahId: number): Promise<Ayah[]> {
 /**
  * الحصول على آية محددة
  * Get a specific Ayah
- * @param surahId - رقم السورة
- * @param ayahNumber - رقم الآية
+ * @param ayahId - معرف الآية أو (surahId, ayahNumber)
  */
-export async function getAyah(surahId: number, ayahNumber: number): Promise<Ayah> {
+export async function getAyah(surahId: number, ayahNumber: number): Promise<Ayah>;
+export async function getAyah(ayahId: string): Promise<Ayah>;
+export async function getAyah(
+  surahIdOrAyahId: number | string,
+  ayahNumber?: number
+): Promise<Ayah> {
+  let surahId: number;
+  let ayahNum: number;
+  let cacheKey: string;
+  
+  if (typeof surahIdOrAyahId === 'string') {
+    cacheKey = `ayah_${surahIdOrAyahId}`;
+    // Parse ayahId format like "1:1" or "1-1"
+    const parts = surahIdOrAyahId.split(/[:-]/);
+    surahId = parseInt(parts[0], 10);
+    ayahNum = parseInt(parts[1], 10);
+  } else {
+    surahId = surahIdOrAyahId;
+    ayahNum = ayahNumber!;
+    cacheKey = `ayah_${surahId}_${ayahNum}`;
+  }
+  
+  // Try cache first
+  const cached = await getCached<Ayah>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
   try {
-    const response = await axios.get(`${QURAN_COMPLEX_API}/surah/${surahId}/ayah/${ayahNumber}`);
-    return response.data;
+    const response = await axios.get(
+      `${getApiBase()}/surah/${surahId}/ayah/${ayahNum}`,
+      { headers: getHeaders() }
+    );
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.AYAH);
+    
+    return data;
   } catch (error) {
-    console.error(`Error fetching ayah ${ayahNumber} from surah ${surahId}:`, error);
+    console.error(`Error fetching ayah ${ayahNum} from surah ${surahId}:`, error);
     throw error;
   }
 }
@@ -66,24 +162,53 @@ export async function getAyah(surahId: number, ayahNumber: number): Promise<Ayah
 /**
  * الحصول على التفسير لآية محددة
  * Get Tafsir for a specific Ayah
- * @param surahId - رقم السورة
- * @param ayahNumber - رقم الآية
+ * @param ayahId - معرف الآية أو (surahId, ayahNumber)
  * @param tafsirSource - مصدر التفسير (اختياري)
  */
 export async function getTafsir(
-  surahId: number,
-  ayahNumber: number,
+  surahIdOrAyahId: number | string,
+  ayahNumberOrSource?: number | string,
   tafsirSource?: string
 ): Promise<Tafsir[]> {
+  let surahId: number;
+  let ayahNum: number;
+  let source: string | undefined;
+  let cacheKey: string;
+  
+  if (typeof surahIdOrAyahId === 'string') {
+    // Parse ayahId format
+    const parts = surahIdOrAyahId.split(/[:-]/);
+    surahId = parseInt(parts[0], 10);
+    ayahNum = parseInt(parts[1], 10);
+    source = typeof ayahNumberOrSource === 'string' ? ayahNumberOrSource : undefined;
+    cacheKey = `tafsir_${surahIdOrAyahId}_${source || 'default'}`;
+  } else {
+    surahId = surahIdOrAyahId;
+    ayahNum = ayahNumberOrSource as number;
+    source = tafsirSource;
+    cacheKey = `tafsir_${surahId}_${ayahNum}_${source || 'default'}`;
+  }
+  
+  // Try cache first
+  const cached = await getCached<Tafsir[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
   try {
-    const params = tafsirSource ? { source: tafsirSource } : {};
+    const params = source ? { source } : {};
     const response = await axios.get(
-      `${QURAN_COMPLEX_API}/surah/${surahId}/ayah/${ayahNumber}/tafsir`,
-      { params }
+      `${getApiBase()}/surah/${surahId}/ayah/${ayahNum}/tafsir`,
+      { params, headers: getHeaders() }
     );
-    return response.data;
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.TAFSIR);
+    
+    return data;
   } catch (error) {
-    console.error(`Error fetching tafsir for ayah ${ayahNumber} from surah ${surahId}:`, error);
+    console.error(`Error fetching tafsir for ayah ${ayahNum} from surah ${surahId}:`, error);
     throw error;
   }
 }
@@ -98,18 +223,34 @@ export async function getSurahTafsir(
   surahId: number,
   tafsirSource?: string
 ): Promise<Tafsir[]> {
+  const cacheKey = `surah_tafsir_${surahId}_${tafsirSource || 'default'}`;
+  
+  // Try cache first
+  const cached = await getCached<Tafsir[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
   try {
     const params = tafsirSource ? { source: tafsirSource } : {};
     const response = await axios.get(
-      `${QURAN_COMPLEX_API}/surah/${surahId}/tafsir`,
-      { params }
+      `${getApiBase()}/surah/${surahId}/tafsir`,
+      { params, headers: getHeaders() }
     );
-    return response.data;
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.TAFSIR);
+    
+    return data;
   } catch (error) {
     console.error(`Error fetching tafsir for surah ${surahId}:`, error);
     throw error;
   }
 }
+
+// Legacy export for backwards compatibility
+export const getSurahList = getChapters;
 
 /**
  * البحث في القرآن الكريم
@@ -118,8 +259,9 @@ export async function getSurahTafsir(
  */
 export async function searchQuran(query: string): Promise<Ayah[]> {
   try {
-    const response = await axios.get(`${QURAN_COMPLEX_API}/search`, {
-      params: { q: query }
+    const response = await axios.get(`${getApiBase()}/search`, {
+      params: { q: query },
+      headers: getHeaders(),
     });
     return response.data;
   } catch (error) {
@@ -129,22 +271,112 @@ export async function searchQuran(query: string): Promise<Ayah[]> {
 }
 
 /**
+ * الحصول على روابط الصوت لآية أو صفحة
+ * Get audio URLs for ayah or page
+ */
+export async function getAudioUrls(
+  type: 'ayah' | 'page',
+  id: string | number
+): Promise<Recitation[]> {
+  const cacheKey = `audio_${type}_${id}`;
+  
+  // Try cache first
+  const cached = await getCached<Recitation[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
+  try {
+    let endpoint: string;
+    
+    if (type === 'ayah') {
+      // Parse ayah ID if string
+      if (typeof id === 'string') {
+        const parts = id.split(/[:-]/);
+        const surahId = parts[0];
+        const ayahNum = parts[1];
+        endpoint = `${getApiBase()}/surah/${surahId}/ayah/${ayahNum}/audio`;
+      } else {
+        endpoint = `${getApiBase()}/ayah/${id}/audio`;
+      }
+    } else {
+      endpoint = `${getApiBase()}/page/${id}/audio`;
+    }
+    
+    const response = await axios.get(endpoint, {
+      headers: getHeaders(),
+    });
+    const data = response.data;
+    
+    // Cache the result
+    await setCached(cacheKey, data, CACHE_TTL.AUDIO);
+    
+    return data;
+  } catch (error) {
+    console.warn(`Could not fetch audio for ${type} ${id}:`, error);
+    // Return empty array on error instead of throwing
+    return [];
+  }
+}
+
+/**
  * الحصول على معلومات الصفحة
- * Get page information
+ * Get page information and image URL
  * @param pageNumber - رقم الصفحة (1-604)
  */
-export async function getPageAyat(pageNumber: number): Promise<Ayah[]> {
+export async function getPage(pageNumber: number): Promise<{
+  pageNumber: number;
+  imageUrl: string;
+  ayat?: Ayah[];
+}> {
+  if (pageNumber < 1 || pageNumber > 604) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+  }
+  
+  const cacheKey = `page_${pageNumber}`;
+  
+  // Try cache first
+  const cached = await getCached<{ pageNumber: number; imageUrl: string; ayat?: Ayah[] }>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
   try {
-    if (pageNumber < 1 || pageNumber > 604) {
-      throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+    // Page image URL from Quran Complex
+    // Note: Using QURAN_COMPLEX_API directly for images as they're served from CDN
+    // If CORS issues occur, configure VITE_QURAN_PROXY to use Netlify Function
+    const imageUrl = `${QURAN_COMPLEX_API}/images/page-${String(pageNumber).padStart(3, '0')}.png`;
+    
+    // Try to fetch ayat data for the page
+    let ayat: Ayah[] | undefined;
+    try {
+      const response = await axios.get(`${getApiBase()}/page/${pageNumber}`, {
+        headers: getHeaders(),
+      });
+      ayat = response.data;
+    } catch (error) {
+      console.warn(`Could not fetch ayat for page ${pageNumber}:`, error);
     }
-
-    const response = await axios.get(`${QURAN_COMPLEX_API}/page/${pageNumber}`);
-    return response.data;
+    
+    const pageData = {
+      pageNumber,
+      imageUrl,
+      ayat,
+    };
+    
+    // Cache the result
+    await setCached(cacheKey, pageData, CACHE_TTL.PAGE);
+    
+    return pageData;
   } catch (error) {
     console.error(`Error fetching page ${pageNumber}:`, error);
     throw error;
   }
+}
+
+export async function getPageAyat(pageNumber: number): Promise<Ayah[]> {
+  const pageData = await getPage(pageNumber);
+  return pageData.ayat || [];
 }
 
 /**

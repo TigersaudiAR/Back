@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import ErrorBoundary from "./components/ErrorBoundary";
 import "./styles/global.css";
+import "./i18n/config"; // Initialize i18n
 
 // Register Service Worker for offline capabilities
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

@@ -1,0 +1,39 @@
+{
+  "quranReader": {
+    "title": "The Holy Quran",
+    "back": "Back",
+    "search": "Search",
+    "toggleMode": "Toggle Mode",
+    "pageNumber": "Page {{page}}",
+    "previous": "Previous",
+    "next": "Next",
+    "zoom": "Zoom",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "toolbar": "Toolbar",
+    "showToolbar": "Show Toolbar",
+    "hideToolbar": "Hide Toolbar",
+    "audio": "Audio",
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "repeat": "Repeat",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "goToPage": "Go to Page",
+    "ayahText": "Ayah Text",
+    "tafsir": "Tafsir",
+    "noTafsir": "No tafsir available for this ayah",
+    "close": "Close",
+    "surahName": "Surah Name"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}
