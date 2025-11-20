@@ -45,3 +45,20 @@ export type Recitation = {
   reciter_id: string;
   timings?: AyahTiming[];
 };
+
+export interface AyahBoundingBox {
+  ayahId: string | number;
+  surahNumber: number;
+  ayahNumber: number;
+  x: number; // percentage or pixels
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface QuranPage {
+  page_number: number;
+  ayat: Ayah[];
+  verses?: Ayah[];
+  // Add other fields as per actual API response
+}

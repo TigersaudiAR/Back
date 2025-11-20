@@ -49,11 +49,40 @@ self.addEventListener('fetch', (event) => {
   const allowedOrigins = [
     location.origin,
     'https://api.quran.com',
-    'https://cdn.islamic.network'
+    'https://cdn.islamic.network',
+    'https://qurancomplex.gov.sa'
   ];
   
   // Skip requests from non-whitelisted origins
   if (!allowedOrigins.some(origin => url.origin === origin)) {
+    return;
+  }
+
+  // Quran page images and fonts - cache first, fallback to network (for offline reading)
+  if (url.pathname.includes('/images/pages/') || 
+      url.pathname.includes('/fonts/') ||
+      url.pathname.endsWith('.woff2') ||
+      url.pathname.endsWith('.woff')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(request).then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        }).catch((err) => {
+          console.error('Failed to fetch resource:', err);
+          return caches.match(request);
+        });
+      })
+    );
     return;
   }
 
