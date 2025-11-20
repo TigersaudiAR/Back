@@ -138,7 +138,37 @@ front/src/
 
 إنشاء ملف `.env` في مجلد `front/`:
 ```env
+# Backend API URL
 VITE_API_URL=http://localhost:4000
+
+# Quran API Configuration
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=your_api_key_here_if_required
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+```
+
+### Netlify Functions
+
+المشروع يدعم Netlify Functions للخصائص التالية:
+
+1. **quran-proxy**: وكيل لتمرير طلبات API لمجمع الملك فهد
+   - يحافظ على أمان مفاتيح API
+   - يضيف رؤوس CORS
+   - يدعم التخزين المؤقت
+
+2. **save-question**: حفظ أسئلة المستخدمين
+   - يتحقق من صحة البيانات
+   - يحفظ في ملف JSON (للتطوير)
+   - TODO: الترحيل إلى قاعدة بيانات للإنتاج
+
+للتشغيل المحلي:
+```bash
+# تثبيت Netlify CLI
+npm install -g netlify-cli
+
+# تشغيل التطوير مع Functions
+cd front
+netlify dev
 ```
 
 ## 📝 المساهمة

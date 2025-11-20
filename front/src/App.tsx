@@ -5,6 +5,8 @@ import QuranLayout from "./layouts/QuranLayout";
 import LoadingScreen from "./components/LoadingScreen";
 import NetworkStatus from "./components/NetworkStatus";
 import QuranList from "./pages/QuranList";
+import QuranReaderPage from "./pages/QuranReader";
+import QuranClassicTextPage from "./pages/QuranClassic";
 
 const HomePage = lazy(() => import("./pages/index"));
 const QuranModernPage = lazy(() => import("./pages/quran/Modern"));
@@ -49,6 +51,8 @@ function App() {
             <Route path="modern" element={<QuranModernPage />} />
             <Route path="classic" element={<QuranClassicPage />} />
             <Route path="page-view" element={<QuranPageViewPage />} />
+            <Route path="reader" element={<QuranReaderPage />} />
+            <Route path="classic-text" element={<QuranClassicTextPage />} />
           </Route>
           <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/dashboard/content" element={<DashboardContent />} />
