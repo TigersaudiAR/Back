@@ -4,9 +4,9 @@
  */
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getSurahList, getSurahAyat } from '../../services/quranService';
-import type { Surah, Ayah } from '../../types/quran';
-import '../../styles/quran.css';
+import { getSurahList, getSurahAyat } from '../services/quranService';
+import type { Surah, Ayah } from '../types/quran';
+import '../styles/quran.css';
 
 export default function QuranClassic() {
   const navigate = useNavigate();

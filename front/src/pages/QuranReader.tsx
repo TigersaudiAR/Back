@@ -4,12 +4,12 @@
  */
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import PageView from '../../components/Quran/PageView';
-import AyahOverlay from '../../components/Quran/AyahOverlay';
-// import AudioPlayer from '../../components/Quran/AudioPlayer'; // TODO: Implement audio feature
-import { getPage, getChapters } from '../../services/quranService';
-import type { Ayah } from '../../types/quran';
-import '../../styles/quran.css';
+import PageView from '../components/Quran/PageView';
+import AyahOverlay from '../components/Quran/AyahOverlay';
+// import AudioPlayer from '../components/Quran/AudioPlayer'; // TODO: Implement audio feature
+import { getPage, getChapters } from '../services/quranService';
+import type { Ayah } from '../types/quran';
+import '../styles/quran.css';
 
 export default function QuranReader() {
   const navigate = useNavigate();
