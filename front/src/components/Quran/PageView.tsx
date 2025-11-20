@@ -17,7 +17,7 @@ interface PageViewProps {
 export default function PageView({
   pageNumber,
   onPageChange,
-  onAyahClick,
+  onAyahClick: _onAyahClick,
   className = ''
 }: PageViewProps) {
   const [imageUrl, setImageUrl] = useState<string>('');

@@ -5,7 +5,7 @@
 
 import { useState, useCallback } from 'react';
 import { getAyah, getTafsir } from '../../services/quranService';
-import type { Ayah, Tafsir } from '../../types/quran';
+import type { Tafsir } from '../../types/quran';
 
 interface AyahBounds {
   surah: number;

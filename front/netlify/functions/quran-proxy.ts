@@ -10,7 +10,7 @@ import axios from "axios";
 const QURAN_BASE_URL = process.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
 const QURAN_API_KEY = process.env.VITE_QURAN_API_KEY || '';
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Only allow GET requests
   if (event.httpMethod !== 'GET') {
     return {

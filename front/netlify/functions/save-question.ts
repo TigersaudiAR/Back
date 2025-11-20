@@ -31,7 +31,7 @@ interface QuestionPayload {
 
 const QUESTIONS_FILE = path.join(process.cwd(), '../../../data/questions.json');
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Set CORS headers
   const headers = {
     'Content-Type': 'application/json',

@@ -31,9 +31,24 @@ export default function QuranReader() {
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
   const [showToolbar, setShowToolbar] = useState(false);
-  const [pageMetadata, setPageMetadata] = useState<any>(null);
+  const [pageMetadata, setPageMetadata] = useState<PageMetadata | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | undefined>();
   const [showSettings, setShowSettings] = useState(false);
+
+  // Interface for page metadata
+  interface PageMetadata {
+    page: number;
+    ayahs: Array<{
+      surah: number;
+      ayah: number;
+      bounds?: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+      };
+    }>;
+  }
 
   // Load page metadata for ayah overlays
   useEffect(() => {
@@ -55,7 +70,7 @@ export default function QuranReader() {
   }, []);
 
   // Handle ayah click - load audio
-  const handleAyahClick = useCallback(async (surah: number, ayah: number) => {
+  const handleAyahClick = useCallback(async (surah: number, _ayah: number) => {
     try {
       const urls = await getAudioUrls(surah);
       if (urls && urls.length > 0) {
