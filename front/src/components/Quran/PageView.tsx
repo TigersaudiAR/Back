@@ -5,7 +5,7 @@ import { getPageCoordinates } from '../../services/quranService';
 interface PageViewProps {
   pageNumber: number;
   imageUrl: string;
-  onPageChange?: (page: number) => void;
+  onPageChange?: (page: number) => void; // eslint-disable-line @typescript-eslint/no-unused-vars
 }
 
 interface VerseCoordinate {
@@ -21,11 +21,12 @@ interface VerseCoordinate {
  * Page View Component
  * Displays Quran page image with interactive ayah overlays
  */
-function PageView({ pageNumber, imageUrl, onPageChange }: PageViewProps) {
+function PageView({ pageNumber, imageUrl }: PageViewProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [coordinates, setCoordinates] = useState<VerseCoordinate[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<VerseCoordinate | null>(null);
-  const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_loading, setLoading] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 

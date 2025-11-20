@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Volume2, BookOpen } from 'lucide-react';
+import { X, BookOpen } from 'lucide-react';
 import { getAyah, getTafsir, getAyahAudioUrl } from '../../services/quranService';
 import type { Ayah, Tafsir } from '../../types/quran';
 import AudioPlayer from './AudioPlayer';
