@@ -1,0 +1,67 @@
+{
+  "quranReader": {
+    "title": "Quran Al-Huda",
+    "page": "Page",
+    "of": "of",
+    "juz": "Juz",
+    "hizb": "Hizb",
+    "surah": "Surah",
+    "ayah": "Ayah",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "navigation": {
+      "home": "Home",
+      "classic": "Classic View",
+      "reader": "Page View",
+      "next": "Next",
+      "previous": "Previous",
+      "goToPage": "Go to Page"
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "repeat": "Repeat",
+      "skipBack": "Skip Back 10s",
+      "skipForward": "Skip Forward 10s",
+      "volume": "Volume",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "toolbar": "Toolbar",
+      "hideTopBar": "Hide Top Bar",
+      "showTopBar": "Show Top Bar"
+    },
+    "ayah": {
+      "text": "Ayah Text",
+      "tafsir": "Tafsir",
+      "recitation": "Recitation",
+      "close": "Close"
+    },
+    "messages": {
+      "boundingBoxesComingSoon": "Interactive ayah data under development",
+      "tafsirComingSoon": "Tafsir and recitation coming soon, insha'Allah",
+      "audioLoading": "Loading recitation...",
+      "pressT": "Press T to toggle toolbar",
+      "pressEsc": "Press ESC to close"
+    },
+    "welcome": {
+      "title": "Welcome to Quran Al-Huda",
+      "instruction1": "Use arrow keys or swipe to navigate pages",
+      "instruction2": "Tap on an ayah to view tafsir and listen",
+      "instruction3": "Press T to show/hide toolbar",
+      "instruction4": "Press ESC to exit any menu",
+      "start": "Got it, start reading"
+    },
+    "print": {
+      "title": "Print",
+      "footer": "Quran Al-Huda - Educational Quran Platform",
+      "source": "Source: King Fahd Glorious Quran Printing Complex"
+    }
+  },
+  "common": {
+    "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
+    "makkah": "Makkan",
+    "madinah": "Madinan",
+    "verses": "verses"
+  }
+}
