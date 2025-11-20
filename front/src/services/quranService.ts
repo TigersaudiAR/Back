@@ -7,6 +7,7 @@
 
 import axios from 'axios';
 import type { Surah, Ayah, Tafsir } from '../types/quran';
+import type { PageMetadata, LastPosition } from '../types/quranReader';
 
 // Environment variables with fallback to official API
 const QURAN_BASE_URL = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
@@ -21,27 +22,6 @@ const CACHE_TTL = 24 * 60 * 60 * 1000;
 
 interface CacheItem<T> {
   data: T;
-  timestamp: number;
-}
-
-interface PageMetadata {
-  page: number;
-  ayahs: Array<{
-    surah: number;
-    ayah: number;
-    bounds?: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    };
-  }>;
-}
-
-interface LastPosition {
-  page?: number;
-  surah?: number;
-  ayah?: number;
   timestamp: number;
 }
 

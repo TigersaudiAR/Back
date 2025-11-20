@@ -7,10 +7,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import PageView from '../../components/Quran/PageView';
-import AyahOverlay from '../../components/Quran/AyahOverlay';
-import AudioPlayer from '../../components/Quran/AudioPlayer';
-import { getPageMeta, saveLastPosition, loadLastPosition, getAudioUrls } from '../../services/quranService';
+import PageView from '../components/Quran/PageView';
+import AyahOverlay from '../components/Quran/AyahOverlay';
+import AudioPlayer from '../components/Quran/AudioPlayer';
+import { getPageMeta, saveLastPosition, loadLastPosition, getAudioUrls } from '../services/quranService';
+import type { PageMetadata } from '../types/quranReader';
 import { BookOpen, Settings, Home } from 'lucide-react';
 
 export default function QuranReader() {
@@ -34,21 +35,6 @@ export default function QuranReader() {
   const [pageMetadata, setPageMetadata] = useState<PageMetadata | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | undefined>();
   const [showSettings, setShowSettings] = useState(false);
-
-  // Interface for page metadata
-  interface PageMetadata {
-    page: number;
-    ayahs: Array<{
-      surah: number;
-      ayah: number;
-      bounds?: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-      };
-    }>;
-  }
 
   // Load page metadata for ayah overlays
   useEffect(() => {
@@ -163,10 +149,10 @@ export default function QuranReader() {
           className="w-full h-full"
         />
 
-        {/* Ayah Overlays - only show if metadata is available */}
+        {/* Ayah Overlays - only show if metadata is available and has bounds */}
         {pageMetadata?.ayahs && (
           <AyahOverlay
-            ayahBounds={pageMetadata.ayahs}
+            ayahBounds={pageMetadata.ayahs.filter(ayah => ayah.bounds !== undefined) as any[]}
             containerWidth={1000} // TODO: Get actual container dimensions
             containerHeight={1400}
             onAyahClick={handleAyahClick}

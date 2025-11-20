@@ -6,17 +6,7 @@
 import { useState, useCallback } from 'react';
 import { getAyah, getTafsir } from '../../services/quranService';
 import type { Tafsir } from '../../types/quran';
-
-interface AyahBounds {
-  surah: number;
-  ayah: number;
-  bounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-}
+import type { AyahBounds } from '../../types/quranReader';
 
 interface AyahOverlayProps {
   ayahBounds: AyahBounds[];
