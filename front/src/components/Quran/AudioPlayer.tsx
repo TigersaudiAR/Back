@@ -25,7 +25,7 @@ export default function AudioPlayer({
   const [repeat, setRepeat] = useState(false);
   const [selectedRecitation, setSelectedRecitation] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const highlightIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const highlightIntervalRef = useRef<number | null>(null);
 
   const currentRecitation = recitations[selectedRecitation];
   const timings = currentRecitation?.timings || [];
