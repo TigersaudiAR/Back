@@ -182,6 +182,32 @@ Ctrl+C                      # Linux/macOS
 
 ---
 
+## 🔐 Environment Variables | متغيرات البيئة
+
+Create a `.env` file in `front/` directory:
+
+أنشئ ملف `.env` في مجلد `front/`:
+
+```env
+# Backend API
+VITE_API_URL=http://localhost:4000
+
+# Quran API Configuration (King Fahd Complex)
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=
+VITE_QURAN_PROXY=
+
+# Optional: Use Netlify Functions proxy
+# VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+```
+
+**Notes | ملاحظات:**
+- API keys are optional | مفاتيح API اختيارية
+- Proxy is useful for CORS issues | البروكسي مفيد لمشاكل CORS
+- All Quran data from official King Fahd Complex | جميع بيانات القرآن من مجمع الملك فهد الرسمي
+
+---
+
 ## 🔧 Troubleshooting | حل المشاكل
 
 ### Problem: Port Already in Use | المنفذ مستخدم
