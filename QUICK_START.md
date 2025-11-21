@@ -184,6 +184,40 @@ Ctrl+C                      # Linux/macOS
 
 ## 🔧 Troubleshooting | حل المشاكل
 
+### Netlify Functions (للتطوير المحلي)
+
+إذا كنت تستخدم Netlify Functions للتطوير:
+
+If using Netlify Functions for development:
+
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Run frontend with Netlify Functions
+cd front
+netlify dev
+```
+
+**Environment Variables for Netlify Functions:**
+```env
+# Create .env in front/ directory
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=  # Optional
+VITE_QURAN_PROXY=/api/quran-proxy  # Netlify function path
+```
+
+**Available Netlify Functions:**
+- `/api/quran-proxy` - Proxy for King Fahd Complex API with CORS
+- `/api/save-question` - Save user questions (ephemeral in serverless)
+
+**Note:** File-based persistence in `data/questions.json` is for local development only. 
+In production serverless environments, migrate to a database (MongoDB, PostgreSQL, or Netlify Blobs).
+
+---
+
+## 🔧 Troubleshooting | حل المشاكل
+
 ### Problem: Port Already in Use | المنفذ مستخدم
 
 **Backend (Port 4000):**
