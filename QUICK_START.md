@@ -224,9 +224,13 @@ This will:
    - Save user questions (temporary file-based storage)
    - Usage: `POST /.netlify/functions/save-question` with JSON body
 
-**ملاحظة مهمة:** التخزين الملفي ليس دائماً على المنصات serverless. للإنتاج، استخدم قاعدة بيانات.
+**⚠️ ملاحظة مهمة جداً | CRITICAL WARNING:**
 
-**Important Note:** File-based storage is NOT permanent on serverless platforms. For production, use a database.
+التخزين الملفي ليس دائماً على المنصات serverless. هذا حل مؤقت للتطوير والاختبار فقط!
+للإنتاج، يجب استخدام قاعدة بيانات (Firebase, MongoDB, Supabase, إلخ).
+
+File-based storage is NOT permanent on serverless platforms. This is a temporary solution for development and testing only!
+For production, you MUST use a database (Firebase, MongoDB, Supabase, etc.).
 
 ---
 
