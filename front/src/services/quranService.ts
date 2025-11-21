@@ -28,6 +28,22 @@ interface CacheEntry<T> {
 }
 
 /**
+ * Page metadata type for verse coordinates
+ */
+interface PageMetadata {
+  verses?: Array<{
+    surah_id: number;
+    ayah_number: number;
+    ayah_id?: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  [key: string]: unknown;
+}
+
+/**
  * Get data from localStorage cache
  */
 function getFromCache<T>(key: string): T | null {
@@ -288,7 +304,7 @@ export function getPageImage(pageNumber: number): string {
  * Get page metadata including verse coordinates
  * @param pageNumber - رقم الصفحة (1-604)
  */
-export async function getPageMeta(pageNumber: number): Promise<any> {
+export async function getPageMeta(pageNumber: number): Promise<PageMetadata> {
   if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
     throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
   }
@@ -296,14 +312,14 @@ export async function getPageMeta(pageNumber: number): Promise<any> {
   const cacheKey = `page_meta_${pageNumber}`;
   
   // Try cache first
-  const cached = getFromCache<any>(cacheKey);
+  const cached = getFromCache<PageMetadata>(cacheKey);
   if (cached) {
     return cached;
   }
 
   try {
     const response = await axios.get(`${QURAN_COMPLEX_API}/page/${pageNumber}/meta`);
-    const data = response.data;
+    const data = response.data as PageMetadata;
     
     saveToCache(cacheKey, data);
     return data;
@@ -347,6 +363,7 @@ export async function getAyahById(ayahId: number): Promise<Ayah> {
  * Get audio URLs for recitation
  * @param surahId - رقم السورة
  * @param reciterId - معرّف القارئ (اختياري، افتراضي: ماهر المعيقلي)
+ * @returns نمط URL للآية (يحتاج إلى رقم الآية)
  */
 export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiqly'): string[] {
   if (surahId < 1 || surahId > 114) {
@@ -356,11 +373,7 @@ export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiq
   // Using Islamic Network CDN for audio
   const baseUrl = `https://cdn.islamic.network/quran/audio/128/${reciterId}`;
   
-  // Note: You'll need to know the ayah count for each surah to generate all URLs
-  // This is a simplified version. In production, fetch ayah count from API or use static data
-  const urls: string[] = [];
-  
-  // For now, return a single URL pattern that can be used with ayah number
+  // Return URL pattern that can be used with ayah number
   // The caller will need to append the ayah number
   return [`${baseUrl}/{ayahNumber}.mp3`];
 }
@@ -402,3 +415,50 @@ export function getAyahAudioUrl(
  * 
  * يُنصح بالترقية إلى IndexedDB لاحقاً لدعم تخزين أكبر وأداء أفضل
  */
+
+/**
+ * حفظ آخر موضع قراءة
+ * Save last reading position
+ * @param pageNumber - رقم الصفحة
+ * @param surahId - رقم السورة (اختياري)
+ * @param ayahNumber - رقم الآية (اختياري)
+ */
+export function saveLastPosition(
+  pageNumber: number,
+  surahId?: number,
+  ayahNumber?: number
+): void {
+  try {
+    const position = {
+      pageNumber,
+      surahId,
+      ayahNumber,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('quran_last_position', JSON.stringify(position));
+  } catch (error) {
+    console.error('Error saving last position:', error);
+  }
+}
+
+/**
+ * استرجاع آخر موضع قراءة
+ * Load last reading position
+ * @returns آخر موضع قراءة أو null
+ */
+export function loadLastPosition(): {
+  pageNumber: number;
+  surahId?: number;
+  ayahNumber?: number;
+  timestamp: number;
+} | null {
+  try {
+    const saved = localStorage.getItem('quran_last_position');
+    if (!saved) return null;
+    
+    return JSON.parse(saved);
+  } catch (error) {
+    console.error('Error loading last position:', error);
+    return null;
+  }
+}
