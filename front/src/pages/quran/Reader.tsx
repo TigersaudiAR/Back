@@ -49,7 +49,8 @@ const QuranReader: React.FC = () => {
           setVerses([]);
         }
       } catch (error) {
-        console.warn(`Coordinates not available for page ${currentPage}:`, error);
+        // Coordinates not available for this page - this is expected behavior
+        // The UI will show an appropriate message to the user
         setVerses([]);
       } finally {
         setLoading(false);

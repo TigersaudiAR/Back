@@ -99,7 +99,7 @@ const AyahOverlay: React.FC<AyahOverlayProps> = ({
     loadVerseData();
   }, [selectedVerse]);
 
-  const handleVerseClick = (verse: VerseBox, event: React.MouseEvent) => {
+  const handleVerseClick = (verse: VerseBox, event: React.MouseEvent<SVGRectElement>) => {
     event.stopPropagation();
     setSelectedVerse(verse);
     setShowAudio(false);
@@ -174,7 +174,7 @@ const AyahOverlay: React.FC<AyahOverlayProps> = ({
             strokeWidth="2"
             rx="4"
             className="cursor-pointer hover:fill-[rgba(16,185,129,0.2)] transition-all"
-            onClick={(e) => handleVerseClick(verse, e as any)}
+            onClick={(e) => handleVerseClick(verse, e)}
             role="button"
             aria-label={`سورة ${verse.surah_id} آية ${verse.ayah_number}`}
           />

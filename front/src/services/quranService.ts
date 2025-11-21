@@ -12,6 +12,10 @@ import type { Surah, Ayah, Tafsir } from '../types/quran';
 const QURAN_BASE = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
 const QURAN_COMPLEX_API = QURAN_BASE;
 
+// Constants
+const TOTAL_QURAN_PAGES = 604;
+const TOTAL_QURAN_AYAT = 6236;
+
 // Cache TTL in milliseconds (default: 1 hour)
 const CACHE_TTL = Number(import.meta.env.VITE_CACHE_TTL) || 3600000;
 
@@ -49,6 +53,8 @@ function getFromCache<T>(key: string): T | null {
 
 /**
  * Save data to localStorage cache
+ * Note: Silently fails if localStorage is full. Consider showing user notification
+ * or implementing fallback strategy for production use.
  */
 function saveToCache<T>(key: string, data: T): void {
   try {
@@ -60,6 +66,7 @@ function saveToCache<T>(key: string, data: T): void {
   } catch (error) {
     console.error('Cache write error:', error);
     // Silently fail if localStorage is full or unavailable
+    // TODO: Consider implementing user notification or fallback strategy
   }
 }
 
@@ -267,8 +274,8 @@ export async function fetchWithRetry<T>(
  * @param pageNumber - رقم الصفحة (1-604)
  */
 export function getPageImage(pageNumber: number): string {
-  if (pageNumber < 1 || pageNumber > 604) {
-    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+  if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
   }
 
   const paddedNumber = String(pageNumber).padStart(3, '0');
@@ -282,8 +289,8 @@ export function getPageImage(pageNumber: number): string {
  * @param pageNumber - رقم الصفحة (1-604)
  */
 export async function getPageMeta(pageNumber: number): Promise<any> {
-  if (pageNumber < 1 || pageNumber > 604) {
-    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+  if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
   }
 
   const cacheKey = `page_meta_${pageNumber}`;
@@ -312,8 +319,8 @@ export async function getPageMeta(pageNumber: number): Promise<any> {
  * @param ayahId - معرّف الآية العالمي (1-6236)
  */
 export async function getAyahById(ayahId: number): Promise<Ayah> {
-  if (ayahId < 1 || ayahId > 6236) {
-    throw new Error(`Invalid ayah ID: ${ayahId}. Must be between 1 and 6236.`);
+  if (ayahId < 1 || ayahId > TOTAL_QURAN_AYAT) {
+    throw new Error(`Invalid ayah ID: ${ayahId}. Must be between 1 and ${TOTAL_QURAN_AYAT}.`);
   }
 
   const cacheKey = `ayah_${ayahId}`;
@@ -361,6 +368,11 @@ export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiq
 /**
  * الحصول على رابط صوت آية محددة
  * Get audio URL for a specific ayah
+ * 
+ * NOTE: This is a simplified implementation using a direct URL pattern.
+ * For production, consider implementing proper ayah numbering lookup
+ * or using a more reliable audio URL generation method.
+ * 
  * @param surahId - رقم السورة
  * @param ayahNumber - رقم الآية
  * @param reciterId - معرّف القارئ (اختياري)
