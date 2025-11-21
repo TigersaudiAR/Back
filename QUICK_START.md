@@ -169,16 +169,64 @@ Ctrl+C                      # Linux/macOS
 التطبيق يشمل:
 
 ✅ **القرآن الكريم** - Quran Reader with Juz/Hizb/Page numbers
+✅ **قارئ القرآن الحديث** - Modern Quran Reader with page images
+✅ **التفسير والتلاوة** - Integrated Tafsir and Audio recitation
 ✅ **تعلم الإسلام** - Islamic Learning (8 comprehensive topics)
 ✅ **السيرة النبوية** - Prophet's Biography (6 major events)
 ✅ **التعليم الذاتي** - Self-learning modules (Arabic, Tajweed, Hifz)
 ✅ **الأحاديث** - Hadith collection from authentic sources
 ✅ **الأذكار** - Daily Adhkar and supplications
 ✅ **حلقات التحفيظ** - Memorization circles management
+✅ **Netlify Functions** - Serverless functions for API proxy and question storage
 ✅ **PWA Support** - Works offline, installable as native app
 ✅ **Service Worker** - Smart caching for better performance
 ✅ **Error Handling** - Beautiful error pages with recovery options
 ✅ **Network Status** - Real-time online/offline indicator
+
+---
+
+## 🔌 Netlify Functions | دوال Netlify
+
+للتطوير والاختبار المحلي لدوال Netlify:
+
+For local development and testing of Netlify Functions:
+
+### Install Netlify CLI | تثبيت Netlify CLI
+
+```bash
+npm install -g netlify-cli
+```
+
+### Run with Netlify Dev | التشغيل مع Netlify Dev
+
+```bash
+cd front
+netlify dev
+```
+
+هذا سيقوم بـ:
+- تشغيل خادم التطوير للواجهة (Vite) على `http://localhost:8888`
+- تفعيل دوال Netlify على `/.netlify/functions/*`
+
+This will:
+- Start frontend dev server (Vite) at `http://localhost:8888`
+- Enable Netlify Functions at `/.netlify/functions/*`
+
+### Available Functions | الدوال المتاحة
+
+1. **quran-proxy** - `/.netlify/functions/quran-proxy`
+   - بروكسي لـ API مجمع الملك فهد
+   - Proxy for King Fahd Complex API
+   - Usage: `GET /.netlify/functions/quran-proxy?endpoint=page/1`
+
+2. **save-question** - `/.netlify/functions/save-question`
+   - حفظ أسئلة المستخدمين (تخزين مؤقت ملفي)
+   - Save user questions (temporary file-based storage)
+   - Usage: `POST /.netlify/functions/save-question` with JSON body
+
+**ملاحظة مهمة:** التخزين الملفي ليس دائماً على المنصات serverless. للإنتاج، استخدم قاعدة بيانات.
+
+**Important Note:** File-based storage is NOT permanent on serverless platforms. For production, use a database.
 
 ---
 

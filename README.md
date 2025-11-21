@@ -176,6 +176,33 @@ VITE_QURAN_API_KEY=[your-api-key-if-required]
 - The `save-question.ts` function uses file-based storage which is NOT permanent on serverless platforms
 - For production, migrate question storage to a database service (Firebase, MongoDB, etc.)
 
+### Netlify Functions Development
+
+To develop and test Netlify Functions locally:
+
+```bash
+# Install Netlify CLI globally (if not already installed)
+npm install -g netlify-cli
+
+# Navigate to front directory
+cd front
+
+# Run development server with Netlify Functions
+netlify dev
+```
+
+This will start:
+- Frontend dev server (Vite) on `http://localhost:8888`
+- Netlify Functions accessible at `/.netlify/functions/*`
+
+**Available Functions:**
+- `/.netlify/functions/quran-proxy` - Proxy for King Fahd Complex API
+- `/.netlify/functions/save-question` - Save user questions (temporary file-based storage)
+
+For more information about Quran Reader implementation, see:
+- `front/docs/Codex_Patch_Quran_Al-Huda.md` - Detailed implementation guide
+- `front/docs/IMPLEMENTATION_NOTES.md` - Technical implementation notes
+
 ## 📝 المساهمة
 
 نرحب بالمساهمات! يرجى:
