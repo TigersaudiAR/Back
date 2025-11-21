@@ -176,6 +176,12 @@ VITE_QURAN_API_KEY=[your-api-key-if-required]
 - The `save-question.ts` function uses file-based storage which is NOT permanent on serverless platforms
 - For production, migrate question storage to a database service (Firebase, MongoDB, etc.)
 
+## 📚 Additional Documentation | وثائق إضافية
+
+For detailed implementation notes and Quran display specifications, see:
+- [Codex Patch: Quran Al-Huda](front/docs/Codex_Patch_Quran_Al-Huda.md) - دليل تنفيذ قارئ القرآن الكريم
+- [Implementation Notes](front/docs/IMPLEMENTATION_NOTES.md) - ملاحظات التنفيذ التقنية
+
 ## 📝 المساهمة
 
 نرحب بالمساهمات! يرجى:
