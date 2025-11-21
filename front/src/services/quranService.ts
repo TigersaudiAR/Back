@@ -29,18 +29,33 @@ interface CacheEntry<T> {
 
 /**
  * Page metadata type for verse coordinates
+ * Coordinates are relative to the page image dimensions
  */
 interface PageMetadata {
   verses?: Array<{
     surah_id: number;
     ayah_number: number;
     ayah_id?: number;
+    /** X coordinate (pixels, relative to image width) */
     x: number;
+    /** Y coordinate (pixels, relative to image height) */
     y: number;
+    /** Width of bounding box (pixels) */
     width: number;
+    /** Height of bounding box (pixels) */
     height: number;
   }>;
   [key: string]: unknown;
+}
+
+/**
+ * Last reading position data structure
+ */
+export interface LastPosition {
+  pageNumber: number;
+  surahId?: number;
+  ayahNumber?: number;
+  timestamp: number;
 }
 
 /**
@@ -361,9 +376,14 @@ export async function getAyahById(ayahId: number): Promise<Ayah> {
 /**
  * الحصول على روابط الصوت لتلاوة السورة أو الآية
  * Get audio URLs for recitation
+ * 
+ * NOTE: This function returns a URL template pattern.
+ * For actual ayah audio, use `getAyahAudioUrl(surahId, ayahNumber)` instead.
+ * 
  * @param surahId - رقم السورة
  * @param reciterId - معرّف القارئ (اختياري، افتراضي: ماهر المعيقلي)
  * @returns نمط URL للآية (يحتاج إلى رقم الآية)
+ * @deprecated Use getAyahAudioUrl for direct audio URL generation
  */
 export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiqly'): string[] {
   if (surahId < 1 || surahId > 114) {
@@ -373,8 +393,8 @@ export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiq
   // Using Islamic Network CDN for audio
   const baseUrl = `https://cdn.islamic.network/quran/audio/128/${reciterId}`;
   
-  // Return URL pattern that can be used with ayah number
-  // The caller will need to append the ayah number
+  // Return URL pattern - replace {ayahNumber} with actual ayah number
+  // Better approach: Use getAyahAudioUrl(surahId, ayahNumber) instead
   return [`${baseUrl}/{ayahNumber}.mp3`];
 }
 
@@ -429,7 +449,7 @@ export function saveLastPosition(
   ayahNumber?: number
 ): void {
   try {
-    const position = {
+    const position: LastPosition = {
       pageNumber,
       surahId,
       ayahNumber,
@@ -446,17 +466,12 @@ export function saveLastPosition(
  * Load last reading position
  * @returns آخر موضع قراءة أو null
  */
-export function loadLastPosition(): {
-  pageNumber: number;
-  surahId?: number;
-  ayahNumber?: number;
-  timestamp: number;
-} | null {
+export function loadLastPosition(): LastPosition | null {
   try {
     const saved = localStorage.getItem('quran_last_position');
     if (!saved) return null;
     
-    return JSON.parse(saved);
+    return JSON.parse(saved) as LastPosition;
   } catch (error) {
     console.error('Error loading last position:', error);
     return null;

@@ -59,7 +59,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Quran page images - cache first for offline reading
-  if (url.pathname.includes('/pages/') && url.pathname.endsWith('.png')) {
+  // Pattern: any URL containing '/pages/' followed by .png or .jpg
+  const isQuranPageImage = url.pathname.includes('/pages/') && 
+                          (url.pathname.endsWith('.png') || url.pathname.endsWith('.jpg'));
+  
+  if (isQuranPageImage) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -80,7 +84,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Font files - cache first
-  if (url.pathname.endsWith('.woff2') || url.pathname.endsWith('.woff')) {
+  const isFontFile = url.pathname.endsWith('.woff2') || 
+                     url.pathname.endsWith('.woff') ||
+                     url.pathname.endsWith('.ttf');
+  
+  if (isFontFile) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
