@@ -51,6 +51,47 @@ deploy.bat
 
 ---
 
+## 🌐 Running with Netlify Functions | تشغيل مع دوال Netlify
+
+### For Local Development with Netlify Functions
+
+**المتطلبات | Requirements:**
+```bash
+npm install -g netlify-cli
+```
+
+**التشغيل | Running:**
+
+1. **Set up environment variables | إعداد متغيرات البيئة:**
+   ```bash
+   cd front
+   cp .env.example .env
+   # Edit .env with your values | عدّل .env بقيمك
+   ```
+
+2. **Run Netlify Dev | تشغيل Netlify Dev:**
+   ```bash
+   cd front
+   netlify dev
+   ```
+   
+   This will:
+   - Start the Vite dev server
+   - Start Netlify Functions locally
+   - Make functions available at `/.netlify/functions/*`
+
+3. **Test Functions | اختبار الدوال:**
+   - Quran Proxy: `http://localhost:8888/.netlify/functions/quran-proxy?endpoint=surahs`
+   - Save Question: `POST http://localhost:8888/.netlify/functions/save-question`
+
+**ملاحظات مهمة | Important Notes:**
+- دالة `save-question` تستخدم تخزين الملفات وهو غير دائم على المنصات serverless
+- The `save-question` function uses file-based storage which is NOT permanent on serverless platforms
+- للإنتاج، استخدم قاعدة بيانات (Firebase, Supabase, MongoDB, etc.)
+- For production, use a database service (Firebase, Supabase, MongoDB, etc.)
+
+---
+
 ## 📋 What the Script Does | ماذا يفعل السكربت
 
 السكربت سيقوم تلقائياً بـ:
