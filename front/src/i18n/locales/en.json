@@ -1,0 +1,62 @@
+{
+  "quran": {
+    "reader": {
+      "title": "Quran Reader",
+      "modernView": "Modern View",
+      "classicView": "Classic View",
+      "pageView": "Page View",
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "retry": "Retry",
+      "nextPage": "Next Page",
+      "prevPage": "Previous Page",
+      "page": "Page",
+      "of": "of",
+      "surah": "Surah",
+      "ayah": "Ayah",
+      "play": "Play",
+      "pause": "Pause",
+      "repeat": "Repeat",
+      "tafsir": "Tafsir",
+      "audio": "Audio",
+      "close": "Close",
+      "search": "Search",
+      "toggleDarkMode": "Toggle Dark Mode",
+      "back": "Back",
+      "noTafsirAvailable": "Tafsir not available",
+      "noTextAvailable": "Text not available"
+    },
+    "navigation": {
+      "chapters": "Chapters",
+      "pages": "Pages",
+      "bookmarks": "Bookmarks",
+      "settings": "Settings"
+    },
+    "settings": {
+      "fontSize": "Font Size",
+      "fontFamily": "Font Family",
+      "lineHeight": "Line Height",
+      "theme": "Theme",
+      "reciter": "Reciter"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit"
+  }
+}

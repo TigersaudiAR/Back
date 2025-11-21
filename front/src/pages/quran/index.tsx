@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MonitorPlay, ScrollText, BookOpen } from "lucide-react";
+import { MonitorPlay, ScrollText, BookOpen, BookOpenCheck } from "lucide-react";
 import SurahNavigator from "../../components/SurahNavigator";
 import { useSurahIndex } from "../../hooks/useQuranContent";
 
@@ -14,7 +14,10 @@ function QuranIndexPage() {
           عرض حديث يحافظ على ثبات الآيات مع أدوات بث خارجي وشريط أدوات مخفي، بالإضافة إلى نسخة تقليدية مطابقة للمصحف العثماني قابلة للطباعة والاستخدام في قاعات التحفيظ.
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-3">
-          <Link className="btn btn-accent gap-2" to="modern">
+          <Link className="btn btn-accent gap-2" to="reader">
+            <BookOpenCheck className="h-4 w-4" /> قارئ المصحف الجديد
+          </Link>
+          <Link className="btn btn-outline gap-2" to="modern">
             <MonitorPlay className="h-4 w-4" /> وضع العرض الحديث
           </Link>
           <Link className="btn btn-outline gap-2" to="classic">

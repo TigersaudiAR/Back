@@ -9,22 +9,118 @@ import axios from 'axios';
 import type { Surah, Ayah, Tafsir } from '../types/quran';
 
 // Base URL for King Fahd Complex API
-const QURAN_COMPLEX_API = 'https://qurancomplex.gov.sa/quran-dev';
+const QURAN_BASE = import.meta.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
+const QURAN_COMPLEX_API = QURAN_BASE;
+
+// Constants
+const TOTAL_QURAN_PAGES = 604;
+const TOTAL_QURAN_AYAT = 6236;
+
+// Cache TTL in milliseconds (default: 1 hour)
+const CACHE_TTL = Number(import.meta.env.VITE_CACHE_TTL) || 3600000;
+
+// Cache prefix for localStorage keys
+const CACHE_PREFIX = 'quran_cache_';
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
 
 /**
- * الحصول على قائمة السور
- * Get list of all Surahs
+ * Get data from localStorage cache
  */
-export async function getSurahList(): Promise<Surah[]> {
+function getFromCache<T>(key: string): T | null {
+  try {
+    const cached = localStorage.getItem(CACHE_PREFIX + key);
+    if (!cached) return null;
+
+    const entry: CacheEntry<T> = JSON.parse(cached);
+    const now = Date.now();
+
+    // Check if cache is still valid
+    if (now - entry.timestamp > CACHE_TTL) {
+      localStorage.removeItem(CACHE_PREFIX + key);
+      return null;
+    }
+
+    return entry.data;
+  } catch (error) {
+    console.error('Cache read error:', error);
+    return null;
+  }
+}
+
+/**
+ * Save data to localStorage cache
+ * Note: Silently fails if localStorage is full. Consider showing user notification
+ * or implementing fallback strategy for production use.
+ */
+function saveToCache<T>(key: string, data: T): void {
+  try {
+    const entry: CacheEntry<T> = {
+      data,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(entry));
+  } catch (error) {
+    console.error('Cache write error:', error);
+    // Silently fail if localStorage is full or unavailable
+    // TODO: Consider implementing user notification or fallback strategy
+  }
+}
+
+/**
+ * Clear all cache entries
+ */
+export function clearCache(): void {
+  try {
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith(CACHE_PREFIX)) {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch (error) {
+    console.error('Cache clear error:', error);
+  }
+}
+
+/**
+ * الحصول على قائمة السور (مع التخزين المؤقت)
+ * Get list of all Surahs (with caching)
+ */
+export async function getChapters(): Promise<Surah[]> {
+  const cacheKey = 'chapters';
+  
+  // Try to get from cache first
+  const cached = getFromCache<Surah[]>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   try {
     // Note: The actual endpoint may vary. This is a placeholder structure
     // based on common API patterns. Adjust according to actual API documentation.
     const response = await axios.get(`${QURAN_COMPLEX_API}/surahs`);
-    return response.data;
+    const data = response.data;
+    
+    // Save to cache
+    saveToCache(cacheKey, data);
+    
+    return data;
   } catch (error) {
     console.error('Error fetching surah list from Quran Complex:', error);
     throw error;
   }
+}
+
+/**
+ * الحصول على قائمة السور (اسم بديل للتوافق)
+ * Get list of all Surahs (alias for compatibility)
+ */
+export async function getSurahList(): Promise<Surah[]> {
+  return getChapters();
 }
 
 /**
@@ -171,3 +267,138 @@ export async function fetchWithRetry<T>(
 
   throw lastError!;
 }
+
+/**
+ * الحصول على صورة صفحة المصحف
+ * Get Quran page image URL
+ * @param pageNumber - رقم الصفحة (1-604)
+ */
+export function getPageImage(pageNumber: number): string {
+  if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
+  }
+
+  const paddedNumber = String(pageNumber).padStart(3, '0');
+  // Using the official Quran Complex image CDN or fallback
+  return `${QURAN_BASE}/pages/${paddedNumber}.png`;
+}
+
+/**
+ * الحصول على معلومات الصفحة (metadata)
+ * Get page metadata including verse coordinates
+ * @param pageNumber - رقم الصفحة (1-604)
+ */
+export async function getPageMeta(pageNumber: number): Promise<any> {
+  if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
+  }
+
+  const cacheKey = `page_meta_${pageNumber}`;
+  
+  // Try cache first
+  const cached = getFromCache<any>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  try {
+    const response = await axios.get(`${QURAN_COMPLEX_API}/page/${pageNumber}/meta`);
+    const data = response.data;
+    
+    saveToCache(cacheKey, data);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching metadata for page ${pageNumber}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * الحصول على آية محددة حسب ID العالمي
+ * Get a specific Ayah by global ID
+ * @param ayahId - معرّف الآية العالمي (1-6236)
+ */
+export async function getAyahById(ayahId: number): Promise<Ayah> {
+  if (ayahId < 1 || ayahId > TOTAL_QURAN_AYAT) {
+    throw new Error(`Invalid ayah ID: ${ayahId}. Must be between 1 and ${TOTAL_QURAN_AYAT}.`);
+  }
+
+  const cacheKey = `ayah_${ayahId}`;
+  
+  const cached = getFromCache<Ayah>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  try {
+    const response = await axios.get(`${QURAN_COMPLEX_API}/ayah/${ayahId}`);
+    const data = response.data;
+    
+    saveToCache(cacheKey, data);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching ayah ${ayahId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * الحصول على روابط الصوت لتلاوة السورة أو الآية
+ * Get audio URLs for recitation
+ * @param surahId - رقم السورة
+ * @param reciterId - معرّف القارئ (اختياري، افتراضي: ماهر المعيقلي)
+ */
+export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiqly'): string[] {
+  if (surahId < 1 || surahId > 114) {
+    throw new Error(`Invalid surah ID: ${surahId}. Must be between 1 and 114.`);
+  }
+
+  // Using Islamic Network CDN for audio
+  const baseUrl = `https://cdn.islamic.network/quran/audio/128/${reciterId}`;
+  
+  // Note: You'll need to know the ayah count for each surah to generate all URLs
+  // This is a simplified version. In production, fetch ayah count from API or use static data
+  const urls: string[] = [];
+  
+  // For now, return a single URL pattern that can be used with ayah number
+  // The caller will need to append the ayah number
+  return [`${baseUrl}/{ayahNumber}.mp3`];
+}
+
+/**
+ * الحصول على رابط صوت آية محددة
+ * Get audio URL for a specific ayah
+ * 
+ * NOTE: This is a simplified implementation using a direct URL pattern.
+ * For production, consider implementing proper ayah numbering lookup
+ * or using a more reliable audio URL generation method.
+ * 
+ * @param surahId - رقم السورة
+ * @param ayahNumber - رقم الآية
+ * @param reciterId - معرّف القارئ (اختياري)
+ */
+export function getAyahAudioUrl(
+  surahId: number, 
+  ayahNumber: number, 
+  reciterId: string = 'ar.mahermuaiqly'
+): string {
+  // Calculate global ayah number
+  // This is a simplified calculation. In production, use accurate ayah numbering
+  // For now, use a direct URL pattern
+  const baseUrl = `https://cdn.islamic.network/quran/audio/128/${reciterId}`;
+  
+  // Format: surahNumber:ayahNumber (e.g., 001001 for Al-Fatiha, ayah 1)
+  const paddedSurah = String(surahId).padStart(3, '0');
+  const paddedAyah = String(ayahNumber).padStart(3, '0');
+  
+  return `${baseUrl}/${paddedSurah}${paddedAyah}.mp3`;
+}
+
+/**
+ * NOTE: للترقية المستقبلية
+ * TODO: Upgrade to IndexedDB for better storage capacity and performance
+ * localStorage has size limitations (~5-10MB). For caching many pages,
+ * consider migrating to IndexedDB which supports much larger storage.
+ * 
+ * يُنصح بالترقية إلى IndexedDB لاحقاً لدعم تخزين أكبر وأداء أفضل
+ */

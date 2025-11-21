@@ -318,6 +318,67 @@ After the app is running, you can:
 
 ---
 
+## 🌐 Netlify Deployment | النشر على Netlify
+
+### Local Testing with Netlify CLI
+
+للاختبار المحلي مع Netlify CLI:
+
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Navigate to front directory
+cd front
+
+# Install dependencies
+npm install
+
+# Run Netlify dev server (includes functions)
+netlify dev
+```
+
+This will start the development server with Netlify Functions support on `http://localhost:8888`
+
+سيبدأ هذا خادم التطوير مع دعم Netlify Functions على المنفذ 8888
+
+### Deploying to Netlify
+
+1. **Connect Repository to Netlify:**
+   - Go to https://app.netlify.com
+   - Click "New site from Git"
+   - Connect your GitHub repository
+   - Select the branch to deploy
+
+2. **Build Settings:**
+   ```
+   Base directory: front
+   Build command: npm install && npm run build
+   Publish directory: front/dist
+   Functions directory: front/netlify/functions
+   ```
+
+3. **Environment Variables:**
+   Add in Netlify dashboard under Site settings > Environment variables:
+   ```
+   VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+   VITE_QURAN_API_KEY=[optional-api-key]
+   VITE_CACHE_TTL=3600000
+   ```
+
+4. **Deploy:**
+   Netlify will automatically deploy when you push to the connected branch
+
+**⚠️ Important Notes / ملاحظات مهمة:**
+- The `save-question.ts` function uses file-based storage which is NOT permanent on serverless
+  دالة `save-question.ts` تستخدم تخزين ملفات غير دائم على serverless
+- For production, migrate to a database (Firebase, MongoDB, etc.)
+  للإنتاج، استخدم قاعدة بيانات (Firebase, MongoDB, إلخ)
+- Never commit API keys - use environment variables only
+  لا تحفظ مفاتيح API في الكود - استخدم متغيرات البيئة فقط
+
+---
+
 <div align="center">
 
 **✅ جاهز للتشغيل - Ready to Run**

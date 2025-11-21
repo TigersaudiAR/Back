@@ -138,8 +138,43 @@ front/src/
 
 إنشاء ملف `.env` في مجلد `front/`:
 ```env
+# Backend API URL
 VITE_API_URL=http://localhost:4000
+
+# Quran API Configuration
+# King Fahd Complex API Base URL
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+
+# Optional: API Key for King Fahd Complex (if required)
+VITE_QURAN_API_KEY=
+
+# Optional: Use Netlify proxy for API calls
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+
+# Cache TTL in milliseconds (default: 1 hour)
+VITE_CACHE_TTL=3600000
 ```
+
+### Netlify Configuration
+
+For deployment to Netlify, add the following environment variables in your Netlify site settings:
+
+**Build & Deploy Settings:**
+- Build Command: `cd front && npm install && npm run build`
+- Publish Directory: `front/dist`
+- Functions Directory: `front/netlify/functions`
+
+**Environment Variables:**
+```
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=[your-api-key-if-required]
+```
+
+**Important Notes:**
+- Never commit API keys to the repository
+- Use Netlify's environment variables UI to securely store secrets
+- The `save-question.ts` function uses file-based storage which is NOT permanent on serverless platforms
+- For production, migrate question storage to a database service (Firebase, MongoDB, etc.)
 
 ## 📝 المساهمة
 
