@@ -109,3 +109,241 @@
     transition: none;
   }
 }
+
+/* ========== Additional Quran Reader Styles ========== */
+
+/* Page Reader Layout */
+.quran-page-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #041b10, #000);
+}
+
+.quran-page-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.quran-page-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.quran-page-overlay.interactive {
+  pointer-events: auto;
+}
+
+/* Toolbar Styles */
+.quran-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(6, 27, 17, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+  border-bottom: 1px solid rgba(111, 191, 115, 0.2);
+}
+
+.quran-toolbar-hidden {
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.quran-toolbar-visible {
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.quran-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(6, 27, 17, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  border-top: 1px solid rgba(111, 191, 115, 0.2);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.quran-bottom-bar.visible {
+  transform: translateY(0);
+}
+
+/* Popover Styles */
+.ayah-popover {
+  position: fixed;
+  background: rgba(15, 61, 46, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(111, 191, 115, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  max-width: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  direction: rtl;
+}
+
+.ayah-popover-text {
+  font-family: 'UthmanicHafs', 'Amiri Quran', serif;
+  font-size: 1.25rem;
+  line-height: 2;
+  color: #e7f6ec;
+  margin-bottom: 0.75rem;
+  text-align: right;
+}
+
+.ayah-popover-tafsir {
+  font-family: 'Noto Naskh Arabic', 'Tajawal', serif;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #c7f0d8;
+  text-align: justify;
+  margin-bottom: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ayah-popover-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Audio Player Styles */
+.quran-audio-player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(15, 61, 46, 0.8);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(111, 191, 115, 0.2);
+}
+
+.audio-control-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(111, 191, 115, 0.2);
+  border: 1px solid rgba(111, 191, 115, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #e7f6ec;
+}
+
+.audio-control-btn:hover {
+  background: rgba(111, 191, 115, 0.3);
+  border-color: #6fbf73;
+}
+
+.audio-control-btn:active {
+  transform: scale(0.95);
+}
+
+.audio-seek-bar {
+  flex: 1;
+  height: 0.25rem;
+  background: rgba(111, 191, 115, 0.2);
+  border-radius: 0.125rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.audio-seek-progress {
+  height: 100%;
+  background: #6fbf73;
+  border-radius: 0.125rem;
+  transition: width 0.1s linear;
+}
+
+/* Navigation Controls */
+.page-nav-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 61, 46, 0.9);
+  border: 1px solid rgba(111, 191, 115, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 40;
+  color: #e7f6ec;
+}
+
+.page-nav-btn:hover {
+  background: rgba(15, 61, 46, 1);
+  border-color: #6fbf73;
+}
+
+.page-nav-btn.prev {
+  left: 1rem;
+}
+
+.page-nav-btn.next {
+  right: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .ayah-popover {
+    max-width: 90vw;
+    font-size: 1rem;
+  }
+
+  .page-nav-btn {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .page-nav-btn.prev {
+    left: 0.5rem;
+  }
+
+  .page-nav-btn.next {
+    right: 0.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .quran-toolbar,
+  .quran-bottom-bar,
+  .page-nav-btn,
+  .ayah-popover {
+    display: none !important;
+  }
+
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+}
+
