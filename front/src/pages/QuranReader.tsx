@@ -187,17 +187,17 @@ export default function QuranReader() {
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               className="btn btn-sm"
-              aria-label="السابق"
+              aria-label="الصفحة السابقة"
             >
-              التالي
+              السابق
             </button>
             <button
               onClick={() => setCurrentPage((p) => Math.min(604, p + 1))}
               disabled={currentPage === 604}
               className="btn btn-sm"
-              aria-label="التالي"
+              aria-label="الصفحة التالية"
             >
-              السابق
+              التالي
             </button>
           </div>
 

@@ -7,7 +7,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Printer } from "lucide-react";
-import { getSurahAyat, getChapters } from "../services/quranService";
+import { getSurahAyat, getChapters, SURAH_AL_FATIHA, SURAH_AT_TAWBAH } from "../services/quranService";
 import "../styles/quran.css";
 
 interface Surah {
@@ -155,7 +155,7 @@ export default function QuranClassic() {
             )}
 
             {/* Bismillah - skip for Al-Fatiha and At-Tawbah */}
-            {surahData && surahData.id !== 1 && surahData.id !== 9 && (
+            {surahData && surahData.id !== SURAH_AL_FATIHA && surahData.id !== SURAH_AT_TAWBAH && (
               <div className="quran-bismillah">
                 <p className="quran-ayah__text">{bismillah}</p>
               </div>

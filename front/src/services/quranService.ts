@@ -17,6 +17,11 @@ const QURAN_PROXY = import.meta.env.VITE_QURAN_PROXY || '';
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 const CACHE_PREFIX = 'quran_cache_';
 
+// Quran constants - exported for use in components
+export const TOTAL_QURAN_PAGES = 604;
+export const SURAH_AL_FATIHA = 1;
+export const SURAH_AT_TAWBAH = 9;
+
 // Simple localStorage cache abstraction with TTL
 interface CacheEntry<T> {
   data: T;
@@ -56,7 +61,9 @@ function setInCache<T>(key: string, data: T): void {
     localStorage.setItem(getCacheKey(key), JSON.stringify(entry));
   } catch (error) {
     console.error('Cache write error:', error);
-    // TODO: Migrate to IndexedDB for larger storage capacity
+    // TODO: Migrate to IndexedDB for larger storage capacity when localStorage limits are reached
+    // See issue: https://github.com/TigersaudiAR/Back/issues/[TBD] for migration plan
+    // localStorage typically has 5-10MB limit which may be insufficient for extensive Quran caching
   }
 }
 
@@ -76,7 +83,8 @@ export async function getChapters(): Promise<Surah[]> {
   if (cached) return cached;
 
   try {
-    // Note: Adjust endpoint based on actual API documentation
+    // TODO: Verify endpoint against official King Fahd Complex API documentation
+    // This endpoint structure is based on common API patterns and may need adjustment
     const response = await apiClient.get('/chapters');
     const data = response.data;
     setInCache(cacheKey, data);
@@ -227,8 +235,8 @@ export async function searchQuran(query: string): Promise<Ayah[]> {
  */
 export async function getPageAyat(pageNumber: number): Promise<Ayah[]> {
   try {
-    if (pageNumber < 1 || pageNumber > 604) {
-      throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+    if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+      throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
     }
 
     const cacheKey = `page_${pageNumber}`;
@@ -251,8 +259,8 @@ export async function getPageAyat(pageNumber: number): Promise<Ayah[]> {
  * @param pageNumber - رقم الصفحة (1-604)
  */
 export function getPageImage(pageNumber: number): string {
-  if (pageNumber < 1 || pageNumber > 604) {
-    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+  if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+    throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
   }
   const baseUrl = QURAN_COMPLEX_API;
   const paddedPage = pageNumber.toString().padStart(3, '0');
@@ -276,8 +284,8 @@ export async function getPageMeta(pageNumber: number): Promise<{
   }>;
 }> {
   try {
-    if (pageNumber < 1 || pageNumber > 604) {
-      throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
+    if (pageNumber < 1 || pageNumber > TOTAL_QURAN_PAGES) {
+      throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and ${TOTAL_QURAN_PAGES}.`);
     }
 
     const cacheKey = `page_meta_${pageNumber}`;
@@ -322,6 +330,29 @@ export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiq
   
   // Return array with surah audio URL
   return [`${audioBaseUrl}/${reciterId}/${paddedSurah}.mp3`];
+}
+
+/**
+ * الحصول على رابط صوت آية محددة
+ * Get audio URL for a specific ayah
+ * @param surahId - رقم السورة
+ * @param ayahNumber - رقم الآية
+ * @param reciterId - معرّف القارئ (اختياري، الافتراضي: المعيقلي)
+ */
+export function getAyahAudioUrl(
+  surahId: number,
+  ayahNumber: number,
+  reciterId: string = 'ar.mahermuaiqly'
+): string {
+  if (surahId < 1 || surahId > 114) {
+    throw new Error(`Invalid surah ID: ${surahId}. Must be between 1 and 114.`);
+  }
+  
+  const audioBaseUrl = 'https://cdn.islamic.network/quran/audio/128';
+  const paddedSurah = surahId.toString().padStart(3, '0');
+  const paddedAyah = ayahNumber.toString().padStart(3, '0');
+  
+  return `${audioBaseUrl}/${reciterId}/${paddedSurah}${paddedAyah}.mp3`;
 }
 
 /**

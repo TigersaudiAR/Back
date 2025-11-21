@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { getAyah, getTafsir } from "../../services/quranService";
+import { getAyah, getTafsir, getAyahAudioUrl } from "../../services/quranService";
 import AudioPlayer from "./AudioPlayer";
 
 interface AyahBoundingBox {
@@ -141,7 +141,7 @@ export default function AyahOverlay({
                 {/* Audio player */}
                 <div className="my-4">
                   <AudioPlayer
-                    audioUrl={`https://cdn.islamic.network/quran/audio/128/ar.mahermuaiqly/${selectedAyah.surahId.toString().padStart(3, "0")}${selectedAyah.ayahNumber.toString().padStart(3, "0")}.mp3`}
+                    audioUrl={getAyahAudioUrl(selectedAyah.surahId, selectedAyah.ayahNumber)}
                   />
                 </div>
 

@@ -7,7 +7,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getPageImage, getPageMeta, saveLastPosition } from "../../services/quranService";
+import { getPageImage, getPageMeta, saveLastPosition, TOTAL_QURAN_PAGES } from "../../services/quranService";
 import AyahOverlay from "./AyahOverlay";
 
 interface PageViewProps {
@@ -61,7 +61,7 @@ export default function PageView({
   useEffect(() => {
     const preloadPages = () => {
       // Preload next page
-      if (currentPage < 604) {
+      if (currentPage < TOTAL_QURAN_PAGES) {
         const nextImg = new Image();
         nextImg.src = getPageImage(currentPage + 1);
       }
@@ -111,7 +111,7 @@ export default function PageView({
     // Swipe threshold: 50px
     if (Math.abs(diff) > 50) {
       // RTL: Swipe left to go to previous page, swipe right to go to next page
-      if (diff > 0 && currentPage < 604) {
+      if (diff > 0 && currentPage < TOTAL_QURAN_PAGES) {
         // Swiped left -> next page
         setCurrentPage((prev) => prev + 1);
       } else if (diff < 0 && currentPage > 1) {
@@ -122,7 +122,7 @@ export default function PageView({
   };
 
   const goToNextPage = () => {
-    if (currentPage < 604) {
+    if (currentPage < TOTAL_QURAN_PAGES) {
       setCurrentPage((prev) => prev + 1);
     }
   };
@@ -184,13 +184,13 @@ export default function PageView({
 
         <div className="flex items-center gap-2 bg-base-100 px-4 py-2 rounded-full shadow-lg">
           <span className="text-sm font-semibold">
-            صفحة {currentPage} من 604
+            صفحة {currentPage} من {TOTAL_QURAN_PAGES}
           </span>
         </div>
 
         <button
           onClick={goToNextPage}
-          disabled={currentPage === 604}
+          disabled={currentPage === TOTAL_QURAN_PAGES}
           className="btn btn-circle"
           aria-label="الصفحة التالية"
         >
