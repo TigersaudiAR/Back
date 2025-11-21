@@ -45,6 +45,8 @@ function App() {
             <Route path="/seerah" element={<SeerahPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
+          {/* Direct access to Quran Reader (edge-to-edge page view) */}
+          <Route path="/quran-reader" element={<QuranReaderPage />} />
           <Route path="/quran" element={<QuranLayout />}>
             <Route index element={<QuranList />} />
             <Route path="modern" element={<QuranModernPage />} />

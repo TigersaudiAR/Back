@@ -49,11 +49,62 @@ self.addEventListener('fetch', (event) => {
   const allowedOrigins = [
     location.origin,
     'https://api.quran.com',
-    'https://cdn.islamic.network'
+    'https://cdn.islamic.network',
+    'https://qurancomplex.gov.sa'
   ];
   
   // Skip requests from non-whitelisted origins
   if (!allowedOrigins.some(origin => url.origin === origin)) {
+    return;
+  }
+
+  // Quran page images - cache first for offline reading
+  // Pattern: any URL containing '/pages/' followed by .png or .jpg
+  const isQuranPageImage = url.pathname.includes('/pages/') && 
+                          (url.pathname.endsWith('.png') || url.pathname.endsWith('.jpg'));
+  
+  if (isQuranPageImage) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Font files - cache first
+  const isFontFile = url.pathname.endsWith('.woff2') || 
+                     url.pathname.endsWith('.woff') ||
+                     url.pathname.endsWith('.ttf');
+  
+  if (isFontFile) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(STATIC_CACHE).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
 

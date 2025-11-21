@@ -169,6 +169,11 @@ Ctrl+C                      # Linux/macOS
 التطبيق يشمل:
 
 ✅ **القرآن الكريم** - Quran Reader with Juz/Hizb/Page numbers
+  - 📖 قارئ الصفحات - Image-based page viewer (edge-to-edge)
+  - 📝 العرض الكلاسيكي - Classical printable text view
+  - 🎵 تلاوة صوتية - Audio recitation by Maher Al-Muaiqly
+  - 💬 التفسير - Interactive tafsir popover
+  - 💾 حفظ الموضع - Auto-save last reading position
 ✅ **تعلم الإسلام** - Islamic Learning (8 comprehensive topics)
 ✅ **السيرة النبوية** - Prophet's Biography (6 major events)
 ✅ **التعليم الذاتي** - Self-learning modules (Arabic, Tajweed, Hifz)
@@ -179,6 +184,16 @@ Ctrl+C                      # Linux/macOS
 ✅ **Service Worker** - Smart caching for better performance
 ✅ **Error Handling** - Beautiful error pages with recovery options
 ✅ **Network Status** - Real-time online/offline indicator
+
+### Quran Reader Pages | صفحات قارئ القرآن
+- 🌐 http://localhost:3000/quran-reader - Modern page viewer
+- 🌐 http://localhost:3000/quran/classic - Classical text view
+
+**Navigation Tips | نصائح التنقل:**
+- ⌨️ Arrow Keys: Navigate pages (RTL-aware)
+- 🖱️ Click/Tap: Show/hide verse overlay
+- 📱 Swipe: Touch-enabled page navigation
+- ⌨️ Press 'T': Toggle toolbar visibility
 
 ---
 
@@ -276,10 +291,34 @@ The app supports installation as a native app:
 After deployment | بعد التشغيل:
 
 1. ✅ Browse the Quran | تصفح القرآن الكريم
+   - Visit http://localhost:3000/quran-reader for page view
+   - Visit http://localhost:3000/quran/classic for text view
 2. ✅ Explore educational content | استكشف المحتوى التعليمي
 3. ✅ Try PWA installation | جرب التثبيت كـ PWA
 4. ✅ Test offline functionality | اختبر العمل بدون إنترنت
 5. ✅ Use admin dashboard | استخدم لوحة التحكم للإدارة
+
+### Environment Variables for Quran Reader | متغيرات البيئة لقارئ القرآن
+
+Create `front/.env` file (optional, defaults work):
+
+```env
+# King Fahd Complex API Base URL
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev/
+
+# Optional: API Key (if required by the API)
+VITE_QURAN_API_KEY=
+
+# Optional: Netlify proxy endpoint
+VITE_QURAN_PROXY=/.netlify/functions/quran-proxy
+
+# Cache TTL in milliseconds (default: 1 hour)
+VITE_CACHE_TTL=3600000
+```
+
+For detailed Quran reader implementation guide, see:
+للحصول على دليل تنفيذ قارئ القرآن التفصيلي، راجع:
+📚 front/docs/Codex_Patch_Quran_Al-Huda.md
 
 ---
 
