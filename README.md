@@ -10,6 +10,11 @@
 - دوائر أرقام الآيات واضحة ومنسقة
 - واجهة قراءة حديثة مع وضع ملء الشاشة
 - شريط أدوات مخفي للتركيز على القراءة
+- **قارئ الصفحات**: عرض صور صفحات المصحف من مجمع الملك فهد (edge-to-edge)
+- **تنقل سلس**: دعم السحب باللمس، مفاتيح الأسهم، وحفظ آخر موضع قراءة
+- **طبقة تفاعلية**: إبراز الآيات مع عرض النص والتفسير عند النقر
+- **تلاوة صوتية**: مشغل صوتي مدمج لتلاوة القارئ ماهر المعيقلي
+- **وضع الطباعة**: عرض نصي كلاسيكي قابل للطباعة
 
 ### التفاعل والتعلم
 - مسبحة ذكية تدعم العد الصوتي والنقر
@@ -175,6 +180,50 @@ VITE_QURAN_API_KEY=[your-api-key-if-required]
 - Use Netlify's environment variables UI to securely store secrets
 - The `save-question.ts` function uses file-based storage which is NOT permanent on serverless platforms
 - For production, migrate question storage to a database service (Firebase, MongoDB, etc.)
+
+**Testing Netlify Functions Locally:**
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Run Netlify dev server
+cd front
+netlify dev
+```
+
+The Netlify functions will be available at:
+- `/.netlify/functions/quran-proxy` - Proxy for King Fahd Complex API
+- `/.netlify/functions/save-question` - Save user questions
+
+## 📚 Quran Reader Features
+
+### Pages Available
+- `/quran-reader` - Modern image-based page viewer with interactive overlay
+- `/quran/classic` - Classical text-based printable view
+
+### Key Features
+1. **Page Navigation**
+   - Swipe gestures (touch-enabled devices)
+   - Arrow keys (left/right for RTL navigation)
+   - Click/tap navigation buttons
+   - Automatic last position restoration
+
+2. **Interactive Overlay**
+   - Click on any verse to view its text and tafsir
+   - Audio playback for individual verses
+   - Popover display with verse details
+
+3. **Offline Support**
+   - Service Worker caches viewed pages
+   - Font files cached for offline use
+   - Works without internet after initial load
+
+4. **Accessibility**
+   - All controls have Arabic aria-labels
+   - Keyboard navigation support
+   - RTL-aware design
+
+For detailed implementation guide, see [front/docs/Codex_Patch_Quran_Al-Huda.md](front/docs/Codex_Patch_Quran_Al-Huda.md)
 
 ## 📝 المساهمة
 
