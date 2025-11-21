@@ -9,7 +9,7 @@ import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 const QURAN_BASE_URL = process.env.VITE_QURAN_BASE || "https://qurancomplex.gov.sa/quran-dev";
 const API_KEY = process.env.VITE_QURAN_API_KEY || "";
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Only allow GET requests
   if (event.httpMethod !== "GET") {
     return {
@@ -60,7 +60,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     const data = await response.text();
     
     // Try to parse as JSON, fallback to text
-    let responseBody = data;
+    const responseBody = data;
     let contentType = "text/plain";
     try {
       JSON.parse(data);

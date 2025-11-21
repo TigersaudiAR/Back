@@ -264,14 +264,34 @@ export function getPageImage(pageNumber: number): string {
  * Get page metadata (ayah bounding boxes, etc.)
  * @param pageNumber - رقم الصفحة (1-604)
  */
-export async function getPageMeta(pageNumber: number): Promise<any> {
+export async function getPageMeta(pageNumber: number): Promise<{
+  page: number;
+  ayahs: Array<{
+    surahId: number;
+    ayahNumber: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+}> {
   try {
     if (pageNumber < 1 || pageNumber > 604) {
       throw new Error(`Invalid page number: ${pageNumber}. Must be between 1 and 604.`);
     }
 
     const cacheKey = `page_meta_${pageNumber}`;
-    const cached = getFromCache<any>(cacheKey);
+    const cached = getFromCache<{
+      page: number;
+      ayahs: Array<{
+        surahId: number;
+        ayahNumber: number;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+      }>;
+    }>(cacheKey);
     if (cached) return cached;
 
     const response = await apiClient.get(`/page/${pageNumber}/meta`);

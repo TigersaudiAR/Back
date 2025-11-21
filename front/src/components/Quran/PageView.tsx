@@ -16,13 +16,25 @@ interface PageViewProps {
   enableOverlay?: boolean;
 }
 
+interface PageMetadata {
+  page: number;
+  ayahs: Array<{
+    surahId: number;
+    ayahNumber: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+}
+
 export default function PageView({
   initialPage = 1,
   onPageChange,
   enableOverlay = false,
 }: PageViewProps) {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [pageMetadata, setPageMetadata] = useState<any>(null);
+  const [pageMetadata, setPageMetadata] = useState<PageMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

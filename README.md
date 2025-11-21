@@ -138,8 +138,37 @@ front/src/
 
 إنشاء ملف `.env` في مجلد `front/`:
 ```env
+# Backend API
 VITE_API_URL=http://localhost:4000
+
+# Quran API Settings (King Fahd Complex)
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
+VITE_QURAN_API_KEY=  # Optional: API key if required
+VITE_QURAN_PROXY=    # Optional: URL for Netlify proxy function
 ```
+
+### Netlify Functions
+
+يوفر المشروع دوال Netlify serverless للوظائف التالية:
+
+1. **quran-proxy** - وكيل API لتوجيه الطلبات إلى مجمع الملك فهد مع دعم CORS
+2. **save-question** - حفظ أسئلة المستخدمين (ملاحظة: التخزين المؤقت في البيئات serverless)
+
+للتطوير المحلي مع Netlify Functions:
+```bash
+cd front
+npm install -g netlify-cli
+netlify dev
+```
+
+### مصادر البيانات القرآنية
+
+- **المصدر الرسمي**: مجمع الملك فهد لطباعة المصحف الشريف
+- **API الأساسي**: `https://qurancomplex.gov.sa/quran-dev/`
+- **الخط العثماني**: `https://cdn.islamic.network/fonts/UthmanicHafs-Regular.woff2`
+- **الصوتيات**: `https://cdn.islamic.network/quran/audio/`
+
+⚠️ **ملاحظة مهمة**: جميع النصوص القرآنية يتم جلبها من API الرسمي فقط. لا يتم إنشاء أي نص ديني بواسطة الذكاء الاصطناعي.
 
 ## 📝 المساهمة
 

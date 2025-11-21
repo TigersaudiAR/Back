@@ -19,7 +19,7 @@ interface QuestionPayload {
 
 const QUESTIONS_FILE = path.join(process.cwd(), "data", "questions.json");
 
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // CORS preflight
   if (event.httpMethod === "OPTIONS") {
     return {
