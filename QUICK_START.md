@@ -186,8 +186,8 @@ Ctrl+C                      # Linux/macOS
 ✅ **Network Status** - Real-time online/offline indicator
 
 ### Quran Reader Pages | صفحات قارئ القرآن
-- 🌐 http://localhost:3000/quran-reader - Modern page viewer
-- 🌐 http://localhost:3000/quran/classic - Classical text view
+- 🌐 http://localhost:5173/quran-reader - Modern page viewer
+- 🌐 http://localhost:5173/quran/classic - Classical text view
 
 **Navigation Tips | نصائح التنقل:**
 - ⌨️ Arrow Keys: Navigate pages (RTL-aware)
