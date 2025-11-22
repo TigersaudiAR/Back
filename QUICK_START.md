@@ -304,7 +304,7 @@ Create `front/.env` file (optional, defaults work):
 
 ```env
 # King Fahd Complex API Base URL
-VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev/
+VITE_QURAN_BASE=https://qurancomplex.gov.sa/quran-dev
 
 # Optional: API Key (if required by the API)
 VITE_QURAN_API_KEY=
