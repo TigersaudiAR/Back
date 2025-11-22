@@ -383,7 +383,7 @@ export async function getAyahById(ayahId: number): Promise<Ayah> {
  * @param surahId - رقم السورة
  * @param reciterId - معرّف القارئ (اختياري، افتراضي: ماهر المعيقلي)
  * @returns نمط URL للآية (يحتاج إلى رقم الآية)
- * @deprecated Use getAyahAudioUrl for direct audio URL generation
+ * @deprecated since v2.0.0 - Use getAyahAudioUrl for direct audio URL generation. Will be removed in v3.0.0.
  */
 export function getAudioUrls(surahId: number, reciterId: string = 'ar.mahermuaiqly'): string[] {
   if (surahId < 1 || surahId > 114) {
