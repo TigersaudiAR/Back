@@ -225,7 +225,7 @@ VITE_QURAN_API_KEY=[your-api-key-if-required]
 ## 🔒 Security & Compliance
 
 ### Data Sources
-All Quran data is exclusively from **King Fahd Complex** (https://qurancomplex.gov.sa/quran-dev/)
+All Quran data is exclusively from **King Fahd Complex** (https://qurancomplex.gov.sa/quran-dev)
 - ✅ No AI-generated religious content
 - ✅ No API keys committed to repository
 - ✅ CORS properly configured
