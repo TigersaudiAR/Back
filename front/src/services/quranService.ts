@@ -31,7 +31,7 @@ interface CacheEntry<T> {
  * Page metadata type for verse coordinates
  * Coordinates are relative to the page image dimensions
  */
-interface PageMetadata {
+export interface PageMetadata {
   verses?: Array<{
     surah_id: number;
     ayah_number: number;
