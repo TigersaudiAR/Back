@@ -25,9 +25,9 @@ i18n
       escapeValue: false, // React already escapes values
     },
     react: {
-      // Disable Suspense to avoid loading delays in the UI
-      // This means translations load immediately without waiting for React.Suspense
-      // Consider enabling Suspense if you want to show loading states for i18n
+      // Disable Suspense because translations are bundled and synchronously available.
+      // There is no async loading, so Suspense is not needed.
+      // Consider enabling Suspense if you switch to async loading and want to show loading states for i18n.
       useSuspense: false,
     },
   });
