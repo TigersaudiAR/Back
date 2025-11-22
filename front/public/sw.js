@@ -109,8 +109,8 @@ self.addEventListener('fetch', (event) => {
           return response;
         }).catch((error) => {
           console.error('Failed to fetch font file:', error);
-          // Network failed, try to return from cache (may be undefined)
-          return caches.match(request);
+          // Network failed, try to return from cache, or error if not cached
+          return caches.match(request).then((cachedResponse) => cachedResponse || Response.error());
         });
       })
     );
