@@ -77,6 +77,11 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return response;
+        }).catch(() => {
+          // Fallback: try to return from cache, or a generic error response
+          return caches.match(request).then((cachedResponse) => {
+            return cachedResponse || Response.error();
+          });
         });
       })
     );
