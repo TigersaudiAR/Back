@@ -96,3 +96,6 @@ export interface Hadith {
   grade?: string;
   topic?: string | string[];
 }
+
+// Export lesson-related types
+export * from './lesson.types.js';
