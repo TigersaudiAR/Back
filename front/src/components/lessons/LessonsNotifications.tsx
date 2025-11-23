@@ -12,6 +12,7 @@ export default function LessonsNotifications() {
   useEffect(() => {
     loadNotifications();
     // Poll for new notifications every 5 minutes
+    // TODO: Consider implementing WebSockets or Server-Sent Events for real-time updates
     const interval = setInterval(loadNotifications, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);

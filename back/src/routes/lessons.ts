@@ -549,8 +549,8 @@ router.get("/stats/overview", authenticate(["admin", "teacher"]), (_req: Request
     totalCompletions: allProgress.reduce((sum, p) => sum + p.completedLessons.length, 0),
     totalQuizzesTaken: allProgress.reduce((sum, p) => sum + p.quizResults.length, 0),
     totalCertificatesIssued: allProgress.reduce((sum, p) => sum + p.certificates.length, 0),
-    averageCompletionRate: allProgress.length > 0 
-      ? allProgress.reduce((sum, p) => sum + (p.completedLessons.length / lessons.size), 0) / allProgress.length * 100
+    averageCompletionRate: allProgress.length > 0 && lessons.size > 0
+      ? (allProgress.reduce((sum, p) => sum + p.completedLessons.length, 0) / (allProgress.length * lessons.size)) * 100
       : 0,
     lessonsByCategory: {
       aqidah: allLessons.filter(l => l.category === "aqidah").length,

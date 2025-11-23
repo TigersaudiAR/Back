@@ -363,19 +363,19 @@ export default function InteractiveLessonViewer({ lessonId, onComplete }: Intera
         {!showQuiz && !quizResult && (
           <div className="flex justify-between">
             <button
+              onClick={handleNext}
+              className="btn btn-primary gap-2"
+            >
+              {currentContentIndex === lesson.content.length - 1 ? 'بدء الاختبار' : 'التالي'}
+              <ChevronLeft size={20} />
+            </button>
+            <button
               onClick={handlePrevious}
               disabled={currentContentIndex === 0}
               className="btn btn-outline gap-2"
             >
               <ChevronRight size={20} />
               السابق
-            </button>
-            <button
-              onClick={handleNext}
-              className="btn btn-primary gap-2"
-            >
-              {currentContentIndex === lesson.content.length - 1 ? 'بدء الاختبار' : 'التالي'}
-              <ChevronLeft size={20} />
             </button>
           </div>
         )}
