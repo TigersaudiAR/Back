@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import { X, Play } from 'lucide-react';
 import { getAyahById, getTafsir, getAyahAudioUrl } from '../../services/quranService';
 import AudioPlayer from './AudioPlayer';
-import type { Ayah, Tafsir } from '../../types/quran';
 
 export interface VerseBox {
   surah_id: number;
@@ -35,7 +34,6 @@ export interface AyahOverlayProps {
 }
 
 const AyahOverlay: React.FC<AyahOverlayProps> = ({
-  pageNumber,
   verses,
   imageWidth,
   imageHeight,

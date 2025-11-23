@@ -9,7 +9,7 @@ import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
 const QURAN_BASE = process.env.VITE_QURAN_BASE || 'https://qurancomplex.gov.sa/quran-dev';
 const API_KEY = process.env.VITE_QURAN_API_KEY || '';
 
-export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+export const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Only allow GET requests
   if (event.httpMethod !== 'GET') {
     return {

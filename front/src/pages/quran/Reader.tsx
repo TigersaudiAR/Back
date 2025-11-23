@@ -30,8 +30,8 @@ const QuranReader: React.FC = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [verses, setVerses] = useState<VerseBox[]>([]);
   const [loading, setLoading] = useState(false);
-  const [imageWidth, setImageWidth] = useState(800);
-  const [imageHeight, setImageHeight] = useState(1200);
+  const [imageWidth] = useState(800);
+  const [imageHeight] = useState(1200);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showToolbar, setShowToolbar] = useState(true);
 
@@ -48,7 +48,7 @@ const QuranReader: React.FC = () => {
           // If no coordinates available, set empty array
           setVerses([]);
         }
-      } catch (error) {
+      } catch (_error) {
         // Coordinates not available for this page - this is expected behavior
         // The UI will show an appropriate message to the user
         setVerses([]);
