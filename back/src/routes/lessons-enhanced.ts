@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { authenticate } from "../middleware/auth.js";
+import { apiRateLimit } from "../middleware/rateLimit.js";
 import lessonsData from "../../data/seed/lessons/lessons-enhanced.json" with { type: "json" };
 import categoriesData from "../../data/seed/lessons/categories.json" with { type: "json" };
 import type { Lesson, LessonCategory, UserLessonProgress, UserProgress, LessonNotification } from "../types/index.js";
@@ -202,7 +203,7 @@ router.get("/search/query", (req: Request, res: Response) => {
 // ============= AUTHENTICATED ENDPOINTS =============
 
 // Get user's overall progress
-router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
+router.get("/progress/me", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const progress = getUserProgress(userId);
   
@@ -215,7 +216,7 @@ router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
 });
 
 // Get user's progress for a specific lesson
-router.get("/:id/progress", authenticate(), (req: Request, res: Response) => {
+router.get("/:id/progress", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
   
@@ -238,7 +239,7 @@ router.get("/:id/progress", authenticate(), (req: Request, res: Response) => {
 });
 
 // Start a lesson
-router.post("/:id/start", authenticate(), (req: Request, res: Response) => {
+router.post("/:id/start", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
   
@@ -277,7 +278,7 @@ router.post("/:id/start", authenticate(), (req: Request, res: Response) => {
 });
 
 // Mark lesson as completed
-router.post("/:id/complete", authenticate(), (req: Request, res: Response) => {
+router.post("/:id/complete", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
   const { timeSpent } = req.body;
@@ -336,7 +337,7 @@ router.post("/:id/complete", authenticate(), (req: Request, res: Response) => {
 });
 
 // Submit quiz result
-router.post("/:id/quiz", authenticate(), (req: Request, res: Response) => {
+router.post("/:id/quiz", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
   const { answers } = req.body;
@@ -446,7 +447,7 @@ router.post("/:id/quiz", authenticate(), (req: Request, res: Response) => {
 });
 
 // Get user certificates
-router.get("/certificates/me", authenticate(), (req: Request, res: Response) => {
+router.get("/certificates/me", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const userProg = getUserProgress(userId);
   
@@ -487,7 +488,7 @@ router.get("/leaderboard/top", (_req: Request, res: Response) => {
 });
 
 // Get user notifications
-router.get("/notifications/me", authenticate(), (req: Request, res: Response) => {
+router.get("/notifications/me", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { unreadOnly = "false" } = req.query;
   
@@ -505,7 +506,7 @@ router.get("/notifications/me", authenticate(), (req: Request, res: Response) =>
 });
 
 // Mark notification as read
-router.put("/notifications/:notificationId/read", authenticate(), (req: Request, res: Response) => {
+router.put("/notifications/:notificationId/read", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { notificationId } = req.params;
   
@@ -523,7 +524,7 @@ router.put("/notifications/:notificationId/read", authenticate(), (req: Request,
 });
 
 // Mark all notifications as read
-router.put("/notifications/read-all", authenticate(), (req: Request, res: Response) => {
+router.put("/notifications/read-all", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const userNotifications = notifications.get(userId) || [];
   
@@ -536,7 +537,7 @@ router.put("/notifications/read-all", authenticate(), (req: Request, res: Respon
 // ============= ADMIN ENDPOINTS =============
 
 // Create new lesson (admin only)
-router.post("/", authenticate(), (req: Request, res: Response) => {
+router.post("/", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const user = (req as any).user;
   
   if (user.role !== "admin" && user.role !== "teacher") {
@@ -573,7 +574,7 @@ router.post("/", authenticate(), (req: Request, res: Response) => {
 });
 
 // Update lesson (admin only)
-router.put("/:id", authenticate(), (req: Request, res: Response) => {
+router.put("/:id", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const user = (req as any).user;
   const { id } = req.params;
   
@@ -602,7 +603,7 @@ router.put("/:id", authenticate(), (req: Request, res: Response) => {
 });
 
 // Delete lesson (admin only)
-router.delete("/:id", authenticate(), (req: Request, res: Response) => {
+router.delete("/:id", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const user = (req as any).user;
   const { id } = req.params;
   
@@ -621,7 +622,7 @@ router.delete("/:id", authenticate(), (req: Request, res: Response) => {
 });
 
 // Get statistics (admin only)
-router.get("/admin/statistics", authenticate(), (req: Request, res: Response) => {
+router.get("/admin/statistics", authenticate(), apiRateLimit, (req: Request, res: Response) => {
   const user = (req as any).user;
   
   if (user.role !== "admin" && user.role !== "teacher") {
