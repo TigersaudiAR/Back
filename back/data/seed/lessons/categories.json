@@ -1,0 +1,56 @@
+[
+  {
+    "id": "aqidah",
+    "name": "العقيدة",
+    "name_en": "Islamic Creed",
+    "description": "دروس في أصول الإيمان والتوحيد",
+    "icon": "book-heart",
+    "color": "#10b981",
+    "order": 1
+  },
+  {
+    "id": "fiqh",
+    "name": "الفقه",
+    "name_en": "Islamic Jurisprudence",
+    "description": "الأحكام الشرعية والعبادات",
+    "icon": "scale",
+    "color": "#3b82f6",
+    "order": 2
+  },
+  {
+    "id": "sirah",
+    "name": "السيرة النبوية",
+    "name_en": "Prophet's Biography",
+    "description": "حياة الرسول صلى الله عليه وسلم",
+    "icon": "user-circle",
+    "color": "#f59e0b",
+    "order": 3
+  },
+  {
+    "id": "quran",
+    "name": "علوم القرآن",
+    "name_en": "Quranic Sciences",
+    "description": "التفسير والتجويد وعلوم القرآن",
+    "icon": "book-open",
+    "color": "#8b5cf6",
+    "order": 4
+  },
+  {
+    "id": "akhlaq",
+    "name": "الأخلاق والآداب",
+    "name_en": "Ethics and Manners",
+    "description": "الأخلاق الإسلامية والآداب النبوية",
+    "icon": "heart",
+    "color": "#ec4899",
+    "order": 5
+  },
+  {
+    "id": "hadith",
+    "name": "الحديث النبوي",
+    "name_en": "Prophetic Traditions",
+    "description": "دراسة الأحاديث النبوية الشريفة",
+    "icon": "scroll",
+    "color": "#06b6d4",
+    "order": 6
+  }
+]

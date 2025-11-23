@@ -1,103 +1,4 @@
-export type Role = "admin" | "teacher" | "lecturer" | "student" | "guest";
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  password?: string;
-  verified?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface Surah {
-  id: number;
-  name_ar: string;
-  name_en?: string;
-  revelation_place?: "Mecca" | "Medina";
-  ayah_count: number;
-  bismillah_pre?: boolean;
-  slug?: string;
-}
-
-export interface Ayah {
-  surah_id: number;
-  ayah_number: number;
-  text_ar: string;
-  page?: number;
-  juz?: number;
-  hizb?: number;
-}
-
-export interface Tafsir {
-  surah_id: number;
-  ayah_number: number;
-  source: string;
-  text_ar: string;
-}
-
-export interface ReciterConfig {
-  id: string;
-  name: string;
-  base_url: string;
-  bitrate?: number;
-  style?: string;
-}
-
-export interface RecitationConfig {
-  version?: number;
-  url_template: string;
-  reciters: ReciterConfig[];
-}
-
-export interface Dhikr {
-  id: string;
-  title: string;
-  text: string;
-  count?: number;
-  tags: string[];
-  reference?: string;
-}
-
-export interface DhikrSet {
-  id: string;
-  name: string;
-  title?: string;
-  description?: string;
-  items: Dhikr[];
-}
-
-export interface Halaqah {
-  id: string;
-  title: string;
-  level: "beginner" | "intermediate" | "advanced" | "kids";
-  teacher: string;
-  schedule: string;
-  members: number;
-  seats: number;
-  language?: string;
-}
-
-export interface LeaderboardEntry {
-  user_id: string;
-  display_name: string;
-  points: number;
-  rank: number;
-}
-
-export interface Hadith {
-  id: string;
-  title?: string;
-  narrator?: string;
-  source: string;
-  number?: string;
-  text_ar: string;
-  grade?: string;
-  topic?: string | string[];
-}
-
-// Enhanced Lesson System Types
+// Lesson System Types
 export type LessonLevel = "beginner" | "intermediate" | "advanced";
 export type LessonStatus = "draft" | "published" | "archived";
 export type MediaType = "text" | "image" | "video" | "audio" | "document";
@@ -164,8 +65,8 @@ export interface Lesson {
   prerequisites?: string[]; // lesson IDs
   tags?: string[];
   author?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   viewCount?: number;
   completionCount?: number;
 }
@@ -177,13 +78,13 @@ export interface UserLessonProgress {
   completed: boolean;
   score?: number;
   timeSpent?: number; // in minutes
-  lastAccessedAt?: Date;
-  completedAt?: Date;
+  lastAccessedAt?: string;
+  completedAt?: string;
   quizResults?: Array<{
     score: number;
     maxScore: number;
     percentage: number;
-    date: Date;
+    date: string;
   }>;
 }
 
@@ -193,7 +94,7 @@ export interface UserProgress {
   inProgressLessons: string[];
   totalPoints: number;
   certificates: string[];
-  lastActivity?: Date;
+  lastActivity?: string;
   stats?: {
     totalLessons: number;
     completedCount: number;
@@ -210,6 +111,34 @@ export interface LessonNotification {
   title: string;
   message: string;
   read: boolean;
-  createdAt: Date;
+  createdAt: string;
   data?: any;
+}
+
+export interface LessonStats {
+  byCategory: Array<{
+    category: string;
+    count: number;
+  }>;
+  byLevel: {
+    beginner: number;
+    intermediate: number;
+    advanced: number;
+  };
+}
+
+export interface LeaderboardEntry {
+  userId: string;
+  totalPoints: number;
+  completedLessons: number;
+  certificates: number;
+  averageScore: number;
+}
+
+export interface Certificate {
+  lessonId: string;
+  lessonTitle?: string;
+  category?: string;
+  date?: string;
+  score: number;
 }

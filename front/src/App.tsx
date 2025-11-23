@@ -13,6 +13,7 @@ const QuranPageViewPage = lazy(() => import("./pages/quran/PageView"));
 const QuranReaderPage = lazy(() => import("./pages/quran/Reader"));
 const AdhkarPage = lazy(() => import("./pages/adhkar"));
 const SelfLearnPage = lazy(() => import("./pages/self-learn"));
+const LessonsPage = lazy(() => import("./pages/lessons"));
 const HalaqatPage = lazy(() => import("./pages/halaqat"));
 const HadithPage = lazy(() => import("./pages/hadith"));
 const DawahPage = lazy(() => import("./pages/dawah"));
@@ -27,6 +28,7 @@ const DashboardHalaqat = lazy(() => import("./pages/dashboard/halaqat"));
 const DashboardAdhkar = lazy(() => import("./pages/dashboard/adhkar"));
 const DashboardHadith = lazy(() => import("./pages/dashboard/hadith"));
 const DashboardUsers = lazy(() => import("./pages/dashboard/users"));
+const DashboardLessons = lazy(() => import("./pages/dashboard/lessons"));
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/adhkar" element={<AdhkarPage />} />
             <Route path="/self-learn" element={<SelfLearnPage />} />
+            <Route path="/lessons" element={<LessonsPage />} />
             <Route path="/halaqat" element={<HalaqatPage />} />
             <Route path="/hadith" element={<HadithPage />} />
             <Route path="/dawah" element={<DawahPage />} />
@@ -58,6 +61,7 @@ function App() {
           <Route path="/dashboard/halaqat" element={<DashboardHalaqat />} />
           <Route path="/dashboard/adhkar" element={<DashboardAdhkar />} />
           <Route path="/dashboard/hadith" element={<DashboardHadith />} />
+          <Route path="/dashboard/lessons" element={<DashboardLessons />} />
           <Route path="/dashboard/users" element={<DashboardUsers />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
