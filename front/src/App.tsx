@@ -13,6 +13,7 @@ const QuranPageViewPage = lazy(() => import("./pages/quran/PageView"));
 const QuranReaderPage = lazy(() => import("./pages/quran/Reader"));
 const AdhkarPage = lazy(() => import("./pages/adhkar"));
 const SelfLearnPage = lazy(() => import("./pages/self-learn"));
+const LessonsPage = lazy(() => import("./pages/lessons"));
 const HalaqatPage = lazy(() => import("./pages/halaqat"));
 const HadithPage = lazy(() => import("./pages/hadith"));
 const DawahPage = lazy(() => import("./pages/dawah"));
@@ -37,6 +38,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/adhkar" element={<AdhkarPage />} />
             <Route path="/self-learn" element={<SelfLearnPage />} />
+            <Route path="/lessons" element={<LessonsPage />} />
             <Route path="/halaqat" element={<HalaqatPage />} />
             <Route path="/hadith" element={<HadithPage />} />
             <Route path="/dawah" element={<DawahPage />} />
