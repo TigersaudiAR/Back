@@ -64,8 +64,10 @@ function LessonsPage() {
 
   const handleCompleteLesson = async (lessonId: string) => {
     try {
+      // TODO: Implement actual time tracking by storing lesson start time
+      // and calculating elapsed time when completing
       await api.post(`/lessons/${lessonId}/complete`, {
-        timeSpent: 0
+        timeSpent: 0 // Placeholder - should track actual time spent
       });
       loadData();
     } catch (error) {

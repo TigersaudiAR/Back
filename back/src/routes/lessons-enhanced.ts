@@ -83,7 +83,7 @@ router.get("/", (req: Request, res: Response) => {
   }));
   
   // Filter by status
-  if (status) {
+  if (status && status !== "all") {
     filtered = filtered.filter(l => l.status === status);
   }
   
@@ -561,8 +561,10 @@ router.post("/", authenticate(), (req: Request, res: Response) => {
     ...lessonData
   };
   
-  // In production, save to database
-  // lessonsData.push(newLesson);
+  // TODO: In production, save to a proper database (MongoDB, PostgreSQL, etc.)
+  // Currently using in-memory storage - new lessons will NOT persist after server restart
+  // Uncomment the following line and implement database save:
+  // await lessonsRepository.save(newLesson);
   
   res.status(201).json({
     message: "تم إنشاء الدرس بنجاح",

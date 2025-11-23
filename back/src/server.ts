@@ -45,7 +45,6 @@ app.use("/api/islamic-learning", islamicLearningRouter);
 app.use("/api/nisuk", nisukRouter);
 app.use("/api/memorization", memorizationRouter);
 app.use("/api/lessons", lessonsRouter);
-app.use("/api/quran-pages", quranPagesRouter);
 
 const port = Number(process.env.PORT) || 4000;
 
