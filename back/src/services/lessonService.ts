@@ -608,12 +608,47 @@ class LessonStore {
     
     const perfectScores = allAttempts.filter(a => a.percentage === 100).length;
 
+    // Calculate streak based on completion dates
+    let streak = 0;
+    if (completedLessons.length > 0) {
+      const sortedLessons = completedLessons
+        .filter(p => p.completedAt)
+        .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime());
+      
+      if (sortedLessons.length > 0) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let currentDate = new Date(sortedLessons[0].completedAt!);
+        currentDate.setHours(0, 0, 0, 0);
+        
+        // Check if last activity was today or yesterday
+        const dayDiff = Math.floor((today.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (dayDiff <= 1) {
+          streak = 1;
+          let prevDate = currentDate;
+          
+          for (let i = 1; i < sortedLessons.length; i++) {
+            const lessonDate = new Date(sortedLessons[i].completedAt!);
+            lessonDate.setHours(0, 0, 0, 0);
+            const diff = Math.floor((prevDate.getTime() - lessonDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 1) {
+              streak++;
+              prevDate = lessonDate;
+            } else if (diff > 1) {
+              break;
+            }
+          }
+        }
+      }
+    }
+
     return {
       userId,
       totalLessonsCompleted: completedLessons.length,
       totalPoints,
       totalTimeSpent,
-      streak: 0, // Would need date-based calculation
+      streak,
       lastActivityDate: new Date().toISOString(),
       categoryProgress,
       levelProgress,

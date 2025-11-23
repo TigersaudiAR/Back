@@ -261,15 +261,55 @@ export default function LessonAdminDashboard() {
                 >
                   «
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    className={`join-item btn ${currentPage === page ? 'btn-active' : ''}`}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {/* Show first page */}
+                {currentPage > 3 && (
+                  <>
+                    <button
+                      className="join-item btn"
+                      onClick={() => setCurrentPage(1)}
+                    >
+                      1
+                    </button>
+                    {currentPage > 4 && <button className="join-item btn btn-disabled">...</button>}
+                  </>
+                )}
+                {/* Show pages around current */}
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const page = Math.max(1, Math.min(currentPage - 2 + i, totalPages));
+                  if (page < 1 || page > totalPages) return null;
+                  if (currentPage <= 3 || currentPage >= totalPages - 2) {
+                    return i < 5 ? (
+                      <button
+                        key={page}
+                        className={`join-item btn ${currentPage === page ? 'btn-active' : ''}`}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </button>
+                    ) : null;
+                  }
+                  return (
+                    <button
+                      key={page}
+                      className={`join-item btn ${currentPage === page ? 'btn-active' : ''}`}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+                {/* Show last page */}
+                {currentPage < totalPages - 2 && (
+                  <>
+                    {currentPage < totalPages - 3 && <button className="join-item btn btn-disabled">...</button>}
+                    <button
+                      className="join-item btn"
+                      onClick={() => setCurrentPage(totalPages)}
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
                 <button
                   className="join-item btn"
                   disabled={currentPage === totalPages}

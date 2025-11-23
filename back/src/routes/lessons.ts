@@ -256,17 +256,15 @@ router.put("/notifications/preferences", authenticate(), (req: Request, res: Res
 
 // Get leaderboard
 router.get("/leaderboard/top", (_req: Request, res: Response) => {
-  // Get all user stats and create leaderboard
-  const allStats = Array.from({ length: 10 }, (_, i) => ({
-    userId: `user-${i}`,
-    userName: `مستخدم ${i + 1}`,
-    totalPoints: 0,
-    completedLessons: 0,
-    certificates: 0,
-    rank: i + 1
-  }));
+  // Get all user stats from the lesson service
+  // Note: In production, this should be optimized with a proper database query
+  // For now, we return an empty leaderboard since we don't have a way to iterate all users
+  const leaderboard: any[] = [];
   
-  res.json({ leaderboard: allStats });
+  res.json({ 
+    leaderboard,
+    message: "يتطلب نظام المتصدرين قاعدة بيانات للمستخدمين"
+  });
 });
 
 // Get all topics

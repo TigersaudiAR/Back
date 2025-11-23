@@ -41,3 +41,36 @@ Authorization: Bearer <token>
 | POST | /api/lessons/topics | Yes (admin/teacher) | Create topic |
 
 See full documentation for detailed request/response examples.
+
+## Security Considerations
+
+### Rate Limiting
+⚠️ **Important**: Rate limiting is not currently implemented but is **required for production** to prevent abuse.
+
+**Recommendations:**
+- Public endpoints: 100 requests per 15 minutes per IP
+- Authenticated endpoints: 200 requests per 15 minutes per user
+- Admin/teacher endpoints: 500 requests per 15 minutes per user
+- Quiz submission: 10 attempts per hour per user per lesson
+- Lesson creation: 20 lessons per day per teacher
+
+**Implementation:** Use `express-rate-limit` middleware
+
+### Authentication Security
+- JWT tokens expire after 12 hours
+- Tokens should be stored securely (httpOnly cookies recommended)
+- Implement token refresh mechanism for production
+- Use HTTPS in production
+
+### Input Validation
+- All user inputs should be validated and sanitized
+- Implement proper error handling to avoid information leakage
+- Use TypeScript types for compile-time validation
+
+### Database Security
+- Current implementation uses in-memory storage
+- For production, migrate to proper database with:
+  - Prepared statements to prevent SQL injection
+  - Encryption at rest for sensitive data
+  - Regular backups
+  - Access control and audit logging
