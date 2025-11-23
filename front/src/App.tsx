@@ -28,6 +28,7 @@ const DashboardHalaqat = lazy(() => import("./pages/dashboard/halaqat"));
 const DashboardAdhkar = lazy(() => import("./pages/dashboard/adhkar"));
 const DashboardHadith = lazy(() => import("./pages/dashboard/hadith"));
 const DashboardUsers = lazy(() => import("./pages/dashboard/users"));
+const DashboardLessons = lazy(() => import("./pages/dashboard/lessons"));
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           <Route path="/dashboard/halaqat" element={<DashboardHalaqat />} />
           <Route path="/dashboard/adhkar" element={<DashboardAdhkar />} />
           <Route path="/dashboard/hadith" element={<DashboardHadith />} />
+          <Route path="/dashboard/lessons" element={<DashboardLessons />} />
           <Route path="/dashboard/users" element={<DashboardUsers />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
