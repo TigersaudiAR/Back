@@ -541,3 +541,19 @@ Lessons support the following content types:
 - Only admins can delete lessons
 - Teachers and admins can create and update lessons
 - Notifications are sent when lessons are published
+
+## Security Considerations
+
+⚠️ **Rate Limiting**: The current implementation does not include rate limiting on authenticated endpoints. For production deployment, it is recommended to add rate limiting middleware to prevent abuse. Example:
+```javascript
+import rateLimit from 'express-rate-limit';
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+router.post('/:id/complete', apiLimiter, authenticate(), ...);
+```
+
+This will be addressed in a future update.
