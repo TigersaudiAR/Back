@@ -15,7 +15,7 @@ import { usersRouter } from "./routes/users.js";
 import islamicLearningRouter from "./routes/islamic-learning.js";
 import nisukRouter from "./routes/nisuk.js";
 import memorizationRouter from "./routes/memorization.js";
-import lessonsRouter from "./routes/lessons.js";
+import lessonsRouter from "./routes/lessons-enhanced.js";
 import quranPagesRouter from "./routes/quran-pages.js";
 
 const app = express();
