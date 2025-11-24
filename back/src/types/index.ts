@@ -97,5 +97,73 @@ export interface Hadith {
   topic?: string | string[];
 }
 
-// Export lesson-related types
-export * from './lesson.types.js';
+// Lessons System Types
+export type LessonLevel = "beginner" | "intermediate" | "advanced";
+export type LessonCategory = "aqidah" | "fiqh" | "sirah" | "tafsir" | "hadith" | "akhlaq" | "tajweed";
+export type ContentType = "text" | "list" | "quote" | "image" | "video" | "audio";
+
+export interface LessonContent {
+  type: ContentType;
+  title?: string;
+  body?: string;
+  items?: string[];
+  text?: string;
+  source?: string;
+  url?: string;
+  thumbnail?: string;
+  duration?: number;
+}
+
+export interface LessonQuiz {
+  question: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+}
+
+export interface Lesson {
+  id: string;
+  category: LessonCategory;
+  title: string;
+  title_en?: string;
+  level: LessonLevel;
+  duration: number;
+  description: string;
+  objectives: string[];
+  content: LessonContent[];
+  quiz?: LessonQuiz[];
+  points: number;
+  order?: number;
+  thumbnail?: string;
+  tags?: string[];
+  isPublished?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  author?: string;
+}
+
+export interface UserLessonProgress {
+  userId: string;
+  completedLessons: string[];
+  quizResults: Array<{
+    lessonId: string;
+    score: number;
+    maxScore: number;
+    date: string;
+    passed: boolean;
+  }>;
+  totalPoints: number;
+  certificates: string[];
+  lastAccessedLesson?: string;
+  lastAccessedDate?: string;
+}
+
+export interface LessonNotification {
+  id: string;
+  lessonId: string;
+  title: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+  userId?: string;
+}
