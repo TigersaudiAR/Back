@@ -23,7 +23,6 @@ function getDefaultProgress(userId: string): UserLessonProgress {
     lastAccessedLesson: undefined,
     lastAccessedDate: undefined
   };
-}
 
 function createNotification(lesson: Lesson): LessonNotification {
   return {
@@ -296,13 +295,13 @@ router.get("/:id", (req: Request, res: Response) => {
     return res.status(404).json({ message: "الدرس غير موجود" });
   }
   
-  res.json(lesson);
+  res.json({ lesson });
 });
 
 // Get user's lesson progress with analytics
 router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const progress = userLessonProgress.get(userId) || getDefaultProgress(userId);
+  const stats = lessonService.getUserStats(userId);
   
   // Calculate detailed analytics
   const totalLessons = lessons.size;
@@ -325,6 +324,30 @@ router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
   }
 
   res.json({
+    stats,
+    completionRate: (stats.totalLessonsCompleted / lessonService.getAllLessons().total) * 100
+  });
+});
+
+// Get progress for specific lesson
+router.get("/progress/lesson/:lessonId", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { lessonId } = req.params;
+  const progress = lessonService.getUserProgress(userId, lessonId);
+  
+  res.json({ progress });
+});
+
+// Update lesson progress
+router.post("/progress/:lessonId", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { lessonId } = req.params;
+  const { progress, timeSpent, currentContentBlockId, bookmarks, notes } = req.body;
+  
+  const updatedProgress = lessonService.updateProgress({
+    userId,
+    lessonId,
+    status: progress >= 100 ? 'completed' : progress > 0 ? 'in_progress' : 'not_started',
     progress,
     analytics: {
       completionRate,
@@ -337,6 +360,8 @@ router.get("/progress/me", authenticate(), (req: Request, res: Response) => {
       progressByCategory
     }
   });
+  
+  res.json({ progress: updatedProgress, message: "تم تحديث التقدم بنجاح" });
 });
 
 // Mark lesson as completed
@@ -364,6 +389,7 @@ router.post("/:id/complete", authenticate(), (req: Request, res: Response) => {
   
   res.json({
     message: "تم إتمام الدرس بنجاح",
+    progress,
     points: lesson.points,
     totalPoints: progress.totalPoints,
     completedLessons: progress.completedLessons.length
@@ -385,12 +411,10 @@ router.post("/:id/quiz", authenticate(), (req: Request, res: Response) => {
     return res.status(400).json({ message: "الإجابات يجب أن تكون مصفوفة" });
   }
   
-  // Calculate score
-  let correctCount = 0;
-  const results = lesson.quiz.map((question, index) => {
-    const userAnswer = answers[index];
-    const isCorrect = userAnswer === question.correct;
-    if (isCorrect) correctCount++;
+  try {
+    const attempt = lessonService.submitQuiz(userId, id, answers);
+    const achievements = lessonService.checkAndAwardAchievements(userId);
+    const stats = lessonService.getUserStats(userId);
     
     return {
       question: question.question,
@@ -457,10 +481,33 @@ router.post("/:id/quiz", authenticate(), (req: Request, res: Response) => {
 // Get user certificates
 router.get("/certificates/me", authenticate(), (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const progress = userLessonProgress.get(userId);
+  const certificates = lessonService.getUserCertificates(userId);
+  res.json({ certificates, total: certificates.length });
+});
+
+// Get user achievements
+router.get("/achievements/me", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const achievements = lessonService.getUserAchievements(userId);
+  res.json({ achievements, total: achievements.length });
+});
+
+// Get user notifications
+router.get("/notifications/me", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const unreadOnly = req.query.unread === 'true';
+  const notifications = lessonService.getUserNotifications(userId, unreadOnly);
+  res.json({ notifications, total: notifications.length });
+});
+
+// Mark notification as read
+router.post("/notifications/:notificationId/read", authenticate(), (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { notificationId } = req.params;
+  const success = lessonService.markNotificationAsRead(userId, notificationId);
   
-  if (!progress || progress.certificates.length === 0) {
-    return res.json({ certificates: [], total: 0 });
+  if (!success) {
+    return res.status(404).json({ message: "الإشعار غير موجود" });
   }
   
   const certificates = progress.certificates.map(lessonId => {
